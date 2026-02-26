@@ -232,3 +232,4 @@ export function endsWithSuffix(
   }
   return address.endsWith(suffix);
 }
+
