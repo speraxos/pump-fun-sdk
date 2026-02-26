@@ -220,3 +220,4 @@ describe('formatTimeEstimate', () => {
     expect(formatTimeEstimate(10, 1000)).toContain('second');
   });
 });
+
