@@ -8,7 +8,7 @@ import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar';
 export const metadata: Metadata = {
   title: 'Pump Fun SDK',
   description:
-    'Community TypeScript SDK for the Pump protocol on Solana — create, buy, sell, and migrate tokens with bonding curve pricing, AMM migration, and fee sharing.',
+    'Official community PumpFun SDK for the Pump protocol on Solana — create, buy, sell, and migrate tokens with bonding curve pricing, AMM migration, and fee sharing.',
   keywords: [
     'pump fun',
     'pump sdk',

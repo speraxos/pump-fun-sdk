@@ -10,10 +10,10 @@
 </pre>
 
 <p>
-  <img src=".github/banner.svg" alt="Pump SDK — Community SDK for the Pump Protocol" width="720">
+  <img src=".github/banner.svg" alt="Pump SDK — Official Community PumpFun SDK" width="720">
 </p>
 
-<h3>A community TypeScript SDK for the <a href="https://pump.fun">Pump</a> protocol on Solana</h3>
+<h3>The official community TypeScript SDK for the <a href="https://pump.fun">Pump</a> protocol on Solana</h3>
 
 <p>
 Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&nbsp; Fee Sharing &nbsp;·&nbsp; Volume Rewards<br>
