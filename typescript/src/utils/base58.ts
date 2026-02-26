@@ -185,3 +185,4 @@ export const BASE58_PROBABILITY = {
     return 1 - Math.pow(1 - p, attempts);
   },
 };
+
