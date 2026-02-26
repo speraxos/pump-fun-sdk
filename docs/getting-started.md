@@ -141,3 +141,4 @@ console.log("Transaction:", signature);
 - [Architecture](./architecture.md) — how the SDK is structured
 - [Fee Sharing Guide](./fee-sharing.md) — set up creator fee distribution
 - [Token Incentives Guide](./token-incentives.md) — volume-based token rewards
+
