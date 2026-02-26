@@ -173,3 +173,4 @@ const ixs = await sdk.adminUpdateTokenIncentivesBothPrograms(
   secondsInADay?, mint?, tokenProgram?,
 );
 ```
+
