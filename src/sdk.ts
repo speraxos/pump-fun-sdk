@@ -1061,3 +1061,4 @@ export function isCreatorUsingSharingConfig({
 }): boolean {
   return feeSharingConfigPda(mint).equals(creator);
 }
+
