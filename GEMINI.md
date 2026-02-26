@@ -1,6 +1,6 @@
 # Pump SDK — Gemini Instructions
 
-> Community Pump program SDK for creating, buying, and selling tokens on the Solana blockchain. Bonding curve pricing, AMM migration, tiered fees, creator fee sharing, token incentives, and vanity address generation.
+> Official community PumpFun SDK for creating, buying, and selling tokens on the Solana blockchain. Bonding curve pricing, AMM migration, tiered fees, creator fee sharing, token incentives, and vanity address generation.
 
 ## Project Overview
 

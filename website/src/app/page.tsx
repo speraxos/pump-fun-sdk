@@ -79,7 +79,7 @@ export default function HomePage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-border rounded-full text-xs text-muted-foreground">
               <span className="w-1.5 h-1.5 rounded-full bg-solana-green animate-pulse" />
-              Community Pump Protocol SDK for Solana
+              Official Community PumpFun SDK for Solana
             </div>
 
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
@@ -89,7 +89,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-              A community TypeScript SDK for the Pump protocol on Solana.
+              The official community TypeScript SDK for the Pump protocol on Solana.
               Create, buy, sell, and migrate tokens with bonding curve pricing,
               AMM pools, fee sharing, and token incentives.
             </p>
