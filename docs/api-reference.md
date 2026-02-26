@@ -664,3 +664,4 @@ All errors extend `Error`.
 | `InvalidShareTotalError` | Shares don't sum to 10,000 bps |
 | `DuplicateShareholderError` | Duplicate addresses in shareholders |
 | `PoolRequiredForGraduatedError` | `createFeeSharingConfig` for graduated token without pool |
+
