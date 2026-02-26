@@ -197,3 +197,4 @@ generate-vanity.sh → source utils.sh
 - `shred` for secure deletion is not available on all systems (macOS needs `gshred`)
 - Difficulty scales exponentially: each additional character multiplies search time by 58x
 - Prefix + suffix combined difficulty is multiplicative, not additive
+
