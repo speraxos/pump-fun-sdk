@@ -135,3 +135,4 @@ It ensures correct behavior regardless of whether a token has graduated to the A
 3. **Deterministic PDAs** — All account addresses are derivable from mint and user public keys.
 4. **Backward compatibility** — V1 methods (`createInstruction`, `createAndBuyInstructions`) are kept but deprecated in favor of V2.
 5. **Type safety** — Full TypeScript types for all on-chain account structures via Anchor IDL types.
+
