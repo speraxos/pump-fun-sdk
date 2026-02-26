@@ -1,6 +1,6 @@
-# Solana Wallet Toolkit
+# Pump SDK
 
-> Secure, auditable toolkit for Solana wallet generation and vanity addresses — using only official Solana Labs libraries.
+> Official Pump program SDK for creating, buying, and selling tokens on the Solana blockchain. Bonding curve pricing, AMM migration, tiered fees, creator fee sharing, token incentives, and vanity address generation.
 
 ## Critical Security Notice
 
@@ -12,6 +12,36 @@ This toolkit uses ONLY official Solana Labs libraries:
 NO third-party cryptographic code is used. All key generation uses Ed25519 from official packages.
 
 ## Quick Reference
+
+### SDK Usage
+```typescript
+import { Connection, PublicKey } from "@solana/web3.js";
+import { OnlinePumpSdk, PUMP_SDK, getBuyTokenAmountFromSolAmount } from "@pump-fun/pump-sdk";
+import BN from "bn.js";
+
+// Offline SDK singleton (instruction builder only)
+const offlineSdk = PUMP_SDK;
+
+// Online SDK (fetches on-chain state)
+const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+const sdk = new OnlinePumpSdk(connection);
+
+// Create token
+const ix = await PUMP_SDK.createV2Instruction({ mint, name, symbol, uri, creator, user });
+
+// Buy tokens
+const global = await sdk.fetchGlobal();
+const { bondingCurve } = await sdk.fetchBuyState(mint, user);
+const ixs = await sdk.buyInstructions({ global, bondingCurve, mint, user, solAmount, amount, slippage: 1 });
+```
+
+### On-Chain Programs
+
+| Program | ID | Purpose |
+|---------|-----|---------|
+| Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve |
+| PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | AMM pools |
+| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing |
 
 ### Rust Key Generation
 ```rust

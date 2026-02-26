@@ -1,10 +1,77 @@
-# solana-wallet-toolkit Development Guidelines
+# Pump SDK — Agent Development Guidelines
 
-> ☀️ Solana Development Toolkit ⚒️Official Solana Labs libraries 🔑 Vanity Address Generation — custom wallet addresses, OG names on the blockchain 😎 Multi-threaded Search 🔍 Parallel generation using all CPU cores 💨 Rust & TypeScript, Node.js ⛓
+> Official Pump program SDK for creating, buying, and selling tokens on the Solana blockchain. Bonding curve pricing, AMM migration, tiered fees, creator fee sharing, token incentives, and vanity address generation.
 
 ## Project Overview
 
-solana-wallet-toolkit is built with TypeScript. See the README for full documentation.
+The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol — a Solana-based token launchpad. It provides offline-first instruction builders for token creation, buying, selling, migration, and fee management across three on-chain programs.
+
+The repository also includes:
+- **Rust vanity address generator** — multi-threaded, 100K+ keys/sec with rayon + solana-sdk
+- **TypeScript vanity generator** — educational reference implementation with @solana/web3.js
+- **MCP server** — Model Context Protocol server for AI agent integration
+- **Shell scripts** — production Bash wrappers for solana-keygen
+- **Documentation site** — Next.js website
+
+## Architecture
+
+| Component | Directory | Language |
+|-----------|-----------|----------|
+| Core SDK | `src/` | TypeScript |
+| Rust vanity generator | `rust/` | Rust |
+| TypeScript vanity generator | `typescript/` | TypeScript |
+| MCP server | `mcp-server/` | TypeScript |
+| Shell scripts | `scripts/` | Bash |
+| Test suites | `tests/` | Mixed |
+| Documentation | `docs/` | Markdown |
+| Website | `website/` | Next.js |
+
+## On-Chain Programs
+
+| Program | ID | Purpose |
+|---------|-----|---------|
+| Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve operations |
+| PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Graduated AMM pools |
+| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing |
+
+## SDK Design
+
+- **`PumpSdk`** (offline) — Builds `TransactionInstruction[]` without a connection. Singleton: `PUMP_SDK`
+- **`OnlinePumpSdk`** (online) — Extends offline SDK with RPC fetchers for account state
+- All instruction methods return `TransactionInstruction[]`, never `Transaction` objects
+
+## Agent Skill Files
+
+See `.github/skills/` for 15 detailed skill documents covering every domain:
+- `pump-sdk-core.skill.md` — Core SDK patterns
+- `bonding-curve.skill.md` / `bonding-curve-math.skill.md` — AMM math
+- `token-lifecycle.skill.md` — Create, trade, migrate
+- `fee-system.skill.md` / `fee-sharing.skill.md` — Fee system
+- `token-incentives.skill.md` — Volume-based rewards
+- `solana-program-architecture.skill.md` — PDAs and accounts
+- `solana-wallet.skill.md` — Key generation security
+- `rust-vanity-gen.skill.md` / `rust-vanity-generator.skill.md` — Rust generator
+- `typescript-vanity-generator.skill.md` — TypeScript generator
+- `mcp-server.skill.md` — MCP integration
+- `shell-scripting-cli.skill.md` — Bash scripts
+- `security-practices.skill.md` — Security hardening
+
+## Well-Known Files
+
+- `.well-known/ai-plugin.json` — AI plugin manifest
+- `.well-known/agent.json` — Agent capabilities and configuration
+- `.well-known/skills.json` — Skills registry with all 15 skills
+- `.well-known/security.txt` — Security contact information
+- `llms.txt` — LLM context (quick reference)
+- `llms-full.txt` — LLM context (comprehensive)
+
+## Security Rules
+
+1. **ONLY** official Solana Labs crypto libraries: `solana-sdk`, `@solana/web3.js`, `solana-keygen`
+2. Zeroize all key material after use
+3. Set keypair file permissions to `0600`
+4. No network calls for key generation
+5. See `security/SECURITY_CHECKLIST.md` for 60+ item checklist
 
 ### Terminal Management
 
