@@ -545,3 +545,4 @@ usage() {
     echo "Usage: $script_name $usage_text"
     exit "$EXIT_USER_ERROR"
 }
+
