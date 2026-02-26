@@ -60,3 +60,4 @@ export function registerPromptHandlers(server: Server, state: ServerState): void
     };
   });
 }
+
