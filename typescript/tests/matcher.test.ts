@@ -174,3 +174,4 @@ describe('endsWithSuffix', () => {
     expect(endsWithSuffix('SOLANA', 'NA', true)).toBe(true);
   });
 });
+
