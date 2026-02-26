@@ -122,11 +122,10 @@ export async function createPaymentTransaction(
   const { blockhash, lastValidBlockHeight } =
     await connection.getLatestBlockhash('confirmed');
 
-  const transaction = new Transaction({
-    recentBlockhash: blockhash,
-    feePayer: payerPubkey,
-    lastValidBlockHeight,
-  });
+  const transaction = new Transaction();
+  transaction.recentBlockhash = blockhash;
+  transaction.feePayer = payerPubkey;
+  transaction.lastValidBlockHeight = lastValidBlockHeight;
   transaction.add(...instructions);
 
   // Sign with payer's keypair

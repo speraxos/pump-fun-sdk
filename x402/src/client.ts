@@ -217,15 +217,15 @@ export class X402Client {
   // -------------------------------------------------------------------------
 
   /** GET request with automatic 402 handling */
-  async get(url: string, headers?: HeadersInit): Promise<Response> {
+  async get(url: string, headers?: Record<string, string>): Promise<Response> {
     return this.fetch(url, { method: 'GET', headers });
   }
 
   /** POST request with automatic 402 handling */
   async post(
     url: string,
-    body?: BodyInit,
-    headers?: HeadersInit
+    body?: BodyInit | null,
+    headers?: Record<string, string>
   ): Promise<Response> {
     return this.fetch(url, { method: 'POST', body, headers });
   }
