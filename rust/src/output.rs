@@ -347,3 +347,4 @@ mod tests {
         assert!(report.contains("NEVER share"));
     }
 }
+
