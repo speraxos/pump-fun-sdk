@@ -297,3 +297,4 @@ export interface PaymentEvent {
 
 /** Event listener type */
 export type PaymentEventListener = (event: PaymentEvent) => void;
+
