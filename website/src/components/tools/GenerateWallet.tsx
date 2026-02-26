@@ -33,7 +33,7 @@ export function GenerateWallet() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Generate Random Wallet
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -43,13 +43,13 @@ export function GenerateWallet() {
 
       <button
         onClick={generate}
-        className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Generate New Wallet
       </button>
 
       {result && (
-        <div className="space-y-4 p-4 border border-border rounded-lg bg-dark-800/50 animate-fade-in">
+        <div className="space-y-4 p-4 border border-border rounded-lair bg-dark-800/50 animate-fade-in">
           <div className="flex items-center justify-between">
             <ResultField label="Public Key (Address)" value={result.address} />
           </div>
@@ -95,14 +95,14 @@ export function ResultField({
       <div className="flex items-start gap-2">
         <div
           className={`flex-1 p-2.5 border border-border rounded font-mono text-xs break-all ${
-            success ? 'text-solana-green' : 'text-white'
+            success ? 'text-good' : 'text-primary-foreground'
           }`}
         >
           {value}
         </div>
         <button
           onClick={copy}
-          className="shrink-0 px-2 py-2 text-xs border border-border rounded hover:bg-dark-700 transition-colors text-muted-foreground hover:text-white"
+          className="shrink-0 px-2 py-2 text-xs border border-border rounded hover:bg-dark-700 transition-colors text-muted-foreground hover:text-primary-foreground"
         >
           {copied ? '✓' : 'Copy'}
         </button>

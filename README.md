@@ -518,11 +518,17 @@ See [mcp-server/README.md](mcp-server/README.md) for setup instructions.
 | Guide | Description |
 |-------|-------------|
 | [Getting Started](docs/getting-started.md) | Installation, setup, and first transaction |
+| [End-to-End Workflow](docs/end-to-end-workflow.md) | Full lifecycle: create → buy → graduate → migrate → fees → rewards |
 | [Architecture](docs/architecture.md) | SDK structure, lifecycle, and design patterns |
 | [API Reference](docs/api-reference.md) | Full class, function, and type documentation |
 | [Examples](docs/examples.md) | Practical code examples for common operations |
+| [Bonding Curve Math](docs/bonding-curve-math.md) | Virtual reserves, price formulas, and graduation |
 | [Fee Sharing](docs/fee-sharing.md) | Creator fee distribution to shareholders |
+| [Fee Tiers](docs/fee-tiers.md) | Market-cap-based fee tier mechanics |
 | [Token Incentives](docs/token-incentives.md) | Volume-based trading rewards |
+| [Mayhem Mode](docs/mayhem-mode.md) | Alternate routing mode and fee recipients |
+| [Security](docs/security.md) | Security model, key handling, and best practices |
+| [Testing](docs/testing.md) | Test suites, commands, and CI pipelines |
 | [CLI Guide](docs/cli-guide.md) | Vanity address generation with Solana CLI |
 
 ---

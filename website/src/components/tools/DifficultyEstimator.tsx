@@ -89,7 +89,7 @@ export function DifficultyEstimator() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Difficulty Estimation
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -109,7 +109,7 @@ export function DifficultyEstimator() {
             onChange={(e) => setPrefix(e.target.value)}
             placeholder="e.g., ABC"
             maxLength={8}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <div>
@@ -122,7 +122,7 @@ export function DifficultyEstimator() {
             onChange={(e) => setSuffix(e.target.value)}
             placeholder="e.g., xyz"
             maxLength={8}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
       </div>
@@ -140,7 +140,7 @@ export function DifficultyEstimator() {
       <button
         onClick={runBenchmark}
         disabled={benchmarking}
-        className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98] disabled:opacity-50"
+        className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50"
       >
         {benchmarking ? 'Benchmarking...' : 'Run Benchmark & Estimate'}
       </button>
@@ -148,17 +148,17 @@ export function DifficultyEstimator() {
       {error && <p className="text-sm text-red-400">{error}</p>}
 
       {result && (
-        <div className="space-y-4 p-4 border border-border rounded-lg bg-dark-800/50 animate-fade-in">
+        <div className="space-y-4 p-4 border border-border rounded-lair bg-dark-800/50 animate-fade-in">
           <div>
             <div className="text-xs text-muted uppercase tracking-wide mb-1">Benchmark</div>
             <div className="p-3 border border-border rounded font-mono text-sm space-y-1">
               <div>
                 <span className="text-muted-foreground">Pattern:</span>{' '}
-                <span className="text-white">{result.patternDesc}</span>
+                <span className="text-primary-foreground">{result.patternDesc}</span>
               </div>
               <div>
                 <span className="text-muted-foreground">Generation Rate:</span>{' '}
-                <span className="text-solana-green">{formatNumber(result.rate)} keys/sec</span>
+                <span className="text-good">{formatNumber(result.rate)} keys/sec</span>
               </div>
             </div>
           </div>
@@ -168,13 +168,13 @@ export function DifficultyEstimator() {
             <div className="p-3 border border-border rounded font-mono text-sm space-y-1">
               <div>
                 <span className="text-muted-foreground">Expected Attempts:</span>{' '}
-                <span className="text-white">
+                <span className="text-primary-foreground">
                   {formatNumber(Math.round(result.expectedAttempts))}
                 </span>
               </div>
               <div>
                 <span className="text-muted-foreground">Estimated Time:</span>{' '}
-                <span className="text-solana">{formatDuration(result.expectedSeconds)}</span>
+                <span className="text-accent">{formatDuration(result.expectedSeconds)}</span>
               </div>
             </div>
           </div>
@@ -186,9 +186,9 @@ export function DifficultyEstimator() {
             <div className="p-3 border border-border rounded font-mono text-sm space-y-1">
               {result.probabilities.map((p, i) => (
                 <div key={i}>
-                  <span className="text-white">{p.time}</span>{' '}
+                  <span className="text-primary-foreground">{p.time}</span>{' '}
                   <span className="text-muted-foreground">→</span>{' '}
-                  <span className="text-solana-green">{p.prob}%</span> chance
+                  <span className="text-good">{p.prob}%</span> chance
                 </div>
               ))}
             </div>
@@ -201,14 +201,14 @@ export function DifficultyEstimator() {
       )}
 
       {/* Base58 reference */}
-      <div className="p-4 border border-border rounded-lg bg-dark-800/30">
-        <h4 className="text-sm font-semibold text-white mb-2">
+      <div className="p-4 border border-border rounded-lair bg-dark-800/30">
+        <h4 className="text-sm font-semibold text-primary-foreground mb-2">
           Base58 Character Reference
         </h4>
         <p className="text-xs text-muted-foreground mb-2">
           Solana addresses use Base58 encoding (58 characters):
         </p>
-        <div className="p-2.5 border border-border rounded font-mono text-xs text-solana tracking-wider break-all">
+        <div className="p-2.5 border border-border rounded font-mono text-xs text-accent tracking-wider break-all">
           123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz
         </div>
         <p className="text-xs text-muted mt-2">

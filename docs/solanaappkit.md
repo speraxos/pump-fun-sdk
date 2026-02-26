@@ -9487,20 +9487,22 @@ This backend server is built with Express.js and TypeScript, offering a robust A
 
 The server follows a modular, service-oriented architecture:
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Controllers   │◄──►│    Services     │◄──►│   External APIs │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         ▲                        ▲                        ▲
-         │                        │                        │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│     Routes      │    │   Utilities     │    │   Blockchain    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         ▲                        ▲                        ▲
-         │                        │                        │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Express App    │◄──►│   Database      │    │   WebSockets    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+```mermaid
+flowchart TB
+  subgraph Top[" "]
+    direction LR
+    Controllers <--> Services <--> ExternalAPIs[External APIs]
+  end
+  subgraph Middle[" "]
+    direction LR
+    Routes --- Utilities --- Blockchain
+  end
+  subgraph Bottom[" "]
+    direction LR
+    ExpressApp[Express App] <--> Database
+    WebSockets
+  end
+  Top --- Middle --- Bottom
 ```
 
 ## Core Services

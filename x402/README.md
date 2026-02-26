@@ -6,25 +6,15 @@
 
 **x402** implements the [HTTP 402 Payment Required](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402) status code as a real protocol. When a server returns `402`, it tells the client exactly how to pay — and the client pays automatically using a Solana USDC transfer.
 
-```
-Client                          Server
-  │                               │
-  │  GET /premium                 │
-  │──────────────────────────────►│
-  │                               │
-  │  402 Payment Required         │
-  │  X-PAYMENT-REQUIRED: {...}    │
-  │◄──────────────────────────────│
-  │                               │
-  │  (signs USDC transfer tx)     │
-  │                               │
-  │  GET /premium                 │
-  │  X-PAYMENT: <base64 payload>  │
-  │──────────────────────────────►│
-  │                               │
-  │  200 OK                       │
-  │  { premium data }             │
-  │◄──────────────────────────────│
+```mermaid
+sequenceDiagram
+  participant Client
+  participant Server
+  Client->>Server: GET /premium
+  Server-->>Client: 402 Payment Required<br/>X-PAYMENT-REQUIRED: {...}
+  Note over Client: Signs USDC transfer tx
+  Client->>Server: GET /premium<br/>X-PAYMENT: base64 payload
+  Server-->>Client: 200 OK { premium data }
 ```
 
 ## Installation

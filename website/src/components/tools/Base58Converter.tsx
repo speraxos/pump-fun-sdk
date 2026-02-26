@@ -60,7 +60,7 @@ export function Base58Converter() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Base58 / Hex / Bytes Converter
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -79,8 +79,8 @@ export function Base58Converter() {
               onClick={() => { setMode(m as any); setResult(''); setError(''); }}
               className={`px-3 py-2 text-xs font-medium rounded border transition-all ${
                 mode === m
-                  ? 'bg-white text-black border-white'
-                  : 'border-border text-muted-foreground hover:text-white hover:border-dark-600'
+                  ? 'bg-accent text-white border-white'
+                  : 'border-border text-muted-foreground hover:text-primary-foreground hover:border-accent/30'
               }`}
             >
               {modeLabels[m]}
@@ -104,13 +104,13 @@ export function Base58Converter() {
               : '[174,47,154,16,...]'
           }
           rows={3}
-          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-white placeholder:text-muted resize-y"
+          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-primary-foreground placeholder:text-muted resize-y"
         />
       </div>
 
       <button
         onClick={convert}
-        className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Convert
       </button>

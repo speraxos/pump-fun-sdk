@@ -8,12 +8,12 @@ The token incentives system rewards traders based on their SOL trading volume. R
 
 ## How It Works
 
-```
-Daily Token Pool
-    │
-    ├── Trader A volume ──► proportional share of daily tokens
-    ├── Trader B volume ──► proportional share of daily tokens
-    └── Trader C volume ──► proportional share of daily tokens
+```mermaid
+flowchart TD
+  Pool["Daily Token Pool"]
+  Pool --> A["Trader A volume → proportional share"]
+  Pool --> B["Trader B volume → proportional share"]
+  Pool --> C["Trader C volume → proportional share"]
 ```
 
 1. A global daily token pool is configured (e.g., 1M tokens/day)

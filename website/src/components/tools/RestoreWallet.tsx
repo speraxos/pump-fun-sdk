@@ -53,7 +53,7 @@ export function RestoreWallet() {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Restore Wallet
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -62,8 +62,8 @@ export function RestoreWallet() {
       </div>
 
       {/* JSON restore */}
-      <div className="p-4 border border-border rounded-lg bg-dark-800/30 space-y-4">
-        <h4 className="text-sm font-semibold text-white border-b border-border pb-2">
+      <div className="p-4 border border-border rounded-lair bg-dark-800/30 space-y-4">
+        <h4 className="text-sm font-semibold text-primary-foreground border-b border-border pb-2">
           From Secret Key (JSON Array)
         </h4>
         <p className="text-xs text-muted-foreground">
@@ -78,12 +78,12 @@ export function RestoreWallet() {
             onChange={(e) => setJsonInput(e.target.value)}
             placeholder="[174,47,154,16,202,193,206,113,199,190,53,133,...]"
             rows={3}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-white placeholder:text-muted resize-y"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-primary-foreground placeholder:text-muted resize-y"
           />
         </div>
         <button
           onClick={restoreFromJson}
-          className="px-4 py-2 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+          className="px-4 py-2 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
         >
           Restore Wallet
         </button>
@@ -91,14 +91,14 @@ export function RestoreWallet() {
         {jsonResult && (
           <div className="animate-fade-in">
             <ResultField label="Public Key (Address)" value={jsonResult.address} />
-            <p className="text-sm text-solana-green mt-2">✅ Keypair restored successfully</p>
+            <p className="text-sm text-good mt-2">✅ Keypair restored successfully</p>
           </div>
         )}
       </div>
 
       {/* Base58 restore */}
-      <div className="p-4 border border-border rounded-lg bg-dark-800/30 space-y-4">
-        <h4 className="text-sm font-semibold text-white border-b border-border pb-2">
+      <div className="p-4 border border-border rounded-lair bg-dark-800/30 space-y-4">
+        <h4 className="text-sm font-semibold text-primary-foreground border-b border-border pb-2">
           From Base58 Secret Key
         </h4>
         <p className="text-xs text-muted-foreground">
@@ -113,12 +113,12 @@ export function RestoreWallet() {
             value={base58Input}
             onChange={(e) => setBase58Input(e.target.value)}
             placeholder="Base58 encoded secret key..."
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <button
           onClick={restoreFromBase58}
-          className="px-4 py-2 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+          className="px-4 py-2 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
         >
           Restore Wallet
         </button>
@@ -127,7 +127,7 @@ export function RestoreWallet() {
           <div className="space-y-3 animate-fade-in">
             <ResultField label="Public Key (Address)" value={base58Result.address} />
             <ResultField label="Secret Key (JSON Array)" value={base58Result.secretKey} />
-            <p className="text-sm text-solana-green">✅ Keypair restored successfully</p>
+            <p className="text-sm text-good">✅ Keypair restored successfully</p>
           </div>
         )}
       </div>

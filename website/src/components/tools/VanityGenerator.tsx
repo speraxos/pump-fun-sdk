@@ -119,7 +119,7 @@ export function VanityGenerator() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Vanity Address Generator
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -139,7 +139,7 @@ export function VanityGenerator() {
             onChange={(e) => setPrefix(e.target.value)}
             placeholder="e.g., So1"
             maxLength={6}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <div>
@@ -152,7 +152,7 @@ export function VanityGenerator() {
             onChange={(e) => setSuffix(e.target.value)}
             placeholder="e.g., xyz"
             maxLength={6}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
       </div>
@@ -171,26 +171,26 @@ export function VanityGenerator() {
         <button
           onClick={start}
           disabled={running}
-          className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {running ? 'Mining...' : 'Start Mining'}
         </button>
         <button
           onClick={stop}
-          className="px-5 py-2.5 border border-border text-white font-semibold text-sm rounded hover:bg-dark-700 transition-colors"
+          className="px-5 py-2.5 border border-border text-primary-foreground font-semibold text-sm rounded hover:bg-dark-700 transition-colors"
         >
           Stop
         </button>
       </div>
 
       {status && (
-        <p className={`text-sm ${status.startsWith('✅') ? 'text-solana-green' : 'text-muted-foreground'}`}>
+        <p className={`text-sm ${status.startsWith('✅') ? 'text-good' : 'text-muted-foreground'}`}>
           {status}
         </p>
       )}
 
       {result && (
-        <div className="space-y-4 p-4 border border-border rounded-lg bg-dark-800/50 animate-fade-in">
+        <div className="space-y-4 p-4 border border-border rounded-lair bg-dark-800/50 animate-fade-in">
           <ResultField label="Public Key (Address)" value={result.address} />
           <ExplorerLink address={result.address} />
           <ResultField label="Secret Key (JSON Array)" value={result.secretKey} />

@@ -19,26 +19,15 @@ Pump charges trading fees split between protocol and creator. The Fee Sharing sy
 
 ## Architecture
 
-```
-    Token Creator
-         │
-         ▼
-    ┌─────────────────────┐
-    │  SharingConfig PDA  │
-    │  (PumpFees program) │
-    │                     │
-    │  admin: PublicKey    │
-    │  mint: PublicKey     │
-    │  adminRevoked: bool  │
-    │  shareholders:       │
-    │    [{ addr, bps }]   │
-    └─────────────────────┘
-         │
-         ▼ distribute
-    ┌────┴────┬────┬────┐
-    │  40%    │ 30%│ 20%│ 10%
-    ▼         ▼    ▼    ▼
-   User1   User2 User3 User4
+```mermaid
+flowchart TD
+  Creator["Token Creator"]
+  Config["SharingConfig PDA\n(PumpFees program)\n\nadmin: PublicKey\nmint: PublicKey\nadminRevoked: bool\nshareholders: [addr, bps]"]
+  Creator --> Config
+  Config --> U1["User1\n40%"]
+  Config --> U2["User2\n30%"]
+  Config --> U3["User3\n20%"]
+  Config --> U4["User4\n10%"]
 ```
 
 ## Workflow
@@ -167,18 +156,15 @@ interface MinimumDistributableFeeEvent {
 
 For graduated tokens, fees accumulate in two separate vaults:
 
-```
-Trading fees ──► AMM Creator Vault (PumpAMM)
-                        │
-                transferCreatorFeesToPump
-                        │
-                        ▼
-                Pump Creator Vault (Pump)
-                        │
-                distributeCreatorFees
-                        │
-                        ▼
-                Shareholders (proportional)
+```mermaid
+flowchart TD
+  Fees["Trading fees"]
+  AMM["AMM Creator Vault\n(PumpAMM)"]
+  Pump["Pump Creator Vault\n(Pump)"]
+  Share["Shareholders\n(proportional)"]
+  Fees -->|"accumulate"| AMM
+  AMM -->|"transferCreatorFeesToPump"| Pump
+  Pump -->|"distributeCreatorFees"| Share
 ```
 
 The `buildDistributeCreatorFeesInstructions` method automatically detects graduation and includes the consolidation step.

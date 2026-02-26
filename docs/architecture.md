@@ -55,15 +55,11 @@ The SDK interacts with three on-chain programs:
   <img src="assets/token-lifecycle.svg" alt="Token lifecycle — bonding curve to AMM graduation" width="720">
 </div>
 
-```
-┌─────────────────────┐      complete = true      ┌─────────────────────┐
-│   Bonding Curve      │ ──────────────────────►  │    AMM Pool          │
-│   (Pump Program)     │       Migration          │    (PumpAMM Program) │
-│                      │                          │                      │
-│  • createV2          │                          │  • Pool-based swaps  │
-│  • buy / sell        │                          │  • LP fees           │
-│  • Price discovery   │                          │  • Graduated trading │
-└─────────────────────┘                           └─────────────────────┘
+```mermaid
+flowchart LR
+  A["🔄 Bonding Curve\n(Pump Program)\n\n• createV2\n• buy / sell\n• Price discovery"]
+  B["💱 AMM Pool\n(PumpAMM Program)\n\n• Pool-based swaps\n• LP fees\n• Graduated trading"]
+  A -- "complete = true\nMigration" --> B
 ```
 
 1. **Creation** — A new token is created with `createV2Instruction`. It starts on a bonding curve.
