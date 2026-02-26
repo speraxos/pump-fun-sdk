@@ -237,3 +237,4 @@ export function tableRow(cells: string[], widths: number[]): string {
 export function tableSeparator(widths: number[]): string {
   return widths.map((w) => '-'.repeat(w)).join('-+-');
 }
+
