@@ -1,13 +1,43 @@
 # Pump SDK
 
-Official Pump program SDK
+Official Pump program SDK for creating, buying, and selling tokens on the Solana blockchain.
+
+[![npm](https://img.shields.io/npm/v/@pump-fun/pump-sdk)](https://www.npmjs.com/package/@pump-fun/pump-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](docs/getting-started.md) | Installation, setup, and first transaction |
+| [Architecture](docs/architecture.md) | SDK structure, lifecycle, and design patterns |
+| [API Reference](docs/api-reference.md) | Full class, function, and type documentation |
+| [Examples](docs/examples.md) | Practical code examples for common operations |
+| [Fee Sharing](docs/fee-sharing.md) | Creator fee distribution to shareholders |
+| [Token Incentives](docs/token-incentives.md) | Volume-based trading rewards |
+
+## Installation
+
+```bash
+npm install @pump-fun/pump-sdk
+```
+
+## Quick Start
 
 ```Typescript
+import { Connection } from "@solana/web3.js";
+import { OnlinePumpSdk, PUMP_SDK } from "@pump-fun/pump-sdk";
+
 const connection = new Connection(
     "https://api.devnet.solana.com",
     "confirmed",
 );
-const sdk = new PumpSdk(connection);
+
+// Online SDK (fetches on-chain state)
+const sdk = new OnlinePumpSdk(connection);
+
+// Offline SDK singleton (instruction builder only)
+const offlineSdk = PUMP_SDK;
 ```
 
 ## Coin creation
@@ -163,3 +193,10 @@ const tx = new Transaction().add(...instructions);
 ```
 
 This method automatically handles graduated tokens by including the `transferCreatorFeesToPump` instruction to consolidate fees from the AMM vault before distributing.
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+[MIT](LICENSE)
