@@ -50,7 +50,7 @@ export function VerifySignature() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">
           Verify Signature
         </h3>
         <p className="text-sm text-muted-foreground">
@@ -68,7 +68,7 @@ export function VerifySignature() {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Original message"
             rows={3}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted resize-y"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted resize-y"
           />
         </div>
         <div>
@@ -80,7 +80,7 @@ export function VerifySignature() {
             value={signature}
             onChange={(e) => setSignature(e.target.value)}
             placeholder="Signature..."
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <div>
@@ -92,29 +92,29 @@ export function VerifySignature() {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Address (Base58)..."
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
       </div>
 
       <button
         onClick={verify}
-        className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Verify Signature
       </button>
 
       {error && <p className="text-sm text-red-400">Error: {error}</p>}
       {result === 'valid' && (
-        <div className="p-4 border border-solana-green/30 rounded-lg bg-solana-green/5 animate-fade-in">
-          <p className="text-lg font-semibold text-solana-green">✅ SIGNATURE VALID</p>
+        <div className="p-4 border border-good/30 rounded-lair bg-good/5 animate-fade-in">
+          <p className="text-lg font-semibold text-good">✅ SIGNATURE VALID</p>
           <p className="text-sm text-muted-foreground mt-1">
             The message was signed by {address}
           </p>
         </div>
       )}
       {result === 'invalid' && (
-        <div className="p-4 border border-red-500/30 rounded-lg bg-red-500/5 animate-fade-in">
+        <div className="p-4 border border-red-500/30 rounded-lair bg-red-500/5 animate-fade-in">
           <p className="text-lg font-semibold text-red-400">❌ SIGNATURE INVALID</p>
           <p className="text-sm text-muted-foreground mt-1">
             The signature does not match the message and address.

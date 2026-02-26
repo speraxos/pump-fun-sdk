@@ -15,7 +15,7 @@ export function ExplorerLink({ address }: { address: string }) {
           href={e.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-2 py-0.5 text-[10px] font-medium text-muted-foreground border border-border rounded hover:text-white hover:border-dark-600 transition-colors"
+          className="px-2 py-0.5 text-[10px] font-medium text-muted-foreground border border-border rounded hover:text-primary-foreground hover:border-accent/30 transition-colors"
         >
           {e.name} ↗
         </a>

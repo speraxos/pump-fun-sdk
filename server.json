@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.nirholas/pump-fun-sdk",
   "title": "Pump SDK MCP Server",
-  "description": "Pump SDK MCP Server — Solana token launchpad with bonding curves, vanity addresses, key management, and transaction building",
+  "description": "Pump SDK MCP — Solana token launchpad, bonding curves, vanity addresses, key management",
   "license": "MIT",
   "authors": [
     {
@@ -21,7 +21,7 @@
   },
   "icons": [
     {
-      "url": "https://raw.githubusercontent.com/nirholas/pump-fun-sdk/main/assets/milady.svg",
+      "src": "https://raw.githubusercontent.com/nirholas/pump-fun-sdk/main/assets/milady.svg",
       "type": "svg"
     }
   ],

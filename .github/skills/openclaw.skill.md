@@ -45,60 +45,53 @@ The Pump SDK is designed to work within this ecosystem. The MCP server is an Ope
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    AI Agent / LLM                    │
-│  (Claude, Copilot, Gemini, Cursor, SperaxOS, etc.)  │
-└──────────────────────┬──────────────────────────────┘
-                       │
-         ┌─────────────┴─────────────┐
-         │     OpenClaw Discovery     │
-         │                           │
-         │  .well-known/             │
-         │  ├─ ai-plugin.json        │  ← Plugin manifest
-         │  ├─ agent.json            │  ← Capabilities & programs
-         │  ├─ skills.json           │  ← Skill registry
-         │  └─ security.txt          │  ← Security contact
-         │                           │
-         │  llms.txt / llms-full.txt │  ← LLM context
-         │  AGENTS.md / CLAUDE.md    │  ← Agent instructions
-         └─────────────┬─────────────┘
-                       │
-         ┌─────────────┴─────────────┐
-         │    Skill Resolution        │
-         │                           │
-         │  .github/skills/          │
-         │  ├─ pump-sdk-core         │  ← Instruction building
-         │  ├─ bonding-curve         │  ← AMM pricing
-         │  ├─ token-lifecycle       │  ← Create/trade/migrate
-         │  ├─ fee-system            │  ← Tiered fees
-         │  ├─ security-practices    │  ← Defense-in-depth
-         │  ├─ openclaw              │  ← This skill
-         │  └─ ... (21+ skills)      │
-         └─────────────┬─────────────┘
-                       │
-         ┌─────────────┴─────────────┐
-         │    MCP Runtime Layer       │
-         │                           │
-         │  Tools (7)                │
-         │  ├─ generate_keypair      │
-         │  ├─ generate_vanity       │
-         │  ├─ sign_message          │
-         │  ├─ verify_signature      │
-         │  ├─ validate_address      │
-         │  ├─ estimate_vanity_time  │
-         │  └─ restore_keypair       │
-         │                           │
-         │  Resources (3)            │
-         │  ├─ solana://config       │
-         │  ├─ solana://keypair/{id} │
-         │  └─ solana://address/{pk} │
-         │                           │
-         │  Prompts (3)              │
-         │  ├─ create_wallet         │
-         │  ├─ security_audit        │
-         │  └─ batch_generate        │
-         └───────────────────────────┘
+```mermaid
+flowchart TD
+  Agent["AI Agent / LLM\n(Claude, Copilot, Gemini, Cursor, SperaxOS, etc.)"]
+
+  subgraph Discovery["OpenClaw Discovery"]
+    D1[".well-known/ai-plugin.json — Plugin manifest"]
+    D2[".well-known/agent.json — Capabilities & programs"]
+    D3[".well-known/skills.json — Skill registry"]
+    D4[".well-known/security.txt — Security contact"]
+    D5["llms.txt / llms-full.txt — LLM context"]
+    D6["AGENTS.md / CLAUDE.md — Agent instructions"]
+  end
+
+  subgraph Skills["Skill Resolution"]
+    S1["pump-sdk-core — Instruction building"]
+    S2["bonding-curve — AMM pricing"]
+    S3["token-lifecycle — Create/trade/migrate"]
+    S4["fee-system — Tiered fees"]
+    S5["security-practices — Defense-in-depth"]
+    S6["openclaw — This skill"]
+    S7["... (21+ skills)"]
+  end
+
+  subgraph MCP["MCP Runtime Layer"]
+    direction LR
+    subgraph Tools["Tools (7)"]
+      T1["generate_keypair"]
+      T2["generate_vanity"]
+      T3["sign_message"]
+      T4["verify_signature"]
+      T5["validate_address"]
+      T6["estimate_vanity_time"]
+      T7["restore_keypair"]
+    end
+    subgraph Resources["Resources (3)"]
+      R1["solana://config"]
+      R2["solana://keypair/{id}"]
+      R3["solana://address/{pk}"]
+    end
+    subgraph Prompts["Prompts (3)"]
+      P1["create_wallet"]
+      P2["security_audit"]
+      P3["batch_generate"]
+    end
+  end
+
+  Agent --> Discovery --> Skills --> MCP
 ```
 
 ## OpenClaw Skill Package Format

@@ -110,7 +110,7 @@ export function BatchGenerator() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-white mb-1">Batch Generation</h3>
+        <h3 className="text-lg font-semibold text-primary-foreground mb-1">Batch Generation</h3>
         <p className="text-sm text-muted-foreground">
           Generate multiple vanity addresses with the same pattern at once.
         </p>
@@ -122,7 +122,7 @@ export function BatchGenerator() {
           <input
             type="text" value={prefix} onChange={(e) => setPrefix(e.target.value)}
             placeholder="e.g., So1" maxLength={5}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <div>
@@ -130,7 +130,7 @@ export function BatchGenerator() {
           <input
             type="text" value={suffix} onChange={(e) => setSuffix(e.target.value)}
             placeholder="e.g., xyz" maxLength={5}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
           />
         </div>
         <div>
@@ -138,7 +138,7 @@ export function BatchGenerator() {
           <input
             type="number" value={count} min={1} max={20}
             onChange={(e) => setCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
-            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white"
+            className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground"
           />
         </div>
       </div>
@@ -150,19 +150,19 @@ export function BatchGenerator() {
 
       <div className="flex gap-2">
         <button onClick={start} disabled={running}
-          className="px-5 py-2.5 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98] disabled:opacity-50"
+          className="px-5 py-2.5 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98] disabled:opacity-50"
         >
           {running ? 'Mining...' : `Generate ${count} Addresses`}
         </button>
         <button onClick={stop}
-          className="px-5 py-2.5 border border-border text-white font-semibold text-sm rounded hover:bg-dark-700 transition-colors"
+          className="px-5 py-2.5 border border-border text-primary-foreground font-semibold text-sm rounded hover:bg-dark-700 transition-colors"
         >
           Stop
         </button>
       </div>
 
       {status && (
-        <p className={`text-sm ${status.startsWith('Done') ? 'text-solana-green' : 'text-muted-foreground'}`}>
+        <p className={`text-sm ${status.startsWith('Done') ? 'text-good' : 'text-muted-foreground'}`}>
           {status}
         </p>
       )}
@@ -170,7 +170,7 @@ export function BatchGenerator() {
       {results.length > 0 && (
         <div className="space-y-3 animate-fade-in">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-white">
+            <h4 className="text-sm font-semibold text-primary-foreground">
               Results ({results.length})
             </h4>
             <button onClick={downloadAll}
@@ -180,7 +180,7 @@ export function BatchGenerator() {
             </button>
           </div>
           {results.map((r, i) => (
-            <div key={i} className="p-3 border border-border rounded-lg bg-dark-800/50">
+            <div key={i} className="p-3 border border-border rounded-lair bg-dark-800/50">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs text-muted font-mono">#{i + 1}</span>
                 <ExplorerLink address={r.address} />

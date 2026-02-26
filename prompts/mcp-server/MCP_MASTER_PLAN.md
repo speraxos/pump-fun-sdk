@@ -12,21 +12,15 @@ Build a production-grade Model Context Protocol (MCP) server that exposes the So
 
 ## 5-Agent Parallel Development Strategy
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     MCP SERVER COORDINATION                         │
-└─────────────────────────────────────────────────────────────────────┘
-                                  │
-    ┌──────────────┬──────────────┼──────────────┬──────────────┐
-    │              │              │              │              │
-    ▼              ▼              ▼              ▼              ▼
-┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐
-│ AGENT 1│  │ AGENT 2│  │ AGENT 3│  │ AGENT 4│  │ AGENT 5│
-│ Server │  │ Tools  │  │Resources│  │Testing │  │  Docs  │
-│  Core  │  │   &    │  │   &    │  │   &    │  │   &    │
-│        │  │Prompts │  │Sampling│  │Security│  │Deploy  │
-│ 45 min │  │ 60 min │  │ 45 min │  │ 60 min │  │ 30 min │
-└────────┘  └────────┘  └────────┘  └────────┘  └────────┘
+```mermaid
+flowchart TD
+  Coord["MCP SERVER COORDINATION"]
+  A1["AGENT 1\nServer Core\n45 min"]
+  A2["AGENT 2\nTools & Prompts\n60 min"]
+  A3["AGENT 3\nResources & Sampling\n45 min"]
+  A4["AGENT 4\nTesting & Security\n60 min"]
+  A5["AGENT 5\nDocs & Deploy\n30 min"]
+  Coord --> A1 & A2 & A3 & A4 & A5
 ```
 
 ---

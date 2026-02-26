@@ -34,11 +34,11 @@ export default function MCPPage() {
 
       {/* Installation */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Installation
         </h2>
         <div className="space-y-4">
-          <pre className="p-4 bg-dark-900 border border-border rounded font-mono text-xs text-muted-foreground overflow-x-auto">
+          <pre className="p-4 bg-dark-900 border border-border rounded-lair font-mono text-xs text-muted-foreground overflow-x-auto">
 {`cd mcp-server
 npm install
 npm run build`}
@@ -48,15 +48,15 @@ npm run build`}
 
       {/* Claude Desktop setup */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Claude Desktop Setup
         </h2>
         <p className="text-sm text-muted-foreground mb-4">
           Add this to your Claude Desktop config at{' '}
-          <code className="text-solana font-mono text-xs">~/Library/Application Support/Claude/claude_desktop_config.json</code>
+          <code className="text-accent font-mono text-xs">~/Library/Application Support/Claude/claude_desktop_config.json</code>
           {' '}(macOS) or equivalent:
         </p>
-        <pre className="p-4 bg-dark-900 border border-border rounded font-mono text-xs text-muted-foreground overflow-x-auto">
+        <pre className="p-4 bg-dark-900 border border-border rounded-lair font-mono text-xs text-muted-foreground overflow-x-auto">
 {`{
   "mcpServers": {
     "solana-wallet": {
@@ -70,11 +70,11 @@ npm run build`}
 
       {/* Available Tools */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Available Tools
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+          <table className="w-full text-sm border border-border rounded-lair overflow-hidden">
             <thead>
               <tr className="bg-dark-800">
                 <th className="px-4 py-2 text-left text-xs text-muted-foreground font-medium uppercase">Tool</th>
@@ -84,7 +84,7 @@ npm run build`}
             <tbody className="font-mono text-xs">
               {tools.map((t) => (
                 <tr key={t.name} className="border-t border-border/50">
-                  <td className="px-4 py-2 text-solana">{t.name}</td>
+                  <td className="px-4 py-2 text-accent">{t.name}</td>
                   <td className="px-4 py-2 text-muted-foreground font-sans">{t.desc}</td>
                 </tr>
               ))}
@@ -95,11 +95,11 @@ npm run build`}
 
       {/* Available Resources */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Resources
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+          <table className="w-full text-sm border border-border rounded-lair overflow-hidden">
             <thead>
               <tr className="bg-dark-800">
                 <th className="px-4 py-2 text-left text-xs text-muted-foreground font-medium uppercase">URI</th>
@@ -109,7 +109,7 @@ npm run build`}
             <tbody className="font-mono text-xs">
               {resources.map((r) => (
                 <tr key={r.uri} className="border-t border-border/50">
-                  <td className="px-4 py-2 text-solana-green">{r.uri}</td>
+                  <td className="px-4 py-2 text-good">{r.uri}</td>
                   <td className="px-4 py-2 text-muted-foreground font-sans">{r.desc}</td>
                 </tr>
               ))}
@@ -120,11 +120,11 @@ npm run build`}
 
       {/* Available Prompts */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Prompts
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+          <table className="w-full text-sm border border-border rounded-lair overflow-hidden">
             <thead>
               <tr className="bg-dark-800">
                 <th className="px-4 py-2 text-left text-xs text-muted-foreground font-medium uppercase">Prompt</th>
@@ -134,7 +134,7 @@ npm run build`}
             <tbody className="font-mono text-xs">
               {prompts.map((p) => (
                 <tr key={p.name} className="border-t border-border/50">
-                  <td className="px-4 py-2 text-white">{p.name}</td>
+                  <td className="px-4 py-2 text-primary-foreground">{p.name}</td>
                   <td className="px-4 py-2 text-muted-foreground font-sans">{p.desc}</td>
                 </tr>
               ))}
@@ -145,26 +145,26 @@ npm run build`}
 
       {/* Security */}
       <section className="mb-12">
-        <h2 className="text-xl font-semibold text-white mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-semibold text-primary-foreground mb-4 border-b border-border pb-2">
           Security
         </h2>
-        <div className="p-4 border border-red-900/50 rounded-lg bg-dark-800/30 space-y-2">
-          <p className="text-sm font-semibold text-red-400">⚠ CRITICAL: This server handles cryptocurrency private keys.</p>
+        <div className="p-4 border border-bad/50 rounded-lair bg-dark-800/30 space-y-2">
+          <p className="text-sm font-semibold text-bad">⚠ CRITICAL: This server handles cryptocurrency private keys.</p>
           <ul className="text-xs text-muted-foreground space-y-1 list-disc list-inside">
-            <li>Private keys are <strong className="text-white">never logged</strong> or persisted to disk</li>
-            <li>Keys are <strong className="text-white">zeroized from memory</strong> on shutdown</li>
-            <li>All inputs are <strong className="text-white">strictly validated</strong></li>
-            <li>Uses official Solana libraries only</li>
+            <li>Private keys are <strong className="text-primary-foreground">never logged</strong> or persisted to disk</li>
+            <li>Keys are <strong className="text-primary-foreground">zeroized from memory</strong> on shutdown</li>
+            <li>All inputs are <strong className="text-primary-foreground">strictly validated</strong></li>
+            <li>Uses Solana libraries only</li>
           </ul>
         </div>
       </section>
 
       {/* Protocol */}
       <section>
-        <div className="p-4 border border-border rounded-lg bg-dark-800/30 text-xs text-muted-foreground">
-          <p>Protocol version: <code className="text-white font-mono">2024-11-05</code></p>
+        <div className="p-4 border border-border rounded-lair bg-dark-800/30 text-xs text-muted-foreground">
+          <p>Protocol version: <code className="text-primary-foreground font-mono">2024-11-05</code></p>
           <p className="mt-1">
-            <Link href="https://github.com/nirholas/pump-fun-sdk/tree/main/mcp-server" target="_blank" className="text-solana hover:underline">
+            <Link href="https://github.com/nirholas/pump-fun-sdk/tree/main/mcp-server" target="_blank" className="text-accent hover:underline">
               View source on GitHub ↗
             </Link>
           </p>

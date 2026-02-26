@@ -69,34 +69,31 @@ npm start
 
 ## How It Works
 
-```
-┌─────────────────────────────────────────────────┐
-│                  Solana Mainnet                  │
-│                                                  │
-│   PumpFun Program (6EF8r...F6P)                 │
-│   ├── Creator Fee claims                        │
-│   └── Cashback coin claims                      │
-└──────────────────┬──────────────────────────────┘
-                   │ WebSocket onLogs / HTTP polling
-                   ▼
-┌─────────────────────────────────────────────────┐
-│            PumpFunMonitor                        │
-│                                                  │
-│   1. Detect PumpFun program transactions         │
-│   2. Parse for fee-claim instruction patterns    │
-│   3. Extract: claimer, amount, token, type       │
-│   4. Match against watched wallets               │
-└──────────────────┬──────────────────────────────┘
-                   │ FeeClaimEvent
-                   ▼
-┌─────────────────────────────────────────────────┐
-│            Telegram Notifications                │
-│                                                  │
-│   🏦 Creator Fee Claim Detected!                │
-│   👤 Claimer: HN7c...4xYz (MyProject)          │
-│   💰 Amount: 2.5000 SOL                         │
-│   🔗 View TX · Wallet · pump.fun               │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Solana["Solana Mainnet"]
+    Program["PumpFun Program (6EF8r...F6P)"]
+    Fee["Creator Fee claims"]
+    Cash["Cashback coin claims"]
+    Program --- Fee & Cash
+  end
+
+  subgraph Monitor["PumpFunMonitor"]
+    M1["1. Detect PumpFun program transactions"]
+    M2["2. Parse for fee-claim instruction patterns"]
+    M3["3. Extract: claimer, amount, token, type"]
+    M4["4. Match against watched wallets"]
+  end
+
+  subgraph Telegram["Telegram Notifications"]
+    N1["🏦 Creator Fee Claim Detected!"]
+    N2["👤 Claimer: HN7c...4xYz (MyProject)"]
+    N3["💰 Amount: 2.5000 SOL"]
+    N4["🔗 View TX · Wallet · pump.fun"]
+  end
+
+  Solana -->|"WebSocket onLogs / HTTP polling"| Monitor
+  Monitor -->|"FeeClaimEvent"| Telegram
 ```
 
 ### Detection Strategies

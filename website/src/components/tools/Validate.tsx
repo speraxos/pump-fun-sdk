@@ -33,7 +33,7 @@ export function ValidateAddress() {
 
   return (
     <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-white border-b border-border pb-2">
+      <h4 className="text-sm font-semibold text-primary-foreground border-b border-border pb-2">
         Validate Address
       </h4>
       <p className="text-xs text-muted-foreground">
@@ -48,18 +48,18 @@ export function ValidateAddress() {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Address (Base58)..."
-          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
         />
       </div>
       <button
         onClick={validate}
-        className="px-4 py-2 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-4 py-2 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Validate
       </button>
       {result && result.valid && (
-        <div className="space-y-3 p-4 border border-solana-green/30 rounded-lg bg-solana-green/5 animate-fade-in">
-          <p className="text-lg font-semibold text-solana-green">✅ VALID SOLANA ADDRESS</p>
+        <div className="space-y-3 p-4 border border-good/30 rounded-lair bg-good/5 animate-fade-in">
+          <p className="text-lg font-semibold text-good">✅ VALID SOLANA ADDRESS</p>
           <ResultField label="Address" value={address} />
           <ResultField label="Bytes (Hex)" value={result.hex!} />
           <p className="text-xs text-muted-foreground">
@@ -68,7 +68,7 @@ export function ValidateAddress() {
         </div>
       )}
       {result && !result.valid && (
-        <div className="p-4 border border-red-500/30 rounded-lg bg-red-500/5 animate-fade-in">
+        <div className="p-4 border border-red-500/30 rounded-lair bg-red-500/5 animate-fade-in">
           <p className="text-lg font-semibold text-red-400">❌ INVALID ADDRESS</p>
           <p className="text-sm text-muted-foreground mt-1">{result.error}</p>
         </div>
@@ -197,7 +197,7 @@ export function ValidateKeypair() {
 
   return (
     <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-white border-b border-border pb-2">
+      <h4 className="text-sm font-semibold text-primary-foreground border-b border-border pb-2">
         Validate Keypair JSON
       </h4>
       <p className="text-xs text-muted-foreground">
@@ -212,27 +212,27 @@ export function ValidateKeypair() {
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="[174,47,154,16,202,193,206,113,199,190,53,133,...]"
           rows={3}
-          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-white placeholder:text-muted resize-y"
+          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-primary-foreground placeholder:text-muted resize-y"
         />
       </div>
       <button
         onClick={validate}
-        className="px-4 py-2 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-4 py-2 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Validate Keypair
       </button>
 
       {checks.length > 0 && (
         <div
-          className={`p-4 border rounded-lg animate-fade-in ${
+          className={`p-4 border rounded-lair animate-fade-in ${
             allPassed
-              ? 'border-solana-green/30 bg-solana-green/5'
+              ? 'border-good/30 bg-good/5'
               : 'border-red-500/30 bg-red-500/5'
           }`}
         >
           <p
             className={`text-lg font-semibold mb-3 ${
-              allPassed ? 'text-solana-green' : 'text-red-400'
+              allPassed ? 'text-good' : 'text-red-400'
             }`}
           >
             {allPassed ? '✅ KEYPAIR VALID' : '❌ KEYPAIR INVALID'}
@@ -240,10 +240,10 @@ export function ValidateKeypair() {
           <div className="space-y-1">
             {checks.map((c, i) => (
               <div key={i} className="text-sm">
-                <span className={c.passed ? 'text-solana-green' : 'text-red-400'}>
+                <span className={c.passed ? 'text-good' : 'text-red-400'}>
                   {c.passed ? '✅' : '❌'}
                 </span>{' '}
-                <span className="font-medium text-white">{c.name}</span>:{' '}
+                <span className="font-medium text-primary-foreground">{c.name}</span>:{' '}
                 <span className="text-muted-foreground">{c.message}</span>
               </div>
             ))}
@@ -284,7 +284,7 @@ export function VerifyKeyAddressPair() {
 
   return (
     <div className="space-y-4">
-      <h4 className="text-sm font-semibold text-white border-b border-border pb-2">
+      <h4 className="text-sm font-semibold text-primary-foreground border-b border-border pb-2">
         Verify Key-Address Pair
       </h4>
       <p className="text-xs text-muted-foreground">
@@ -299,7 +299,7 @@ export function VerifyKeyAddressPair() {
           onChange={(e) => setKeyJson(e.target.value)}
           placeholder="[174,47,154,16,202,193,206,113,199,190,53,133,...]"
           rows={3}
-          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-white placeholder:text-muted resize-y"
+          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-xs text-primary-foreground placeholder:text-muted resize-y"
         />
       </div>
       <div>
@@ -311,20 +311,20 @@ export function VerifyKeyAddressPair() {
           value={expectedAddress}
           onChange={(e) => setExpectedAddress(e.target.value)}
           placeholder="Address (Base58)..."
-          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-white placeholder:text-muted"
+          className="w-full px-3 py-2 bg-dark-800 border border-border rounded font-mono text-sm text-primary-foreground placeholder:text-muted"
         />
       </div>
       <button
         onClick={verify}
-        className="px-4 py-2 bg-white text-black font-semibold text-sm rounded hover:bg-white/90 transition-all active:scale-[0.98]"
+        className="px-4 py-2 bg-accent text-white font-semibold text-sm rounded hover:brightness-110 transition-all active:scale-[0.98]"
       >
         Verify Match
       </button>
 
       {error && <p className="text-sm text-red-400">Error: {error}</p>}
       {result && result.match && (
-        <div className="p-4 border border-solana-green/30 rounded-lg bg-solana-green/5 animate-fade-in">
-          <p className="text-lg font-semibold text-solana-green">✅ MATCH</p>
+        <div className="p-4 border border-good/30 rounded-lair bg-good/5 animate-fade-in">
+          <p className="text-lg font-semibold text-good">✅ MATCH</p>
           <p className="text-sm text-muted-foreground mt-1">
             The secret key correctly derives to the expected address.
           </p>
@@ -334,7 +334,7 @@ export function VerifyKeyAddressPair() {
         </div>
       )}
       {result && !result.match && (
-        <div className="p-4 border border-red-500/30 rounded-lg bg-red-500/5 animate-fade-in space-y-3">
+        <div className="p-4 border border-red-500/30 rounded-lair bg-red-500/5 animate-fade-in space-y-3">
           <p className="text-lg font-semibold text-red-400">❌ MISMATCH</p>
           <ResultField label="Expected" value={expectedAddress} />
           <ResultField label="Derived" value={result.derived!} />
