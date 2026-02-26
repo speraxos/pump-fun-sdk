@@ -52,3 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation: getting started, architecture, API reference, examples
 - GitHub templates: bug report, feature request, PR template
 - CI/CD configuration
+
