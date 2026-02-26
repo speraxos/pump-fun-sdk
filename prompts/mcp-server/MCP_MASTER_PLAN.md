@@ -169,3 +169,4 @@ Before release:
 5. ✅ Works with Claude Desktop
 6. ✅ Security audit passes
 7. ✅ Published to npm (optional)
+
