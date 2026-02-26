@@ -134,3 +134,4 @@ else
     echo "  find $SEARCH_DIR -name '*.json' -exec chmod 600 {} \\;"
     exit 1
 fi
+
