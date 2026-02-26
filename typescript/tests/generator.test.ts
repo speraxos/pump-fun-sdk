@@ -193,3 +193,4 @@ describe('generateVanityAddress', () => {
     expect(result.secretKey.length).toBe(64);
   });
 });
+
