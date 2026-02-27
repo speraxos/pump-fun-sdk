@@ -12,10 +12,18 @@ import {
     formatClaimNotification,
     formatCreatorChangeNotification,
     formatHelp,
+    formatMonitorActivated,
+    formatMonitorDeactivated,
     formatStatus,
     formatWatchList,
     formatWelcome,
 } from './formatters.js';
+import type { TokenLaunchMonitorState } from './formatters.js';
+import {
+    activateMonitor,
+    deactivateMonitor,
+    isMonitorActive,
+} from './launch-store.js';
 import { log } from './logger.js';
 import type { PumpFunMonitor } from './monitor.js';
 import {
@@ -28,12 +36,22 @@ import {
 import type { BotConfig, CreatorChangeEvent, FeeClaimEvent } from './types.js';
 
 // ============================================================================
+// Token Launch Monitor type (optional — may not exist yet)
+// ============================================================================
+
+/** Minimal interface for the TokenLaunchMonitor (built by Agent 1). */
+export interface TokenLaunchMonitorLike {
+    getState(): TokenLaunchMonitorState;
+}
+
+// ============================================================================
 // Bot Factory
 // ============================================================================
 
 export function createBot(
     config: BotConfig,
     monitor: PumpFunMonitor,
+    launchMonitor?: TokenLaunchMonitorLike,
 ): Bot {
     const bot = new Bot(config.telegramToken);
 
@@ -60,7 +78,9 @@ export function createBot(
     bot.command('watch', handleWatch);
     bot.command('unwatch', handleUnwatch);
     bot.command('list', handleList);
-    bot.command('status', (ctx) => handleStatus(ctx, monitor));
+    bot.command('status', (ctx) => handleStatus(ctx, monitor, launchMonitor));
+    bot.command('monitor', (ctx) => handleMonitor(ctx));
+    bot.command('stopmonitor', (ctx) => handleStopMonitor(ctx));
 
     // ── Fallback ─────────────────────────────────────────────────────────
     bot.on('message:text', async (ctx) => {
@@ -210,10 +230,46 @@ async function handleList(ctx: Context): Promise<void> {
 async function handleStatus(
     ctx: Context,
     monitor: PumpFunMonitor,
+    launchMonitor?: TokenLaunchMonitorLike,
 ): Promise<void> {
     const watches = getWatchesForChat(ctx.chat!.id);
     const state = monitor.getState();
-    await ctx.reply(formatStatus(state, watches.length), { parse_mode: 'HTML' });
+    const launchState = launchMonitor?.getState();
+    await ctx.reply(formatStatus(state, watches.length, launchState), { parse_mode: 'HTML' });
+}
+
+// ============================================================================
+// /monitor [github]
+// ============================================================================
+
+async function handleMonitor(ctx: Context): Promise<void> {
+    const text = ctx.message?.text || '';
+    const parts = text.split(/\s+/).slice(1); // strip /monitor
+    const githubOnly = parts.some((p) => p.toLowerCase() === 'github');
+
+    activateMonitor(ctx.chat!.id, ctx.from!.id, githubOnly);
+
+    await ctx.reply(formatMonitorActivated(githubOnly), { parse_mode: 'HTML' });
+}
+
+// ============================================================================
+// /stopmonitor
+// ============================================================================
+
+async function handleStopMonitor(ctx: Context): Promise<void> {
+    const wasActive = isMonitorActive(ctx.chat!.id);
+
+    if (!wasActive) {
+        await ctx.reply(
+            'ℹ️ Token launch monitor is not active in this chat.\n' +
+            'Start it with: /monitor',
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    deactivateMonitor(ctx.chat!.id);
+    await ctx.reply(formatMonitorDeactivated(), { parse_mode: 'HTML' });
 }
 
 // ============================================================================

@@ -44,8 +44,20 @@ export function loadConfig(): BotConfig {
 
     const logLevel = (process.env.LOG_LEVEL || 'info') as BotConfig['logLevel'];
 
+    const enableLaunchMonitor =
+        (process.env.ENABLE_LAUNCH_MONITOR || 'false').toLowerCase() === 'true';
+
+    const githubOnlyFilter =
+        (process.env.GITHUB_ONLY_FILTER || 'false').toLowerCase() === 'true';
+
+    const ipfsGateway =
+        process.env.IPFS_GATEWAY || 'https://cf-ipfs.com/ipfs/';
+
     return {
         allowedUserIds,
+        enableLaunchMonitor,
+        githubOnlyFilter,
+        ipfsGateway,
         logLevel,
         pollIntervalSeconds,
         solanaRpcUrl,

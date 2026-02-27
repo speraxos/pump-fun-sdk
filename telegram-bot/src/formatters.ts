@@ -4,7 +4,7 @@
  * Rich HTML message formatting for Telegram notifications.
  */
 
-import type { CreatorChangeEvent, FeeClaimEvent, MonitorState, WatchEntry } from './types.js';
+import type { CreatorChangeEvent, FeeClaimEvent, MonitorState, TokenLaunchEvent, TokenLaunchMonitorState, WatchEntry } from './types.js';
 
 // ============================================================================
 // Fee Claim Notification
@@ -145,7 +145,11 @@ export function formatWatchList(watches: WatchEntry[]): string {
 // Status
 // ============================================================================
 
-export function formatStatus(state: MonitorState, watchCount: number): string {
+export function formatStatus(
+    state: MonitorState,
+    watchCount: number,
+    launchState?: TokenLaunchMonitorState,
+): string {
     const uptime = state.startedAt
         ? formatDuration(Date.now() - state.startedAt)
         : 'not started';
@@ -154,7 +158,7 @@ export function formatStatus(state: MonitorState, watchCount: number): string {
         p.includes('pAMM') ? 'PumpSwap' : 'Pump',
     ).join(', ') || 'N/A';
 
-    return (
+    let text =
         `📊 <b>PumpFun Fee Monitor Status</b>\n\n` +
         `⚡ <b>Running:</b> ${state.isRunning ? '✅ Yes' : '❌ No'}\n` +
         `🔌 <b>Mode:</b> ${state.mode}\n` +
@@ -165,8 +169,13 @@ export function formatStatus(state: MonitorState, watchCount: number): string {
         `  💸 Cashback: ${state.cashbackClaims || 0}\n` +
         `  🔀 Creator Changes (CTO): ${state.creatorChanges || 0}\n` +
         `📦 <b>Last Slot:</b> ${state.lastSlot || 'N/A'}\n` +
-        `⏱️ <b>Uptime:</b> ${uptime}`
-    );
+        `⏱️ <b>Uptime:</b> ${uptime}`;
+
+    if (launchState) {
+        text += `\n\n${formatMonitorStatus(launchState)}`;
+    }
+
+    return text;
 }
 
 // ============================================================================
@@ -183,6 +192,9 @@ export function formatHelp(): string {
         `/list — Show all active watches\n` +
         `/status — Monitor status & stats\n` +
         `/help — Show this help\n\n` +
+        `📡 <b>Launch Monitor:</b>\n` +
+        `/monitor <code>[github]</code> — Start real-time token launch feed\n` +
+        `/stopmonitor — Stop the launch feed\n\n` +
         `<b>How it works:</b>\n` +
         `1. Add a fee-recipient wallet address with /watch\n` +
         `2. The bot monitors PumpFun on-chain for fee claims and creator changes\n` +
@@ -209,15 +221,89 @@ export function formatWelcome(name: string): string {
 }
 
 // ============================================================================
+// Token Launch Notifications
+// ============================================================================
+
+/** Rich HTML notification for a new token launch. */
+export function formatTokenLaunchNotification(event: TokenLaunchEvent): string {
+    const name = event.name ? escapeHtml(event.name) : 'Unknown';
+    const symbol = event.symbol ? escapeHtml(event.symbol) : '???';
+    const creator = shortAddr(event.creatorWallet);
+    const mint = shortAddr(event.mintAddress);
+
+    const githubLine = event.hasGithub && event.githubUrls.length > 0
+        ? `🌐 <b>GitHub:</b> ${event.githubUrls.map((l: string) => `<a href="${escapeHtml(l)}">${escapeHtml(l)}</a>`).join(', ')}\n`
+        : '';
+
+    const mayhemIcon = event.mayhemMode ? '✅' : '❌';
+    const timeStr = event.timestamp
+        ? formatTime(event.timestamp)
+        : new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+
+    const solscanTx = `https://solscan.io/tx/${event.txSignature}`;
+    const solscanMint = `https://solscan.io/token/${event.mintAddress}`;
+    const pumpfun = `https://pump.fun/coin/${event.mintAddress}`;
+
+    return (
+        `🚀 <b>New Token Launched!</b>\n\n` +
+        `🪙 <b>Name:</b> ${name} (${symbol})\n` +
+        `👤 <b>Creator:</b> <code>${creator}</code>\n` +
+        `🔗 <b>Mint:</b> <code>${mint}</code>\n\n` +
+        githubLine +
+        `⚡ <b>Mayhem Mode:</b> ${mayhemIcon}\n` +
+        `🕐 <b>Time:</b> ${timeStr}\n\n` +
+        `🔗 <a href="${solscanTx}">View TX</a> · ` +
+        `<a href="${solscanMint}">Solscan</a> · ` +
+        `<a href="${pumpfun}">pump.fun</a>`
+    );
+}
+
+/** Confirmation message when /monitor is activated. */
+export function formatMonitorActivated(githubOnly: boolean): string {
+    const mode = githubOnly ? 'GitHub-linked only' : 'All launches';
+    return (
+        `✅ <b>Token Launch Monitor Activated!</b>\n\n` +
+        `<b>Mode:</b> ${mode}\n` +
+        `You'll receive real-time notifications for new PumpFun token launches.\n\n` +
+        `Stop with: /stopmonitor`
+    );
+}
+
+/** Confirmation message when /stopmonitor is used. */
+export function formatMonitorDeactivated(): string {
+    return (
+        `⏹️ <b>Token Launch Monitor Stopped</b>\n\n` +
+        `No more launch notifications will be sent to this chat.\n` +
+        `Re-enable with: /monitor`
+    );
+}
+
+/** Stats display for the token launch monitor. */
+export function formatMonitorStatus(state: TokenLaunchMonitorState): string {
+    const uptime = state.startedAt
+        ? formatDuration(Date.now() - state.startedAt)
+        : 'not started';
+
+    return (
+        `📡 <b>Token Launch Monitor</b>\n` +
+        `⚡ <b>Running:</b> ${state.isRunning ? '✅ Yes' : '❌ No'}\n` +
+        `🚀 <b>Tokens Detected:</b> ${state.tokensDetected}\n` +
+        `🌐 <b>With GitHub:</b> ${state.tokensWithGithub}\n` +
+        `📦 <b>Last Slot:</b> ${state.lastSlot || 'N/A'}\n` +
+        `⏱️ <b>Uptime:</b> ${uptime}`
+    );
+}
+
+// ============================================================================
 // Utilities
 // ============================================================================
 
-function shortAddr(addr: string): string {
+export function shortAddr(addr: string): string {
     if (addr.length <= 12) return addr;
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
-function escapeHtml(text: string): string {
+export function escapeHtml(text: string): string {
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
