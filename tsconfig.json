@@ -20,5 +20,5 @@
     "noUnusedParameters": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests", "website", "mcp-server", "rust", "typescript"]
+  "exclude": ["node_modules", "dist", "tests", "site/website", "mcp-server", "rust", "typescript"]
 }

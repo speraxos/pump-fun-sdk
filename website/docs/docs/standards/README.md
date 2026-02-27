@@ -1,6 +1,0 @@
----
-icon: ruler-horizontal
----
-
-# Standards
-

@@ -192,79 +192,39 @@ export function formatStatus(
 
 export function formatHelp(): string {
     return (
-        `🤖 <b>PumpFun Fee Claim Bot</b>
-
-` +
-        `Monitor when PumpFun creator fees or cashback rewards are claimed on Solana.
-
-` +
-        `<b>Commands:</b>
-` +
-        `/watch <code>&lt;wallet&gt;</code> <code>[label]</code> — Watch a fee recipient wallet
-` +
-        `/unwatch <code>&lt;wallet_or_#&gt;</code> — Stop watching a wallet
-` +
-        `/list — Show all active watches
-` +
-        `/status — Monitor status & stats
-` +
-        `/help — Show this help
-
-` +
-        `🔀 <b>Creator Takeover (CTO):</b>
-` +
-        `/cto — Show CTO stats & recent events
-` +
-        `/cto <code>&lt;mint_or_wallet&gt;</code> — Look up CTO events for a token or wallet
-
-` +
-        `🔔 <b>Alert Preferences:</b>
-` +
-        `/alerts — View current alert settings
-` +
-        `/alerts <code>&lt;type&gt;</code> <code>on|off</code> — Toggle an alert type
-` +
-        `/alerts <code>all on|off</code> — Toggle all alerts
-` +
-        `  Types: <code>launches</code>, <code>graduations</code>, <code>whales</code>, <code>fees</code>
-
-` +
-        `📡 <b>Launch Monitor:</b>
-` +
-        `/monitor <code>[github]</code> — Start real-time token launch feed
-` +
-        `/stopmonitor — Stop the launch feed
-
-` +
-        `💰 <b>Token Analytics:</b>
-` +
-        `/price <code>&lt;mint&gt;</code> — Token price, market cap & curve status
-` +
-        `/curve <code>&lt;mint&gt;</code> — Alias for /price
-` +
-        `/fees <code>&lt;mint&gt;</code> — Show fee tiers for a token
-` +
-        `/quote <code>buy|sell</code> <code>&lt;mint&gt;</code> <code>&lt;amount&gt;</code> — Buy/sell quote estimate
-
-` +
-        `<b>How it works:</b>
-` +
-        `1. Add a fee-recipient wallet address with /watch
-` +
-        `2. The bot monitors PumpFun on-chain for fee claims and creator changes
-` +
-        `3. When that wallet claims creator fees or cashback, you get notified instantly
-` +
-        `4. When creator fees are redirected (CTO) involving a watched wallet, you get alerted
-` +
-        `5. Use /monitor to receive real-time token launches, graduations, whale trades, and fee distributions
-` +
-        `6. Customize which alerts you receive with /alerts
-
-` +
-        `<b>Works in:</b> DMs and group chats
-` +
-        `<b>Supports:</b> Creator Fees + Cashback + CTO + Launches + Graduations + Whale Trades + Fee Distributions + Price/Quote Analytics`
+        `🤖 <b>PumpFun Monitor</b>\n\n` +
+        `Real-time PumpFun intelligence on Solana.\n\n` +
+        `📊 <b>Token Analytics:</b>\n` +
+        `/price <code>&lt;mint&gt;</code> — Token price, market cap &amp; curve status\n` +
+        `/curve <code>&lt;mint&gt;</code> — Alias for /price\n` +
+        `/balance <code>&lt;mint&gt;</code> <code>&lt;wallet&gt;</code> — Check token balance\n` +
+        `/graduated <code>&lt;mint&gt;</code> — Check AMM graduation status\n` +
+        `/impact <code>&lt;mint&gt;</code> <code>&lt;sol_amount&gt;</code> — Calculate buy price impact\n` +
+        `/fees <code>&lt;mint&gt;</code> — Fee tiers for a token\n` +
+        `/rewards <code>&lt;mint&gt;</code> <code>&lt;wallet&gt;</code> — Check unclaimed volume rewards\n` +
+        `/quote <code>buy|sell</code> <code>&lt;mint&gt;</code> <code>&lt;amount&gt;</code> — Buy/sell quote estimate\n\n` +
+        `👁 <b>Wallet Monitoring:</b>\n` +
+        `/watch <code>&lt;wallet&gt;</code> <code>[label]</code> — Watch a fee recipient wallet\n` +
+        `/unwatch <code>&lt;wallet_or_#&gt;</code> — Stop watching a wallet\n` +
+        `/list — Show all active watches\n` +
+        `/status — Monitor status &amp; stats\n\n` +
+        `🔀 <b>Creator Takeover (CTO):</b>\n` +
+        `/cto — Show CTO stats &amp; recent events\n` +
+        `/cto <code>&lt;mint_or_wallet&gt;</code> — Look up CTO events\n\n` +
+        `🔔 <b>Alert Preferences:</b>\n` +
+        `/alerts — View current alert settings\n` +
+        `/alerts <code>&lt;type&gt;</code> <code>on|off</code> — Toggle an alert type\n` +
+        `/alerts <code>all on|off</code> — Toggle all alerts\n` +
+        `  Types: <code>launches</code>, <code>graduations</code>, <code>whales</code>, <code>fees</code>\n\n` +
+        `📡 <b>Launch Monitor:</b>\n` +
+        `/monitor <code>[github]</code> — Start real-time token launch feed\n` +
+        `/stopmonitor — Stop the launch feed\n\n` +
+        `<b>How it works:</b>\n` +
+        `1. /watch a wallet → get notified on fee claims &amp; CTO events\n` +
+        `2. /monitor → live token launches, graduations, whale trades\n` +
+        `3. /alerts → customize which notifications you receive\n` +
+        `4. /price /balance /graduated /impact → instant token lookups\n\n` +
+        `<b>Works in:</b> DMs and group chats`
     );
 }
 
@@ -275,11 +235,22 @@ export function formatHelp(): string {
 export function formatWelcome(name: string): string {
     return (
         `👋 <b>Welcome, ${escapeHtml(name)}!</b>\n\n` +
-        `I monitor PumpFun on Solana and notify you when creator fees ` +
-        `or cashback rewards are claimed, and when creator fees are redirected (CTO).\n\n` +
-        `Get started:\n` +
-        `<code>/watch &lt;wallet_address&gt; [label]</code>\n\n` +
-        `Type /help for all commands.`
+        `I'm your real-time PumpFun intelligence bot on Solana.\n\n` +
+        `📊 <b>Token Analytics</b>\n` +
+        `/price — Token price &amp; bonding curve\n` +
+        `/balance — Check token balance\n` +
+        `/graduated — AMM graduation status\n` +
+        `/impact — Buy price impact calculator\n` +
+        `/fees — Fee tiers &amp; uncollected fees\n` +
+        `/rewards — Unclaimed volume rewards\n` +
+        `/quote — Buy/sell quote estimate\n\n` +
+        `👁 <b>Monitoring</b>\n` +
+        `/watch — Track wallet fee claims\n` +
+        `/cto — Creator takeover alerts\n` +
+        `/monitor — Live token launch feed\n` +
+        `/alerts — Configure notifications\n\n` +
+        `Get started: <code>/watch &lt;wallet_address&gt;</code>\n` +
+        `Full command list: /help`
     );
 }
 
