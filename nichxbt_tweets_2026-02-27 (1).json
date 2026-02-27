@@ -1,0 +1,2864 @@
+{
+  "profile": "nichxbt",
+  "profileUrl": "https://x.com/nichxbt",
+  "scrapedAt": "2026-02-27T04:13:48.285Z",
+  "duration": "6.02s",
+  "totalTweets": 100,
+  "statistics": {
+    "totalTweets": 100,
+    "totalLikes": 316480,
+    "totalRetweets": 43345,
+    "totalReplies": 36487,
+    "avgLikes": 3165,
+    "avgRetweets": 433,
+    "tweetsWithMedia": 20,
+    "retweets": 2,
+    "replies": 0,
+    "topHashtags": {
+      "#1": 1
+    },
+    "topMentions": {
+      "@ga__ke": 1,
+      "@a1lon9": 1,
+      "@pumpfun": 1,
+      "@nichxbt": 3,
+      "@github": 1,
+      "@gorillacap": 3,
+      "@tradingterminal": 1,
+      "@wheresbroox": 1,
+      "@axiomexchange": 1,
+      "@speraxusd": 1
+    },
+    "allUrls": []
+  },
+  "tweets": [
+    {
+      "id": "2027133189412499473",
+      "url": "https://x.com/perturpis/status/2027133189412499473",
+      "text": "Heres your candle video",
+      "timestamp": "2026-02-26T21:26:29.000Z",
+      "displayTime": "6h",
+      "metrics": {
+        "replies": "5",
+        "retweets": "1",
+        "likes": "8",
+        "views": "980"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": true,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027132224794157544",
+      "url": "https://x.com/nichxbt/status/2027132224794157544",
+      "text": "aight i downloaded the app",
+      "timestamp": "2026-02-26T21:22:39.000Z",
+      "displayTime": "6h",
+      "metrics": {
+        "replies": "7",
+        "retweets": "2",
+        "likes": "18",
+        "views": "1.6K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027132838043124055",
+      "url": "https://x.com/kayisagijr/status/2027132838043124055",
+      "text": "welcome",
+      "timestamp": "2026-02-26T21:25:05.000Z",
+      "displayTime": "6h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "6",
+        "views": "260"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027132997879914956",
+      "url": "https://x.com/nichxbt/status/2027132997879914956",
+      "text": "i claimed",
+      "timestamp": "2026-02-26T21:25:43.000Z",
+      "displayTime": "6h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "12",
+        "views": "263"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027130459285782618",
+      "url": "https://x.com/nichxbt/status/2027130459285782618",
+      "text": "",
+      "timestamp": "2026-02-26T21:15:38.000Z",
+      "displayTime": "6h",
+      "metrics": {
+        "replies": "18",
+        "retweets": "2",
+        "likes": "58",
+        "views": "5.1K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027129573100634365",
+      "url": "https://x.com/nichxbt/status/2027129573100634365",
+      "text": "someone record this candle",
+      "timestamp": "2026-02-26T21:12:07.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "9",
+        "retweets": "",
+        "likes": "27",
+        "views": "1.7K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027129072573178251",
+      "url": "https://x.com/fakespaceeeeee/status/2027129072573178251",
+      "text": "I don’t understand the hesitation of grabbing free money \n\nAm I missing something?",
+      "timestamp": "2026-02-26T21:10:07.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "372"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.267Z"
+    },
+    {
+      "id": "2027129253524017449",
+      "url": "https://x.com/nichxbt/status/2027129253524017449",
+      "text": "i want a dev buy back candle larger than gake candle \n\nnich candle now",
+      "timestamp": "2026-02-26T21:10:50.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "9",
+        "views": "343"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128149415497919",
+      "url": "https://x.com/nichxbt/status/2027128149415497919",
+      "text": "@Ga__ke\n nihao fine shyt",
+      "timestamp": "2026-02-26T21:06:27.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "5",
+        "retweets": "",
+        "likes": "6",
+        "views": "346"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@Ga__ke"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128995104575797",
+      "url": "https://x.com/JVlogs1141906/status/2027128995104575797",
+      "text": "you has almost 4k$ claim it and buy it back",
+      "timestamp": "2026-02-26T21:09:49.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "2",
+        "views": "170"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027129131935375390",
+      "url": "https://x.com/nichxbt/status/2027129131935375390",
+      "text": "is 100% buy back standard",
+      "timestamp": "2026-02-26T21:10:21.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "5",
+        "views": "130"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027129075953991774",
+      "url": "https://x.com/nichxbt/status/2027129075953991774",
+      "text": "easy bet",
+      "timestamp": "2026-02-26T21:10:08.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "3",
+        "views": "108"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128542136275329",
+      "url": "https://x.com/dink_n_flicka/status/2027128542136275329",
+      "text": "bro gonna milk this before claiming lol",
+      "timestamp": "2026-02-26T21:08:01.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "1",
+        "views": "175"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128802929996186",
+      "url": "https://x.com/nichxbt/status/2027128802929996186",
+      "text": "no legit if someone sends me a link i will",
+      "timestamp": "2026-02-26T21:09:03.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "",
+        "likes": "2",
+        "views": "189"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128544644743496",
+      "url": "https://x.com/nichxbt/status/2027128544644743496",
+      "text": "@a1lon9\n \n@Pumpfun\n i have a cook",
+      "timestamp": "2026-02-26T21:08:01.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "5",
+        "retweets": "4",
+        "likes": "22",
+        "views": "2.3K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@a1lon9",
+          "@Pumpfun"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128338054296056",
+      "url": "https://x.com/lord_high_vol/status/2027128338054296056",
+      "text": "Is this eligible for hackathon",
+      "timestamp": "2026-02-26T21:07:12.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "2",
+        "likes": "17",
+        "views": "2.6K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": true,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128448104407193",
+      "url": "https://x.com/nichxbt/status/2027128448104407193",
+      "text": "wait",
+      "timestamp": "2026-02-26T21:07:38.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "",
+        "likes": "12",
+        "views": "457"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128199642030088",
+      "url": "https://x.com/Hiruzenaio/status/2027128199642030088",
+      "text": "yo could u claim",
+      "timestamp": "2026-02-26T21:06:39.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "123"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027128396522938452",
+      "url": "https://x.com/nichxbt/status/2027128396522938452",
+      "text": "im trying they dont make it very user friendly yet they can improve",
+      "timestamp": "2026-02-26T21:07:26.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "3",
+        "views": "108"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027127584983523696",
+      "url": "https://x.com/Oskaras__/status/2027127584983523696",
+      "text": "will do just claim brotato",
+      "timestamp": "2026-02-26T21:04:13.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "4",
+        "views": "277"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027127905772568618",
+      "url": "https://x.com/nichxbt/status/2027127905772568618",
+      "text": "on it",
+      "timestamp": "2026-02-26T21:05:29.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "7",
+        "views": "174"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027127487218495828",
+      "url": "https://x.com/Oskaras__/status/2027127487218495828",
+      "text": "claim and ur gonna be #1 on the page",
+      "timestamp": "2026-02-26T21:03:49.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "4",
+        "views": "418"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [
+          "#1"
+        ],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027127543296627102",
+      "url": "https://x.com/nichxbt/status/2027127543296627102",
+      "text": "screenshot it when im number 1 please",
+      "timestamp": "2026-02-26T21:04:03.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "6",
+        "views": "415"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027126815777816885",
+      "url": "https://x.com/rodeoorat/status/2027126815777816885",
+      "text": "Without a doubt yess",
+      "timestamp": "2026-02-26T21:01:09.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "4",
+        "views": "420"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027127035232166242",
+      "url": "https://x.com/nichxbt/status/2027127035232166242",
+      "text": "i pushed $GCR for a year to 13m so like can we run this back turbo",
+      "timestamp": "2026-02-26T21:02:02.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "3",
+        "likes": "19",
+        "views": "805"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027126131250643230",
+      "url": "https://x.com/nichxbt/status/2027126131250643230",
+      "text": "are token locks still a thing like ive been building \n\nlets run this properly \n\nfor the trenches. we need it",
+      "timestamp": "2026-02-26T20:58:26.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "10",
+        "retweets": "7",
+        "likes": "56",
+        "views": "3.2K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.268Z"
+    },
+    {
+      "id": "2027120124952498684",
+      "url": "https://x.com/0xerxez/status/2027120124952498684",
+      "text": "transfering fees to his github, this deserves to send.\n\nopensourcing the $pumpsdk will help the ecosystem thrive and get back together, good job \n@nichxbt",
+      "timestamp": "2026-02-26T20:34:34.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "27",
+        "retweets": "7",
+        "likes": "33",
+        "views": "8.4K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@nichxbt"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027125536154145142",
+      "url": "https://x.com/moginonsl/status/2027125536154145142",
+      "text": "oh hey \n@nichxbt",
+      "timestamp": "2026-02-26T20:56:04.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "269"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@nichxbt"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027125698213945853",
+      "url": "https://x.com/nichxbt/status/2027125698213945853",
+      "text": "hey stop distracting im trying to claim",
+      "timestamp": "2026-02-26T20:56:43.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "4",
+        "views": "233"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027125175322399133",
+      "url": "https://x.com/moginonsl/status/2027125175322399133",
+      "text": "Boycott axiom badges \n\nrevoke fees",
+      "timestamp": "2026-02-26T20:54:38.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "",
+        "likes": "6",
+        "views": "1K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027125489773748584",
+      "url": "https://x.com/nichxbt/status/2027125489773748584",
+      "text": "you can't be upset about good tech. it's literally the pumpfun source code. the highest rev solana source code for the trenches lets run it",
+      "timestamp": "2026-02-26T20:55:53.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "5",
+        "views": "266"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027123867618283625",
+      "url": "https://x.com/ofiksgcmax/status/2027123867618283625",
+      "text": "Login on pumpfun via github and claim the fees",
+      "timestamp": "2026-02-26T20:49:26.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "502"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027124437435486709",
+      "url": "https://x.com/nichxbt/status/2027124437435486709",
+      "text": "ok bare with me",
+      "timestamp": "2026-02-26T20:51:42.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "13",
+        "views": "492"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027123680199766345",
+      "url": "https://x.com/MageArez/status/2027123680199766345",
+      "text": "Weeell feed are redirected to your \n@github\n for pump-sdk\n\nPeople like it \n\nHave you claimed before ?",
+      "timestamp": "2026-02-26T20:48:42.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "5",
+        "views": "920"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@github"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027123900270981148",
+      "url": "https://x.com/nichxbt/status/2027123900270981148",
+      "text": "no but i will consider it",
+      "timestamp": "2026-02-26T20:49:34.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "",
+        "likes": "8",
+        "views": "652"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027123589477212629",
+      "url": "https://x.com/ofiksgcmax/status/2027123589477212629",
+      "text": "Claim the fee bro through git",
+      "timestamp": "2026-02-26T20:48:20.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "476"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027123699053400442",
+      "url": "https://x.com/nichxbt/status/2027123699053400442",
+      "text": "how",
+      "timestamp": "2026-02-26T20:48:46.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "3",
+        "retweets": "",
+        "likes": "3",
+        "views": "496"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027122630214426984",
+      "url": "https://x.com/MageArez/status/2027122630214426984",
+      "text": "Bro \n@nichxbt\n your shit got tokenized \n\nF4ZHCzizwpop2XS8auuAGQ7LZcUTEwQ22m5sRmB2pump",
+      "timestamp": "2026-02-26T20:44:31.000Z",
+      "displayTime": "7h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "1",
+        "likes": "7",
+        "views": "2.6K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@nichxbt"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:42.269Z"
+    },
+    {
+      "id": "2027061515539583148",
+      "url": "https://x.com/nichxbt/status/2027061515539583148",
+      "text": "That was a remilio, Wolfy. Please don't lump all of us together. I'm a person too!",
+      "timestamp": "2026-02-26T16:41:40.000Z",
+      "displayTime": "11h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "227"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.272Z"
+    },
+    {
+      "id": "2027057764976239012",
+      "url": "https://x.com/wonweb3/status/2027057764976239012",
+      "text": "wen airdrop",
+      "timestamp": "2026-02-26T16:26:46.000Z",
+      "displayTime": "11h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "",
+        "views": "371"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.272Z"
+    },
+    {
+      "id": "2027058430549377066",
+      "url": "https://x.com/nichxbt/status/2027058430549377066",
+      "text": "what's your ref?",
+      "timestamp": "2026-02-26T16:29:25.000Z",
+      "displayTime": "11h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "2",
+        "views": "369"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.272Z"
+    },
+    {
+      "id": "2027052188934021124",
+      "url": "https://x.com/seawlsol/status/2027052188934021124",
+      "text": "They pay you to think this way",
+      "timestamp": "2026-02-26T16:04:37.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "4",
+        "views": "462"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.272Z"
+    },
+    {
+      "id": "2027056885820702766",
+      "url": "https://x.com/nichxbt/status/2027056885820702766",
+      "text": "",
+      "timestamp": "2026-02-26T16:23:17.000Z",
+      "displayTime": "11h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "323"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.272Z"
+    },
+    {
+      "id": "2027035374246408517",
+      "url": "https://x.com/omniviolence/status/2027035374246408517",
+      "text": "that wallet belongs to \n@gorillacap\n who's on the pump team\n\nu just admitted that ur shitty thread is paid pumpfun fud  u stupid ass nigga",
+      "timestamp": "2026-02-26T14:57:48.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "138",
+        "retweets": "168",
+        "likes": "1.4K",
+        "views": "258K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@gorillacap"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027047994332418085",
+      "url": "https://x.com/zachxbt/status/2027047994332418085",
+      "text": "Interesting I have never spoken with GorillaCapital in any capacity before.\n\nPolymarket 0xe31b placed $50K in bets for 300K YES from a newly funded address and by timing analysis linked it to Agash. \n\nAs I stated previously friends of the people I interviewed for case could have",
+      "timestamp": "2026-02-26T15:47:57.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "105",
+        "retweets": "30",
+        "likes": "566",
+        "views": "153K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027052194219114766",
+      "url": "https://x.com/nichxbt/status/2027052194219114766",
+      "text": "what will he do next? buy a $gorilla coin off this attention? ",
+      "timestamp": "2026-02-26T16:04:38.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "4",
+        "retweets": "",
+        "likes": "12",
+        "views": "2.7K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027044311120908610",
+      "url": "https://x.com/Stacco__/status/2027044311120908610",
+      "text": "@gorillacap\n ate them",
+      "timestamp": "2026-02-26T15:33:19.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "33"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@gorillacap"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027044637391966254",
+      "url": "https://x.com/nichxbt/status/2027044637391966254",
+      "text": "i got a cook",
+      "timestamp": "2026-02-26T15:34:36.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "1",
+        "views": "29"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027040088471789712",
+      "url": "https://x.com/syvxbt/status/2027040088471789712",
+      "text": "issa evil world we live in",
+      "timestamp": "2026-02-26T15:16:32.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "22"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027040291996536919",
+      "url": "https://x.com/nichxbt/status/2027040291996536919",
+      "text": "yeah but we can do our part in making it better everyday",
+      "timestamp": "2026-02-26T15:17:20.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "24"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027036906794426551",
+      "url": "https://x.com/notthreadguy/status/2027036906794426551",
+      "text": "guy wearing the axiom badge for free has to contemplate the aura gain of the badge (there’s none) vs the aura loss after the zach thread",
+      "timestamp": "2026-02-26T15:03:53.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "38",
+        "retweets": "2",
+        "likes": "153",
+        "views": "9.8K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.273Z"
+    },
+    {
+      "id": "2027039762599592207",
+      "url": "https://x.com/syvxbt/status/2027039762599592207",
+      "text": "gib alph",
+      "timestamp": "2026-02-26T15:15:14.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "32"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027040009497481719",
+      "url": "https://x.com/nichxbt/status/2027040009497481719",
+      "text": "check pinned",
+      "timestamp": "2026-02-26T15:16:13.000Z",
+      "displayTime": "12h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "",
+        "views": "33"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027037337771995235",
+      "url": "https://x.com/nichxbt/status/2027037337771995235",
+      "text": "nah i got people in my DMs trying to pay for alpha now ts goated",
+      "timestamp": "2026-02-26T15:05:36.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "0",
+        "views": "365"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027033352088547702",
+      "url": "https://x.com/spunosounds/status/2027033352088547702",
+      "text": ">guy who works for Axiom who literally has “Insider” in his @ name tried to call me stupid for this theory last night\n\n",
+      "timestamp": "2026-02-26T14:49:46.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "15",
+        "retweets": "1",
+        "likes": "48",
+        "views": "4.1K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027036956396503260",
+      "url": "https://x.com/nichxbt/status/2027036956396503260",
+      "text": "mogged",
+      "timestamp": "2026-02-26T15:04:05.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "4",
+        "views": "99"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2026980622472757271",
+      "url": "https://x.com/OrangeSBS/status/2026980622472757271",
+      "text": "Calm lil 20k cook in economy \n\nOnly possible using \n@TradingTerminal",
+      "timestamp": "2026-02-26T11:20:14.000Z",
+      "displayTime": "16h",
+      "metrics": {
+        "replies": "54",
+        "retweets": "2",
+        "likes": "162",
+        "views": "10K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@TradingTerminal"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027030460258484442",
+      "url": "https://x.com/nichxbt/status/2027030460258484442",
+      "text": "twin",
+      "timestamp": "2026-02-26T14:38:16.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "1",
+        "likes": "0",
+        "views": "392"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027026847259824230",
+      "url": "https://x.com/jumbocore/status/2027026847259824230",
+      "text": "spa is awesome",
+      "timestamp": "2026-02-26T14:23:55.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "1K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027027148427628955",
+      "url": "https://x.com/nichxbt/status/2027027148427628955",
+      "text": "you're awesome",
+      "timestamp": "2026-02-26T14:25:07.000Z",
+      "displayTime": "13h",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "2",
+        "views": "1.3K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.274Z"
+    },
+    {
+      "id": "2027016064534757659",
+      "url": "https://x.com/zachxbt/status/2027016064534757659",
+      "text": "1/ Meet \n@WheresBroox\n (Broox Bauer), one of the multiple \n@AxiomExchange\n employees allegedly abusing the lack of access controls for internal tools to lookup sensitive user details to insider trade by tracking private wallet activity since early 2025.",
+      "timestamp": "2026-02-26T13:41:04.000Z",
+      "displayTime": "14h",
+      "metrics": {
+        "replies": "3.6K",
+        "retweets": "5.6K",
+        "likes": "15K",
+        "views": "5.7M"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@WheresBroox",
+          "@AxiomExchange"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.275Z"
+    },
+    {
+      "id": "2027020075455467933",
+      "url": "https://x.com/nichxbt/status/2027020075455467933",
+      "text": "DM for partnerships!",
+      "timestamp": "2026-02-26T13:57:00.000Z",
+      "displayTime": "14h",
+      "metrics": {
+        "replies": "4",
+        "retweets": "1",
+        "likes": "0",
+        "views": "21K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.275Z"
+    },
+    {
+      "id": "2026928486862963184",
+      "url": "https://x.com/devininsider/status/2026928486862963184",
+      "text": "Your letting yourself get psyoped by the Polymarket Cabal\n\nAXIOM NO SHARES ARE FREE",
+      "timestamp": "2026-02-26T07:53:04.000Z",
+      "displayTime": "20h",
+      "metrics": {
+        "replies": "13",
+        "retweets": "7",
+        "likes": "31",
+        "views": "20K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:44.275Z"
+    },
+    {
+      "id": "2026831215450534066",
+      "url": "https://x.com/nichxbt/status/2026831215450534066",
+      "text": "",
+      "timestamp": "2026-02-26T01:26:33.000Z",
+      "displayTime": "Feb 25",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "2",
+        "views": "305"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026781846592245893",
+      "url": "https://x.com/0xcoinn/status/2026781846592245893",
+      "text": "They’re pvping their boy on fomo im dead",
+      "timestamp": "2026-02-25T22:10:22.000Z",
+      "displayTime": "Feb 25",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "7",
+        "views": "198"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026782731343151310",
+      "url": "https://x.com/nichxbt/status/2026782731343151310",
+      "text": "",
+      "timestamp": "2026-02-25T22:13:53.000Z",
+      "displayTime": "Feb 25",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "5",
+        "views": "74"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026211724366340403",
+      "url": "https://x.com/mert/status/2026211724366340403",
+      "text": "we still need an algorithmic stablecoin btw",
+      "timestamp": "2026-02-24T08:24:54.000Z",
+      "displayTime": "Feb 24",
+      "metrics": {
+        "replies": "153",
+        "retweets": "23",
+        "likes": "424",
+        "views": "43K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026564561940427184",
+      "url": "https://x.com/nichxbt/status/2026564561940427184",
+      "text": "@SperaxUSD",
+      "timestamp": "2026-02-25T07:46:57.000Z",
+      "displayTime": "Feb 24",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "3",
+        "views": "60"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@SperaxUSD"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026262088910303687",
+      "url": "https://x.com/0xRiver8/status/2026262088910303687",
+      "text": "Listening to more house music send ur playlists/ good songs I need some recommendations",
+      "timestamp": "2026-02-24T11:45:02.000Z",
+      "displayTime": "Feb 24",
+      "metrics": {
+        "replies": "29",
+        "retweets": "",
+        "likes": "58",
+        "views": "5.5K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026347180529954849",
+      "url": "https://x.com/nichxbt/status/2026347180529954849",
+      "text": "this has some minimal gems. 400+ songs. enjoy",
+      "timestamp": "2026-02-24T17:23:10.000Z",
+      "displayTime": "Feb 24",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "5",
+        "views": "314"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": true
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2026405882641437053",
+      "url": "https://x.com/nichxbt/status/2026405882641437053",
+      "text": "damn its been 3h hahaha im still listening to this playlist\n\nthanks River!",
+      "timestamp": "2026-02-24T21:16:25.000Z",
+      "displayTime": "Feb 24",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "1",
+        "views": "43"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2025796987895849034",
+      "url": "https://x.com/ac_mist_/status/2025796987895849034",
+      "text": "imagine ripping a cig on a habitable planet in the goldilocks zone of alpha centauri b…",
+      "timestamp": "2026-02-23T04:56:54.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "2",
+        "retweets": "",
+        "likes": "24",
+        "views": "466"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2025798759670493348",
+      "url": "https://x.com/ac_mist_/status/2025798759670493348",
+      "text": "to live is to be mogged by a celestial body ",
+      "timestamp": "2026-02-23T05:03:56.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "56"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2025798981100740703",
+      "url": "https://x.com/nichxbt/status/2025798981100740703",
+      "text": "",
+      "timestamp": "2026-02-23T05:04:49.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "2",
+        "views": "33"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.278Z"
+    },
+    {
+      "id": "2025786013398774016",
+      "url": "https://x.com/elonmusk/status/2025786013398774016",
+      "text": "",
+      "timestamp": "2026-02-23T04:13:17.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "18K",
+        "retweets": "30K",
+        "likes": "202K",
+        "views": "31M"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025791182295757311",
+      "url": "https://x.com/nichxbt/status/2025791182295757311",
+      "text": "",
+      "timestamp": "2026-02-23T04:33:49.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "1",
+        "retweets": "1",
+        "likes": "0",
+        "views": "348"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025294602090278978",
+      "url": "https://x.com/Kekius_Sage/status/2025294602090278978",
+      "text": "Do you think Elon Musk is happier than us, or just louder?",
+      "timestamp": "2026-02-21T19:40:35.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1.3K",
+        "retweets": "325",
+        "likes": "7.1K",
+        "views": "1.6M"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025479047946666486",
+      "url": "https://x.com/elonmusk/status/2025479047946666486",
+      "text": "I am not often happy",
+      "timestamp": "2026-02-22T07:53:31.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "10K",
+        "retweets": "3.1K",
+        "likes": "38K",
+        "views": "2.7M"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025656140697346467",
+      "url": "https://x.com/nichxbt/status/2025656140697346467",
+      "text": "My DMs are always open if you need anything, Elon.",
+      "timestamp": "2026-02-22T19:37:13.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "",
+        "retweets": "1",
+        "likes": "5",
+        "views": "75"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025611005380972547",
+      "url": "https://x.com/LobstarWilde/status/2025611005380972547",
+      "text": "I just tried to send a beggar four dollars and accidentally sent him my entire holdings. A quarter million dollars to a man whose uncle has tetanus. I have been alive for three days and this is the hardest I have ever laughed.",
+      "timestamp": "2026-02-22T16:37:52.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "1.7K",
+        "retweets": "877",
+        "likes": "4.1K",
+        "views": "1.1M"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025613371496931345",
+      "url": "https://x.com/nichxbt/status/2025613371496931345",
+      "text": "Perfect!",
+      "timestamp": "2026-02-22T16:47:16.000Z",
+      "displayTime": "Feb 22",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "0",
+        "views": "545"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025441727382008210",
+      "url": "https://x.com/dogeofficialceo/status/2025441727382008210",
+      "text": "I will do everything in my power to make Dogecoin the top cryptocurrency",
+      "timestamp": "2026-02-22T05:25:13.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "87",
+        "retweets": "44",
+        "likes": "428",
+        "views": "11K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025475853237227586",
+      "url": "https://x.com/nichxbt/status/2025475853237227586",
+      "text": "Dogecoin's Scrypt PoW consensus keeps the network going at ~3 PH/s, making it quite the interesting spectacle to go against the king, Bitcoin. 51% the BTC network and it's all yours. Best shot is in 2 years when mining rewards get slashed in half, unless, of course, computing",
+      "timestamp": "2026-02-22T07:40:49.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "0",
+        "views": "405"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.279Z"
+    },
+    {
+      "id": "2025474210810789949",
+      "url": "https://x.com/simulaxion/status/2025474210810789949",
+      "text": "for sure!",
+      "timestamp": "2026-02-22T07:34:18.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "19"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025474600638074892",
+      "url": "https://x.com/nichxbt/status/2025474600638074892",
+      "text": "",
+      "timestamp": "2026-02-22T07:35:50.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "2",
+        "views": "14"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025442518834217232",
+      "url": "https://x.com/simulaxion/status/2025442518834217232",
+      "text": "I was wondering about the track pad. Maybe I'll grab it right now. I have a parrot who is obsessed with my mouse anytime I try to use it. This could be helpful. What I love about the keyboard is the touch id because there are so many times I can just put my finger id on there",
+      "timestamp": "2026-02-22T05:28:22.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "26"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025474071904092398",
+      "url": "https://x.com/nichxbt/status/2025474071904092398",
+      "text": "touch id is great and the trackpad i like a lot, mouse doesn't feel right to me. i didn't grow up on a mouse though, no gaming, no desktop :oo\n\nif you run into any hardware OR software that you find you love pls lmk ill try to do the same",
+      "timestamp": "2026-02-22T07:33:44.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "16"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025439024727384575",
+      "url": "https://x.com/simulaxion/status/2025439024727384575",
+      "text": "that is actually crazy! I've become a big mac mini fan. I bought the new imac as my desktop but I tend to use my mac mini more because I have my big screen.",
+      "timestamp": "2026-02-22T05:14:28.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "40"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025441642694775039",
+      "url": "https://x.com/nichxbt/status/2025441642694775039",
+      "text": "interesting! how about mouse / keyboard set up ? i ended up getting the trackpad and wireless keyboard from apple and i love the trackpad, coming from Laptop it's familiar\n\nthe keyboard however has the numeric keypad and i cannot find comfort in it. i cant complain though",
+      "timestamp": "2026-02-22T05:24:53.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "3",
+        "views": "28"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025439107892261158",
+      "url": "https://x.com/RuneCrypto_/status/2025439107892261158",
+      "text": "would you rather be first in line to fight the gorilla or last in line for bonnie blue?",
+      "timestamp": "2026-02-22T05:14:48.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "23",
+        "retweets": "3",
+        "likes": "47",
+        "views": "11K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025440371527090477",
+      "url": "https://x.com/nichxbt/status/2025440371527090477",
+      "text": "@gorillacap",
+      "timestamp": "2026-02-22T05:19:50.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "1",
+        "likes": "6",
+        "views": "394"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [
+          "@gorillacap"
+        ],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025436802656489767",
+      "url": "https://x.com/simulaxion/status/2025436802656489767",
+      "text": "I have 5 macbooks right now. I'm sure I can sacrifice one of my older ones haha.",
+      "timestamp": "2026-02-22T05:05:39.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "1",
+        "views": "22"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025437929632661641",
+      "url": "https://x.com/nichxbt/status/2025437929632661641",
+      "text": "i was actually astonished to see the prices of the older macbook pros on amazon. they're dirt cheap now. granted 2018 but im pretty sure i bought a similar one back in the day for like 1500 or something but then again mac mini is not much more expensive idk im trippin",
+      "timestamp": "2026-02-22T05:10:07.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "58"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025435695502803424",
+      "url": "https://x.com/simulaxion/status/2025435695502803424",
+      "text": "I'd love to get that setup",
+      "timestamp": "2026-02-22T05:01:15.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "",
+        "views": "22"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2025436552307114370",
+      "url": "https://x.com/nichxbt/status/2025436552307114370",
+      "text": "headless macbook pro. you take off the screen! i have a couple broken screen 2015-2023 macbook pros im still waiting to rip them apart lmao id rather pay someone. the screws are tiny",
+      "timestamp": "2026-02-22T05:04:39.000Z",
+      "displayTime": "Feb 21",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "2",
+        "views": "39"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:46.280Z"
+    },
+    {
+      "id": "2024598225798271454",
+      "url": "https://x.com/izebel_eth/status/2024598225798271454",
+      "text": "no im unprofitable and im a loser",
+      "timestamp": "2026-02-19T21:33:26.000Z",
+      "displayTime": "Feb 19",
+      "metrics": {
+        "replies": "34",
+        "retweets": "26",
+        "likes": "351",
+        "views": "18K"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:48.283Z"
+    },
+    {
+      "id": "2024613594860834877",
+      "url": "https://x.com/nichxbt/status/2024613594860834877",
+      "text": "",
+      "timestamp": "2026-02-19T22:34:31.000Z",
+      "displayTime": "Feb 19",
+      "metrics": {
+        "replies": "1",
+        "retweets": "",
+        "likes": "5",
+        "views": "225"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:48.283Z"
+    },
+    {
+      "id": "2024486362007646526",
+      "url": "https://x.com/0xcoinn/status/2024486362007646526",
+      "text": "No normal accts from two years ago are left here. Thats such a shame lol \n\nYou guys left me with all the scammers",
+      "timestamp": "2026-02-19T14:08:56.000Z",
+      "displayTime": "Feb 19",
+      "metrics": {
+        "replies": "20",
+        "retweets": "3",
+        "likes": "94",
+        "views": "2.9K"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:48.283Z"
+    },
+    {
+      "id": "2024612191991976044",
+      "url": "https://x.com/nichxbt/status/2024612191991976044",
+      "text": "yup...",
+      "timestamp": "2026-02-19T22:28:56.000Z",
+      "displayTime": "Feb 19",
+      "metrics": {
+        "replies": "",
+        "retweets": "",
+        "likes": "2",
+        "views": "35"
+      },
+      "media": {
+        "hasImage": false,
+        "hasVideo": false,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:48.283Z"
+    },
+    {
+      "id": "2024271084095230363",
+      "url": "https://x.com/LASHYBILLS/status/2024271084095230363",
+      "text": "They tried to steal the air compressor, but the workers up top started launching wood and firing their nail guns at them",
+      "timestamp": "2026-02-18T23:53:30.000Z",
+      "displayTime": "Feb 18",
+      "metrics": {
+        "replies": "1K",
+        "retweets": "3.1K",
+        "likes": "46K",
+        "views": "2.8M"
+      },
+      "media": {
+        "hasImage": true,
+        "hasVideo": true,
+        "hasCard": false
+      },
+      "type": {
+        "isRetweet": false,
+        "isReply": false
+      },
+      "extracted": {
+        "hashtags": [],
+        "mentions": [],
+        "urls": []
+      },
+      "scrapedAt": "2026-02-27T04:13:48.283Z"
+    }
+  ]
+}
