@@ -30,14 +30,13 @@ COPY --from=build /app/dist dist/
 RUN mkdir -p /app/data && chown bot:bot /app/data
 VOLUME /app/data
 
-# API server port (only used when ENABLE_API=true)
-ENV API_PORT=3000
+# API server port — Railway injects PORT; EXPOSE is just metadata
 EXPOSE 3000
 
 USER bot
 
 # Health check against the API (noop when API disabled)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:${API_PORT}/api/v1/health || exit 0
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-3000}/api/v1/health || exit 0
 
 CMD ["node", "dist/index.js"]
