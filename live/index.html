@@ -160,6 +160,16 @@
 const PUMP_PROGRAM = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 const MAX_LOG_ENTRIES = 500;
 
+// ── RPC Endpoints (rotated on failure) ──────────────────────────────
+const RPC_ENDPOINTS = [
+  'wss://api.mainnet-beta.solana.com',
+  'wss://solana-mainnet.core.chainstack.com',
+  'wss://mainnet.helius-rpc.com/?api-key=demo',
+  'wss://solana-rpc.publicnode.com',
+];
+let rpcIndex = 0;
+let connectAttempts = 0;
+
 // ── State ───────────────────────────────────────────────────────────
 let ws = null;
 let subId = null;
@@ -192,21 +202,50 @@ $btnConnect.onclick = () => {
     $btnConnect.textContent = 'Connect';
   } else {
     manualDisconnect = false;
-    connect($rpc.value.trim());
+    reconnectDelay = 1000;
+    connectAttempts = 0;
+    connect();
   }
 };
 $btnClear.onclick = () => { $log.innerHTML = ''; };
 
-// ── Connect to WebSocket RPC ────────────────────────────────────────
-function connect(url) {
+// ── Connect to WebSocket RPC (multi-endpoint failover) ──────────────
+function getNextEndpoint() {
+  const custom = $rpc.value.trim();
+  if (custom && custom.startsWith('wss://')) return custom;
+  const url = RPC_ENDPOINTS[rpcIndex % RPC_ENDPOINTS.length];
+  rpcIndex++;
+  return url;
+}
+
+function connect() {
+  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+  const url = getNextEndpoint();
+  const shortUrl = url.replace(/api-key=\w+/, 'api-key=***').slice(0, 60);
   setStatus('Connecting...', '');
   $btnConnect.textContent = 'Disconnect';
-  sysLog(`Connecting to ${url}...`);
+  connectAttempts++;
+  sysLog(`Connecting to ${shortUrl}...`);
 
-  ws = new WebSocket(url);
+  try {
+    ws = new WebSocket(url);
+  } catch (e) {
+    sysLog(`Invalid URL: ${e.message}`, 'error');
+    scheduleReconnect();
+    return;
+  }
+
+  const connectTimeout = setTimeout(() => {
+    if (ws && ws.readyState !== WebSocket.OPEN) {
+      sysLog(`Timeout on ${shortUrl}, trying next...`, 'warn');
+      try { ws.close(); } catch {}
+    }
+  }, 8000);
 
   ws.onopen = () => {
+    clearTimeout(connectTimeout);
     reconnectDelay = 1000; // reset backoff on successful connect
+    connectAttempts = 0;
     setStatus('● Connected — subscribing to Pump program...', 'connected');
     if (!startTime) startTime = Date.now();
     startRateCounter();
@@ -235,6 +274,13 @@ function connect(url) {
       return;
     }
 
+    // RPC error (rejected subscription)
+    if (msg.id === 1 && msg.error) {
+      sysLog(`RPC rejected: ${msg.error.message || JSON.stringify(msg.error)}`, 'error');
+      try { ws.close(); } catch {}
+      return;
+    }
+
     // Log notification
     if (msg.method === 'logsNotify' && msg.params?.result) {
       stats.logsReceived++;
@@ -243,27 +289,37 @@ function connect(url) {
   };
 
   ws.onerror = (err) => {
+    clearTimeout(connectTimeout);
     setStatus('● Error', 'error');
-    sysLog('WebSocket error — check console', 'error');
+    sysLog(`WebSocket error on ${shortUrl}`, 'error');
     console.error('WS Error:', err);
   };
 
   ws.onclose = (evt) => {
+    clearTimeout(connectTimeout);
     ws = null;
     subId = null;
     if (!manualDisconnect) {
-      setStatus(`● Reconnecting in ${reconnectDelay/1000}s...`, 'error');
-      sysLog(`Disconnected (code=${evt.code}). Reconnecting in ${reconnectDelay/1000}s...`, 'warn');
-      reconnectTimer = setTimeout(() => {
-        connect($rpc.value.trim());
-      }, reconnectDelay);
-      reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+      scheduleReconnect();
     } else {
       setStatus('● Disconnected', '');
       sysLog(`Disconnected (code=${evt.code}).`);
+      $btnConnect.textContent = 'Connect';
       stopRateCounter();
     }
   };
+}
+
+function scheduleReconnect() {
+  const delay = Math.min(reconnectDelay, 15000);
+  const nextUrl = RPC_ENDPOINTS[rpcIndex % RPC_ENDPOINTS.length];
+  const shortNext = nextUrl.replace(/api-key=\w+/, 'api-key=***').slice(0, 50);
+  setStatus(`● Retrying ${(delay / 1000).toFixed(0)}s...`, 'error');
+  sysLog(`Trying next endpoint in ${(delay / 1000).toFixed(0)}s → ${shortNext}`, 'warn');
+  reconnectTimer = setTimeout(connect, delay);
+  if (connectAttempts >= RPC_ENDPOINTS.length) {
+    reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
+  }
 }
 
 function disconnect() {
@@ -493,9 +549,10 @@ function esc(s) {
 // ── Init ────────────────────────────────────────────────────────────
 sysLog('PumpFun Live Monitor — always-on, auto-reconnecting');
 sysLog(`Monitoring program: ${PUMP_PROGRAM}`);
+sysLog(`${RPC_ENDPOINTS.length} endpoints configured — auto-failover on error`);
 
 // Connect immediately on page load
-connect($rpc.value.trim());
+connect();
 </script>
 </body>
 </html>
