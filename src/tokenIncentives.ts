@@ -48,7 +48,7 @@ export function totalUnclaimedTokens(
     const lastUpdatedDayTokenSupply = totalTokenSupply[lastUpdatedIndex];
     const lastUpdatedDaySolVolume = solVolumes[lastUpdatedIndex];
 
-    if (lastUpdatedDaySolVolume.eqn(0)) {
+    if (!lastUpdatedDaySolVolume || !lastUpdatedDayTokenSupply || lastUpdatedDaySolVolume.eqn(0)) {
       return result;
     }
 
@@ -106,7 +106,7 @@ export function currentDayTokens(
   const currentDayTokenSupply = totalTokenSupply[currentDayIndex];
   const currentDaySolVolume = solVolumes[currentDayIndex];
 
-  if (currentDaySolVolume.eqn(0)) {
+  if (!currentDaySolVolume || !currentDayTokenSupply || currentDaySolVolume.eqn(0)) {
     return new BN(0);
   }
 

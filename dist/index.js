@@ -5,6 +5,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -26,6 +29,277 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/fees.ts
+function getFee({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  amount,
+  isNewBondingCurve
+}) {
+  const { virtualSolReserves, virtualTokenReserves, isMayhemMode } = bondingCurve;
+  const { protocolFeeBps, creatorFeeBps } = computeFeesBps({
+    global,
+    feeConfig,
+    mintSupply: isMayhemMode ? mintSupply : ONE_BILLION_SUPPLY,
+    virtualSolReserves,
+    virtualTokenReserves
+  });
+  return fee(amount, protocolFeeBps).add(
+    isNewBondingCurve || !import_web3.PublicKey.default.equals(bondingCurve.creator) ? fee(amount, creatorFeeBps) : new import_bn.default(0)
+  );
+}
+function computeFeesBps({
+  global,
+  feeConfig,
+  mintSupply,
+  virtualSolReserves,
+  virtualTokenReserves
+}) {
+  if (feeConfig != null) {
+    const marketCap = bondingCurveMarketCap({
+      mintSupply,
+      virtualSolReserves,
+      virtualTokenReserves
+    });
+    return calculateFeeTier({
+      feeTiers: feeConfig.feeTiers,
+      marketCap
+    });
+  }
+  return {
+    protocolFeeBps: global.feeBasisPoints,
+    creatorFeeBps: global.creatorFeeBasisPoints
+  };
+}
+function calculateFeeTier({
+  feeTiers,
+  marketCap
+}) {
+  const firstTier = feeTiers[0];
+  if (!firstTier) {
+    throw new Error("feeTiers must not be empty");
+  }
+  if (marketCap.lt(firstTier.marketCapLamportsThreshold)) {
+    return firstTier.fees;
+  }
+  for (const tier of feeTiers.slice().reverse()) {
+    if (marketCap.gte(tier.marketCapLamportsThreshold)) {
+      return tier.fees;
+    }
+  }
+  return firstTier.fees;
+}
+function fee(amount, feeBasisPoints) {
+  return ceilDiv(amount.mul(feeBasisPoints), new import_bn.default(1e4));
+}
+function ceilDiv(a, b) {
+  return a.add(b.subn(1)).div(b);
+}
+function getFeeRecipient(global, mayhemMode) {
+  if (mayhemMode) {
+    const feeRecipients2 = [
+      global.reservedFeeRecipient,
+      ...global.reservedFeeRecipients
+    ];
+    return feeRecipients2[Math.floor(Math.random() * feeRecipients2.length)];
+  }
+  const feeRecipients = [global.feeRecipient, ...global.feeRecipients];
+  return feeRecipients[Math.floor(Math.random() * feeRecipients.length)];
+}
+var import_web3, import_bn, ONE_BILLION_SUPPLY;
+var init_fees = __esm({
+  "src/fees.ts"() {
+    "use strict";
+    import_web3 = require("@solana/web3.js");
+    import_bn = __toESM(require("bn.js"));
+    init_bondingCurve();
+    ONE_BILLION_SUPPLY = new import_bn.default(1e15);
+  }
+});
+
+// src/bondingCurve.ts
+var bondingCurve_exports = {};
+__export(bondingCurve_exports, {
+  bondingCurveMarketCap: () => bondingCurveMarketCap,
+  getBuySolAmountFromTokenAmount: () => getBuySolAmountFromTokenAmount,
+  getBuyTokenAmountFromSolAmount: () => getBuyTokenAmountFromSolAmount,
+  getSellSolAmountFromTokenAmount: () => getSellSolAmountFromTokenAmount,
+  getStaticRandomFeeRecipient: () => getStaticRandomFeeRecipient,
+  newBondingCurve: () => newBondingCurve
+});
+function newBondingCurve(global) {
+  return {
+    virtualTokenReserves: global.initialVirtualTokenReserves,
+    virtualSolReserves: global.initialVirtualSolReserves,
+    realTokenReserves: global.initialRealTokenReserves,
+    realSolReserves: new import_bn2.default(0),
+    tokenTotalSupply: global.tokenTotalSupply,
+    complete: false,
+    creator: import_web32.PublicKey.default,
+    isMayhemMode: global.mayhemModeEnabled
+  };
+}
+function getBuySolAmountFromTokenAmountQuote({
+  minAmount,
+  virtualTokenReserves,
+  virtualSolReserves
+}) {
+  return minAmount.mul(virtualSolReserves).div(virtualTokenReserves.sub(minAmount)).add(new import_bn2.default(1));
+}
+function getBuyTokenAmountFromSolAmountQuote({
+  inputAmount,
+  virtualTokenReserves,
+  virtualSolReserves
+}) {
+  return inputAmount.mul(virtualTokenReserves).div(virtualSolReserves.add(inputAmount));
+}
+function getSellSolAmountFromTokenAmountQuote({
+  inputAmount,
+  virtualTokenReserves,
+  virtualSolReserves
+}) {
+  return inputAmount.mul(virtualSolReserves).div(virtualTokenReserves.add(inputAmount));
+}
+function getBuyTokenAmountFromSolAmount({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  amount
+}) {
+  if (amount.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  let isNewBondingCurve = false;
+  if (bondingCurve === null || mintSupply === null) {
+    bondingCurve = newBondingCurve(global);
+    mintSupply = global.tokenTotalSupply;
+    isNewBondingCurve = true;
+  }
+  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  const { virtualSolReserves, virtualTokenReserves } = bondingCurve;
+  const { protocolFeeBps, creatorFeeBps } = computeFeesBps({
+    global,
+    feeConfig,
+    mintSupply,
+    virtualSolReserves,
+    virtualTokenReserves
+  });
+  const totalFeeBasisPoints = protocolFeeBps.add(
+    isNewBondingCurve || !import_web32.PublicKey.default.equals(bondingCurve.creator) ? creatorFeeBps : new import_bn2.default(0)
+  );
+  const inputAmount = amount.subn(1).muln(1e4).div(totalFeeBasisPoints.addn(1e4));
+  const tokensReceived = getBuyTokenAmountFromSolAmountQuote({
+    inputAmount,
+    virtualTokenReserves: bondingCurve.virtualTokenReserves,
+    virtualSolReserves: bondingCurve.virtualSolReserves
+  });
+  return import_bn2.default.min(tokensReceived, bondingCurve.realTokenReserves);
+}
+function getBuySolAmountFromTokenAmount({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  amount
+}) {
+  if (amount.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  let isNewBondingCurve = false;
+  if (bondingCurve === null || mintSupply === null) {
+    bondingCurve = newBondingCurve(global);
+    mintSupply = global.tokenTotalSupply;
+    isNewBondingCurve = true;
+  }
+  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  const minAmount = import_bn2.default.min(amount, bondingCurve.realTokenReserves);
+  const solCost = getBuySolAmountFromTokenAmountQuote({
+    minAmount,
+    virtualTokenReserves: bondingCurve.virtualTokenReserves,
+    virtualSolReserves: bondingCurve.virtualSolReserves
+  });
+  return solCost.add(
+    getFee({
+      global,
+      feeConfig,
+      mintSupply,
+      bondingCurve,
+      amount: solCost,
+      isNewBondingCurve
+    })
+  );
+}
+function getSellSolAmountFromTokenAmount({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  amount
+}) {
+  if (amount.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
+    return new import_bn2.default(0);
+  }
+  const solCost = getSellSolAmountFromTokenAmountQuote({
+    inputAmount: amount,
+    virtualTokenReserves: bondingCurve.virtualTokenReserves,
+    virtualSolReserves: bondingCurve.virtualSolReserves
+  });
+  return solCost.sub(
+    getFee({
+      global,
+      feeConfig,
+      mintSupply,
+      bondingCurve,
+      amount: solCost,
+      isNewBondingCurve: false
+    })
+  );
+}
+function getStaticRandomFeeRecipient() {
+  const randomIndex = Math.floor(Math.random() * CURRENT_FEE_RECIPIENTS.length);
+  const recipient = CURRENT_FEE_RECIPIENTS[randomIndex];
+  return new import_web32.PublicKey(recipient);
+}
+function bondingCurveMarketCap({
+  mintSupply,
+  virtualSolReserves,
+  virtualTokenReserves
+}) {
+  if (virtualTokenReserves.isZero()) {
+    throw new Error("Division by zero: virtual token reserves cannot be zero");
+  }
+  return virtualSolReserves.mul(mintSupply).div(virtualTokenReserves);
+}
+var import_web32, import_bn2, CURRENT_FEE_RECIPIENTS;
+var init_bondingCurve = __esm({
+  "src/bondingCurve.ts"() {
+    "use strict";
+    import_web32 = require("@solana/web3.js");
+    import_bn2 = __toESM(require("bn.js"));
+    init_fees();
+    CURRENT_FEE_RECIPIENTS = [
+      "62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV",
+      "7VtfL8fvgNfhz17qKRMjzQEXgbdpnHHHQRh54R9jP2RJ",
+      "7hTckgnGnLQR6sdH7YkqFTAA7VwTfYFaZ6EhEsU3saCX",
+      "9rPYyANsfQZw3DnDmKE3YCQF5E8oD89UXoHn9JFEhJUz",
+      "AVmoTthdrX6tKt4nDjco2D775W2YK3sDhxPcMmzUAmTY",
+      "CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM",
+      "FWsW1xNtWscwNmKv6wVsU1iTzRN6wmmk3MjxRP5tT7hz",
+      "G5UZAVbAf46s7cKWoyKu8kYTip9DGTpbLZ2qa9Aq69dP"
+    ];
+  }
+});
 
 // src/index.ts
 var index_exports = {};
@@ -59,23 +333,28 @@ __export(index_exports, {
   ammCreatorVaultPda: () => ammCreatorVaultPda,
   bondingCurveMarketCap: () => bondingCurveMarketCap,
   bondingCurvePda: () => bondingCurvePda,
+  calculateBuyPriceImpact: () => calculateBuyPriceImpact,
   calculateFeeTier: () => calculateFeeTier,
+  calculateSellPriceImpact: () => calculateSellPriceImpact,
   canonicalPumpPoolPda: () => canonicalPumpPoolPda,
   computeFeesBps: () => computeFeesBps,
   creatorVaultPda: () => creatorVaultPda,
   currentDayTokens: () => currentDayTokens,
   feeSharingConfigPda: () => feeSharingConfigPda,
+  getBondingCurveSummary: () => getBondingCurveSummary,
   getBuySolAmountFromTokenAmount: () => getBuySolAmountFromTokenAmount,
   getBuyTokenAmountFromSolAmount: () => getBuyTokenAmountFromSolAmount,
   getEventAuthorityPda: () => getEventAuthorityPda,
   getFee: () => getFee,
   getGlobalParamsPda: () => getGlobalParamsPda,
+  getGraduationProgress: () => getGraduationProgress,
   getMayhemStatePda: () => getMayhemStatePda,
   getPumpAmmProgram: () => getPumpAmmProgram,
   getPumpFeeProgram: () => getPumpFeeProgram,
   getPumpProgram: () => getPumpProgram,
   getSellSolAmountFromTokenAmount: () => getSellSolAmountFromTokenAmount,
   getSolVaultPda: () => getSolVaultPda,
+  getTokenPrice: () => getTokenPrice,
   getTokenVaultPda: () => getTokenVaultPda,
   isCreatorUsingSharingConfig: () => isCreatorUsingSharingConfig,
   newBondingCurve: () => newBondingCurve,
@@ -7186,255 +7465,8 @@ var pump_default = {
   ]
 };
 
-// src/bondingCurve.ts
-var import_web32 = require("@solana/web3.js");
-var import_bn2 = __toESM(require("bn.js"));
-
-// src/fees.ts
-var import_web3 = require("@solana/web3.js");
-var import_bn = __toESM(require("bn.js"));
-var ONE_BILLION_SUPPLY = new import_bn.default(1e15);
-function getFee({
-  global,
-  feeConfig,
-  mintSupply,
-  bondingCurve,
-  amount,
-  isNewBondingCurve
-}) {
-  const { virtualSolReserves, virtualTokenReserves, isMayhemMode } = bondingCurve;
-  const { protocolFeeBps, creatorFeeBps } = computeFeesBps({
-    global,
-    feeConfig,
-    mintSupply: isMayhemMode ? mintSupply : ONE_BILLION_SUPPLY,
-    virtualSolReserves,
-    virtualTokenReserves
-  });
-  return fee(amount, protocolFeeBps).add(
-    isNewBondingCurve || !import_web3.PublicKey.default.equals(bondingCurve.creator) ? fee(amount, creatorFeeBps) : new import_bn.default(0)
-  );
-}
-function computeFeesBps({
-  global,
-  feeConfig,
-  mintSupply,
-  virtualSolReserves,
-  virtualTokenReserves
-}) {
-  if (feeConfig != null) {
-    const marketCap = bondingCurveMarketCap({
-      mintSupply,
-      virtualSolReserves,
-      virtualTokenReserves
-    });
-    return calculateFeeTier({
-      feeTiers: feeConfig.feeTiers,
-      marketCap
-    });
-  }
-  return {
-    protocolFeeBps: global.feeBasisPoints,
-    creatorFeeBps: global.creatorFeeBasisPoints
-  };
-}
-function calculateFeeTier({
-  feeTiers,
-  marketCap
-}) {
-  const firstTier = feeTiers[0];
-  if (!firstTier) {
-    throw new Error("feeTiers must not be empty");
-  }
-  if (marketCap.lt(firstTier.marketCapLamportsThreshold)) {
-    return firstTier.fees;
-  }
-  for (const tier of feeTiers.slice().reverse()) {
-    if (marketCap.gte(tier.marketCapLamportsThreshold)) {
-      return tier.fees;
-    }
-  }
-  return firstTier.fees;
-}
-function fee(amount, feeBasisPoints) {
-  return ceilDiv(amount.mul(feeBasisPoints), new import_bn.default(1e4));
-}
-function ceilDiv(a, b) {
-  return a.add(b.subn(1)).div(b);
-}
-function getFeeRecipient(global, mayhemMode) {
-  if (mayhemMode) {
-    const feeRecipients2 = [
-      global.reservedFeeRecipient,
-      ...global.reservedFeeRecipients
-    ];
-    return feeRecipients2[Math.floor(Math.random() * feeRecipients2.length)];
-  }
-  const feeRecipients = [global.feeRecipient, ...global.feeRecipients];
-  return feeRecipients[Math.floor(Math.random() * feeRecipients.length)];
-}
-
-// src/bondingCurve.ts
-function newBondingCurve(global) {
-  return {
-    virtualTokenReserves: global.initialVirtualTokenReserves,
-    virtualSolReserves: global.initialVirtualSolReserves,
-    realTokenReserves: global.initialRealTokenReserves,
-    realSolReserves: new import_bn2.default(0),
-    tokenTotalSupply: global.tokenTotalSupply,
-    complete: false,
-    creator: import_web32.PublicKey.default,
-    isMayhemMode: global.mayhemModeEnabled
-  };
-}
-function getBuySolAmountFromTokenAmountQuote({
-  minAmount,
-  virtualTokenReserves,
-  virtualSolReserves
-}) {
-  return minAmount.mul(virtualSolReserves).div(virtualTokenReserves.sub(minAmount)).add(new import_bn2.default(1));
-}
-function getBuyTokenAmountFromSolAmountQuote({
-  inputAmount,
-  virtualTokenReserves,
-  virtualSolReserves
-}) {
-  return inputAmount.mul(virtualTokenReserves).div(virtualSolReserves.add(inputAmount));
-}
-function getSellSolAmountFromTokenAmountQuote({
-  inputAmount,
-  virtualTokenReserves,
-  virtualSolReserves
-}) {
-  return inputAmount.mul(virtualSolReserves).div(virtualTokenReserves.add(inputAmount));
-}
-function getBuyTokenAmountFromSolAmount({
-  global,
-  feeConfig,
-  mintSupply,
-  bondingCurve,
-  amount
-}) {
-  if (amount.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  let isNewBondingCurve = false;
-  if (bondingCurve === null || mintSupply === null) {
-    bondingCurve = newBondingCurve(global);
-    mintSupply = global.tokenTotalSupply;
-    isNewBondingCurve = true;
-  }
-  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  const { virtualSolReserves, virtualTokenReserves } = bondingCurve;
-  const { protocolFeeBps, creatorFeeBps } = computeFeesBps({
-    global,
-    feeConfig,
-    mintSupply,
-    virtualSolReserves,
-    virtualTokenReserves
-  });
-  const totalFeeBasisPoints = protocolFeeBps.add(
-    isNewBondingCurve || !import_web32.PublicKey.default.equals(bondingCurve.creator) ? creatorFeeBps : new import_bn2.default(0)
-  );
-  const inputAmount = amount.subn(1).muln(1e4).div(totalFeeBasisPoints.addn(1e4));
-  const tokensReceived = getBuyTokenAmountFromSolAmountQuote({
-    inputAmount,
-    virtualTokenReserves: bondingCurve.virtualTokenReserves,
-    virtualSolReserves: bondingCurve.virtualSolReserves
-  });
-  return import_bn2.default.min(tokensReceived, bondingCurve.realTokenReserves);
-}
-function getBuySolAmountFromTokenAmount({
-  global,
-  feeConfig,
-  mintSupply,
-  bondingCurve,
-  amount
-}) {
-  if (amount.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  let isNewBondingCurve = false;
-  if (bondingCurve === null || mintSupply === null) {
-    bondingCurve = newBondingCurve(global);
-    mintSupply = global.tokenTotalSupply;
-    isNewBondingCurve = true;
-  }
-  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  const minAmount = import_bn2.default.min(amount, bondingCurve.realTokenReserves);
-  const solCost = getBuySolAmountFromTokenAmountQuote({
-    minAmount,
-    virtualTokenReserves: bondingCurve.virtualTokenReserves,
-    virtualSolReserves: bondingCurve.virtualSolReserves
-  });
-  return solCost.add(
-    getFee({
-      global,
-      feeConfig,
-      mintSupply,
-      bondingCurve,
-      amount: solCost,
-      isNewBondingCurve
-    })
-  );
-}
-function getSellSolAmountFromTokenAmount({
-  global,
-  feeConfig,
-  mintSupply,
-  bondingCurve,
-  amount
-}) {
-  if (amount.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  if (bondingCurve.virtualTokenReserves.eq(new import_bn2.default(0))) {
-    return new import_bn2.default(0);
-  }
-  const solCost = getSellSolAmountFromTokenAmountQuote({
-    inputAmount: amount,
-    virtualTokenReserves: bondingCurve.virtualTokenReserves,
-    virtualSolReserves: bondingCurve.virtualSolReserves
-  });
-  return solCost.sub(
-    getFee({
-      global,
-      feeConfig,
-      mintSupply,
-      bondingCurve,
-      amount: solCost,
-      isNewBondingCurve: false
-    })
-  );
-}
-function getStaticRandomFeeRecipient() {
-  const randomIndex = Math.floor(Math.random() * CURRENT_FEE_RECIPIENTS.length);
-  const recipient = CURRENT_FEE_RECIPIENTS[randomIndex];
-  return new import_web32.PublicKey(recipient);
-}
-var CURRENT_FEE_RECIPIENTS = [
-  "62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV",
-  "7VtfL8fvgNfhz17qKRMjzQEXgbdpnHHHQRh54R9jP2RJ",
-  "7hTckgnGnLQR6sdH7YkqFTAA7VwTfYFaZ6EhEsU3saCX",
-  "9rPYyANsfQZw3DnDmKE3YCQF5E8oD89UXoHn9JFEhJUz",
-  "AVmoTthdrX6tKt4nDjco2D775W2YK3sDhxPcMmzUAmTY",
-  "CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM",
-  "FWsW1xNtWscwNmKv6wVsU1iTzRN6wmmk3MjxRP5tT7hz",
-  "G5UZAVbAf46s7cKWoyKu8kYTip9DGTpbLZ2qa9Aq69dP"
-];
-function bondingCurveMarketCap({
-  mintSupply,
-  virtualSolReserves,
-  virtualTokenReserves
-}) {
-  if (virtualTokenReserves.isZero()) {
-    throw new Error("Division by zero: virtual token reserves cannot be zero");
-  }
-  return virtualSolReserves.mul(mintSupply).div(virtualTokenReserves);
-}
+// src/index.ts
+init_bondingCurve();
 
 // src/pda.ts
 var import_pump_swap_sdk3 = require("@pump-fun/pump-swap-sdk");
@@ -7447,7 +7479,8 @@ var import_anchor = require("@coral-xyz/anchor");
 var import_pump_swap_sdk2 = require("@pump-fun/pump-swap-sdk");
 var import_spl_token2 = require("@solana/spl-token");
 var import_web34 = require("@solana/web3.js");
-var import_bn5 = __toESM(require("bn.js"));
+var import_bn6 = __toESM(require("bn.js"));
+init_bondingCurve();
 
 // src/errors.ts
 var NoShareholdersError = class extends Error {
@@ -7500,6 +7533,9 @@ var PoolRequiredForGraduatedError = class extends Error {
     this.name = "PoolRequiredForGraduatedError";
   }
 };
+
+// src/sdk.ts
+init_fees();
 
 // src/idl/pump_amm.json
 var pump_amm_default = {
@@ -17695,10 +17731,154 @@ var pump_fees_default = {
 var import_pump_swap_sdk = require("@pump-fun/pump-swap-sdk");
 var import_spl_token = require("@solana/spl-token");
 var import_web33 = require("@solana/web3.js");
-var import_bn4 = __toESM(require("bn.js"));
+var import_bn5 = __toESM(require("bn.js"));
+
+// src/analytics.ts
+var import_bn3 = __toESM(require("bn.js"));
+init_bondingCurve();
+var LAMPORTS_PER_SOL = new import_bn3.default(1e9);
+var ONE_TOKEN = new import_bn3.default(1e6);
+function spotPrice(bondingCurve) {
+  if (bondingCurve.virtualTokenReserves.isZero()) return new import_bn3.default(0);
+  return bondingCurve.virtualSolReserves.mul(LAMPORTS_PER_SOL).div(bondingCurve.virtualTokenReserves);
+}
+function calculateBuyPriceImpact({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  solAmount
+}) {
+  const priceBefore = spotPrice(bondingCurve);
+  const tokensReceived = getBuyTokenAmountFromSolAmount({
+    global,
+    feeConfig,
+    mintSupply,
+    bondingCurve,
+    amount: solAmount
+  });
+  const newVirtualSolReserves = bondingCurve.virtualSolReserves.add(solAmount);
+  const newVirtualTokenReserves = bondingCurve.virtualTokenReserves.sub(tokensReceived);
+  const priceAfter = newVirtualTokenReserves.isZero() ? new import_bn3.default(0) : newVirtualSolReserves.mul(LAMPORTS_PER_SOL).div(newVirtualTokenReserves);
+  const impactBps = priceBefore.isZero() ? 0 : priceAfter.sub(priceBefore).muln(1e4).div(priceBefore).toNumber();
+  return {
+    priceBefore,
+    priceAfter,
+    impactBps,
+    outputAmount: tokensReceived
+  };
+}
+function calculateSellPriceImpact({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve,
+  tokenAmount
+}) {
+  const priceBefore = spotPrice(bondingCurve);
+  const solReceived = getSellSolAmountFromTokenAmount({
+    global,
+    feeConfig,
+    mintSupply,
+    bondingCurve,
+    amount: tokenAmount
+  });
+  const newVirtualSolReserves = bondingCurve.virtualSolReserves.sub(solReceived);
+  const newVirtualTokenReserves = bondingCurve.virtualTokenReserves.add(tokenAmount);
+  const priceAfter = newVirtualTokenReserves.isZero() ? new import_bn3.default(0) : newVirtualSolReserves.mul(LAMPORTS_PER_SOL).div(newVirtualTokenReserves);
+  const impactBps = priceBefore.isZero() ? 0 : priceBefore.sub(priceAfter).muln(1e4).div(priceBefore).toNumber();
+  return {
+    priceBefore,
+    priceAfter,
+    impactBps,
+    outputAmount: solReceived
+  };
+}
+function getGraduationProgress(global, bondingCurve) {
+  if (bondingCurve.complete) {
+    return {
+      progressBps: 1e4,
+      isGraduated: true,
+      tokensRemaining: new import_bn3.default(0),
+      tokensTotal: global.initialRealTokenReserves,
+      solAccumulated: bondingCurve.realSolReserves
+    };
+  }
+  const initialReal = global.initialRealTokenReserves;
+  if (initialReal.isZero()) {
+    return {
+      progressBps: 0,
+      isGraduated: false,
+      tokensRemaining: new import_bn3.default(0),
+      tokensTotal: new import_bn3.default(0),
+      solAccumulated: new import_bn3.default(0)
+    };
+  }
+  const tokensSold = initialReal.sub(bondingCurve.realTokenReserves);
+  const progressBps = tokensSold.muln(1e4).div(initialReal).toNumber();
+  return {
+    progressBps,
+    isGraduated: false,
+    tokensRemaining: bondingCurve.realTokenReserves,
+    tokensTotal: initialReal,
+    solAccumulated: bondingCurve.realSolReserves
+  };
+}
+function getTokenPrice({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve
+}) {
+  const buyPricePerToken = getBuySolAmountFromTokenAmount({
+    global,
+    feeConfig,
+    mintSupply,
+    bondingCurve,
+    amount: ONE_TOKEN
+  });
+  const sellPricePerToken = getSellSolAmountFromTokenAmount({
+    global,
+    feeConfig,
+    mintSupply,
+    bondingCurve,
+    amount: ONE_TOKEN
+  });
+  const marketCap = bondingCurveMarketCap({
+    mintSupply,
+    virtualSolReserves: bondingCurve.virtualSolReserves,
+    virtualTokenReserves: bondingCurve.virtualTokenReserves
+  });
+  return {
+    buyPricePerToken,
+    sellPricePerToken,
+    marketCap,
+    isGraduated: bondingCurve.complete
+  };
+}
+function getBondingCurveSummary({
+  global,
+  feeConfig,
+  mintSupply,
+  bondingCurve
+}) {
+  const progress = getGraduationProgress(global, bondingCurve);
+  const price = getTokenPrice({ global, feeConfig, mintSupply, bondingCurve });
+  return {
+    marketCap: price.marketCap,
+    progressBps: progress.progressBps,
+    isGraduated: progress.isGraduated,
+    buyPricePerToken: price.buyPricePerToken,
+    sellPricePerToken: price.sellPricePerToken,
+    realSolReserves: bondingCurve.realSolReserves,
+    realTokenReserves: bondingCurve.realTokenReserves,
+    virtualSolReserves: bondingCurve.virtualSolReserves,
+    virtualTokenReserves: bondingCurve.virtualTokenReserves
+  };
+}
 
 // src/tokenIncentives.ts
-var import_bn3 = __toESM(require("bn.js"));
+var import_bn4 = __toESM(require("bn.js"));
 function totalUnclaimedTokens(globalVolumeAccumulator, userVolumeAccumulator, currentTimestamp = Date.now() / 1e3) {
   const { startTime, endTime, secondsInADay, totalTokenSupply, solVolumes } = globalVolumeAccumulator;
   const { totalUnclaimedTokens: totalUnclaimedTokens2, currentSolVolume, lastUpdateTimestamp } = userVolumeAccumulator;
@@ -17706,7 +17886,7 @@ function totalUnclaimedTokens(globalVolumeAccumulator, userVolumeAccumulator, cu
   if (startTime.eqn(0) || endTime.eqn(0) || secondsInADay.eqn(0)) {
     return result;
   }
-  const currentTimestampBn = new import_bn3.default(currentTimestamp);
+  const currentTimestampBn = new import_bn4.default(currentTimestamp);
   if (currentTimestampBn.lt(startTime)) {
     return result;
   }
@@ -17722,7 +17902,7 @@ function totalUnclaimedTokens(globalVolumeAccumulator, userVolumeAccumulator, cu
   if (currentDayIndex > lastUpdatedIndex && lastUpdatedIndex <= endDayIndex) {
     const lastUpdatedDayTokenSupply = totalTokenSupply[lastUpdatedIndex];
     const lastUpdatedDaySolVolume = solVolumes[lastUpdatedIndex];
-    if (lastUpdatedDaySolVolume.eqn(0)) {
+    if (!lastUpdatedDaySolVolume || !lastUpdatedDayTokenSupply || lastUpdatedDaySolVolume.eqn(0)) {
       return result;
     }
     return result.add(
@@ -17735,27 +17915,27 @@ function currentDayTokens(globalVolumeAccumulator, userVolumeAccumulator, curren
   const { startTime, endTime, secondsInADay, totalTokenSupply, solVolumes } = globalVolumeAccumulator;
   const { currentSolVolume, lastUpdateTimestamp } = userVolumeAccumulator;
   if (startTime.eqn(0) || endTime.eqn(0) || secondsInADay.eqn(0)) {
-    return new import_bn3.default(0);
+    return new import_bn4.default(0);
   }
-  const currentTimestampBn = new import_bn3.default(currentTimestamp);
+  const currentTimestampBn = new import_bn4.default(currentTimestamp);
   if (currentTimestampBn.lt(startTime) || currentTimestampBn.gt(endTime)) {
-    return new import_bn3.default(0);
+    return new import_bn4.default(0);
   }
   const currentDayIndex = currentTimestampBn.sub(startTime).div(secondsInADay).toNumber();
   if (lastUpdateTimestamp.lt(startTime)) {
-    return new import_bn3.default(0);
+    return new import_bn4.default(0);
   }
   const lastUpdatedIndex = lastUpdateTimestamp.sub(startTime).div(secondsInADay).toNumber();
   if (endTime.lt(startTime)) {
-    return new import_bn3.default(0);
+    return new import_bn4.default(0);
   }
   if (currentDayIndex !== lastUpdatedIndex) {
-    return new import_bn3.default(0);
+    return new import_bn4.default(0);
   }
   const currentDayTokenSupply = totalTokenSupply[currentDayIndex];
   const currentDaySolVolume = solVolumes[currentDayIndex];
-  if (currentDaySolVolume.eqn(0)) {
-    return new import_bn3.default(0);
+  if (!currentDaySolVolume || !currentDayTokenSupply || currentDaySolVolume.eqn(0)) {
+    return new import_bn4.default(0);
   }
   return currentSolVolume.mul(currentDayTokenSupply).div(currentDaySolVolume);
 }
@@ -17827,14 +18007,14 @@ var OnlinePumpSdk = class {
     const userVolumeAccumulator = await this.fetchUserVolumeAccumulator(
       user
     ) ?? {
-      totalUnclaimedTokens: new import_bn4.default(0),
-      totalClaimedTokens: new import_bn4.default(0),
-      currentSolVolume: new import_bn4.default(0)
+      totalUnclaimedTokens: new import_bn5.default(0),
+      totalClaimedTokens: new import_bn5.default(0),
+      currentSolVolume: new import_bn5.default(0)
     };
     const userVolumeAccumulatorAmm = await this.pumpAmmSdk.fetchUserVolumeAccumulator(user) ?? {
-      totalUnclaimedTokens: new import_bn4.default(0),
-      totalClaimedTokens: new import_bn4.default(0),
-      currentSolVolume: new import_bn4.default(0)
+      totalUnclaimedTokens: new import_bn5.default(0),
+      totalClaimedTokens: new import_bn5.default(0),
+      currentSolVolume: new import_bn5.default(0)
     };
     return {
       totalUnclaimedTokens: userVolumeAccumulator.totalUnclaimedTokens.add(
@@ -17900,22 +18080,22 @@ var OnlinePumpSdk = class {
     const creatorVault = creatorVaultPda(creator);
     const accountInfo = await this.connection.getAccountInfo(creatorVault);
     if (accountInfo === null) {
-      return new import_bn4.default(0);
+      return new import_bn5.default(0);
     }
     const rentExemptionLamports = await this.connection.getMinimumBalanceForRentExemption(
       accountInfo.data.length
     );
     if (accountInfo.lamports < rentExemptionLamports) {
-      return new import_bn4.default(0);
+      return new import_bn5.default(0);
     }
-    return new import_bn4.default(accountInfo.lamports - rentExemptionLamports);
+    return new import_bn5.default(accountInfo.lamports - rentExemptionLamports);
   }
   async getCreatorVaultBalanceBothPrograms(creator) {
     const balance = await this.getCreatorVaultBalance(creator);
     const ammBalance = await this.pumpAmmSdk.getCoinCreatorVaultBalance(creator);
     return balance.add(ammBalance);
   }
-  async adminUpdateTokenIncentives(startTime, endTime, dayNumber, tokenSupplyPerDay, secondsInADay = new import_bn4.default(86400), mint = PUMP_TOKEN_MINT, tokenProgram = import_spl_token.TOKEN_2022_PROGRAM_ID) {
+  async adminUpdateTokenIncentives(startTime, endTime, dayNumber, tokenSupplyPerDay, secondsInADay = new import_bn5.default(86400), mint = PUMP_TOKEN_MINT, tokenProgram = import_spl_token.TOKEN_2022_PROGRAM_ID) {
     const { authority } = await this.fetchGlobal();
     return await this.offlinePumpProgram.methods.adminUpdateTokenIncentives(
       startTime,
@@ -17929,7 +18109,7 @@ var OnlinePumpSdk = class {
       tokenProgram
     }).instruction();
   }
-  async adminUpdateTokenIncentivesBothPrograms(startTime, endTime, dayNumber, tokenSupplyPerDay, secondsInADay = new import_bn4.default(86400), mint = PUMP_TOKEN_MINT, tokenProgram = import_spl_token.TOKEN_2022_PROGRAM_ID) {
+  async adminUpdateTokenIncentivesBothPrograms(startTime, endTime, dayNumber, tokenSupplyPerDay, secondsInADay = new import_bn5.default(86400), mint = PUMP_TOKEN_MINT, tokenProgram = import_spl_token.TOKEN_2022_PROGRAM_ID) {
     return [
       await this.adminUpdateTokenIncentives(
         startTime,
@@ -17990,7 +18170,7 @@ var OnlinePumpSdk = class {
       userVolumeAccumulatorPda(user)
     ]);
     if (!globalVolumeAccumulatorAccountInfo || !userVolumeAccumulatorAccountInfo) {
-      return new import_bn4.default(0);
+      return new import_bn5.default(0);
     }
     const globalVolumeAccumulator = PUMP_SDK.decodeGlobalVolumeAccumulator(
       globalVolumeAccumulatorAccountInfo
@@ -18014,7 +18194,7 @@ var OnlinePumpSdk = class {
       userVolumeAccumulatorPda(user)
     ]);
     if (!globalVolumeAccumulatorAccountInfo || !userVolumeAccumulatorAccountInfo) {
-      return new import_bn4.default(0);
+      return new import_bn5.default(0);
     }
     const globalVolumeAccumulator = PUMP_SDK.decodeGlobalVolumeAccumulator(
       globalVolumeAccumulatorAccountInfo
@@ -18095,8 +18275,8 @@ var OnlinePumpSdk = class {
     );
     const result = await this.connection.simulateTransaction(tx);
     let minimumDistributableFee = {
-      minimumRequired: new import_bn4.default(0),
-      distributableFees: new import_bn4.default(0),
+      minimumRequired: new import_bn5.default(0),
+      distributableFees: new import_bn5.default(0),
       canDistribute: false
     };
     if (!result.value.err) {
@@ -18161,6 +18341,210 @@ var OnlinePumpSdk = class {
       instructions,
       isGraduated
     };
+  }
+  // ── Analytics & Convenience ───────────────────────────────────────────
+  /**
+   * Fetch bonding curve state, global, and fee config, then return a full
+   * summary including market cap, graduation progress, and token price.
+   *
+   * @param mint - The token mint address
+   * @returns Comprehensive bonding curve summary
+   */
+  async fetchBondingCurveSummary(mint) {
+    const mintPk = new import_web33.PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk)
+    ]);
+    return getBondingCurveSummary({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve
+    });
+  }
+  /**
+   * Fetch graduation progress for a token — how close it is to moving to AMM.
+   *
+   * @param mint - The token mint address
+   * @returns Graduation progress details (0-10000 bps)
+   */
+  async fetchGraduationProgress(mint) {
+    const [global, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchBondingCurve(mint)
+    ]);
+    return getGraduationProgress(global, bondingCurve);
+  }
+  /**
+   * Fetch current token price (cost to buy/sell 1 whole token).
+   *
+   * @param mint - The token mint address
+   * @returns Buy and sell price per token in lamports, plus market cap
+   */
+  async fetchTokenPrice(mint) {
+    const mintPk = new import_web33.PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk)
+    ]);
+    return getTokenPrice({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve
+    });
+  }
+  /**
+   * Calculate price impact for a buy trade on a specific token.
+   *
+   * @param mint - Token mint address
+   * @param solAmount - SOL to spend in lamports
+   * @returns Price impact details including before/after prices and impact in bps
+   */
+  async fetchBuyPriceImpact(mint, solAmount) {
+    const mintPk = new import_web33.PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk)
+    ]);
+    return calculateBuyPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      solAmount
+    });
+  }
+  /**
+   * Calculate price impact for a sell trade on a specific token.
+   *
+   * @param mint - Token mint address
+   * @param tokenAmount - Token amount to sell (raw units)
+   * @returns Price impact details including before/after prices and impact in bps
+   */
+  async fetchSellPriceImpact(mint, tokenAmount) {
+    const mintPk = new import_web33.PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk)
+    ]);
+    return calculateSellPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      tokenAmount
+    });
+  }
+  /**
+   * Build instructions to sell a user's entire token balance and close the ATA
+   * to reclaim rent.
+   *
+   * @param mint - Token mint address
+   * @param user - User wallet public key
+   * @param slippage - Slippage tolerance in percent (default: 1%)
+   * @param tokenProgram - Token program (default: TOKEN_PROGRAM_ID)
+   * @returns Sell + close ATA instructions, or empty array if user has no balance
+   */
+  async sellAllInstructions({
+    mint,
+    user,
+    slippage = 1,
+    tokenProgram = import_spl_token.TOKEN_PROGRAM_ID
+  }) {
+    const associatedUser = (0, import_spl_token.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      tokenProgram
+    );
+    const [bondingCurveAccountInfo, accountInfo, globalState] = await Promise.all([
+      this.connection.getAccountInfo(bondingCurvePda(mint)),
+      this.connection.getAccountInfo(associatedUser),
+      this.fetchGlobal()
+    ]);
+    if (!bondingCurveAccountInfo) {
+      throw new Error(
+        `Bonding curve account not found for mint: ${mint.toBase58()}`
+      );
+    }
+    if (!accountInfo) {
+      return [];
+    }
+    const amount = new import_bn5.default(accountInfo.data.subarray(64, 72), "le");
+    if (amount.isZero()) {
+      return [
+        (0, import_spl_token.createCloseAccountInstruction)(
+          associatedUser,
+          user,
+          user,
+          [],
+          tokenProgram
+        )
+      ];
+    }
+    const bondingCurve = PUMP_SDK.decodeBondingCurve(bondingCurveAccountInfo);
+    const feeConfig = await this.fetchFeeConfig();
+    const solAmount = (await Promise.resolve().then(() => (init_bondingCurve(), bondingCurve_exports))).getSellSolAmountFromTokenAmount({
+      global: globalState,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      amount
+    });
+    const sellIxs = await PUMP_SDK.sellInstructions({
+      global: globalState,
+      bondingCurveAccountInfo,
+      bondingCurve,
+      mint,
+      user,
+      amount,
+      solAmount,
+      slippage,
+      tokenProgram,
+      mayhemMode: bondingCurve.isMayhemMode
+    });
+    sellIxs.push(
+      (0, import_spl_token.createCloseAccountInstruction)(
+        associatedUser,
+        user,
+        user,
+        [],
+        tokenProgram
+      )
+    );
+    return sellIxs;
+  }
+  /**
+   * Check if a token has graduated to the AMM by checking if its
+   * canonical pool account exists on-chain.
+   *
+   * @param mint - Token mint address
+   * @returns true if the token has a live AMM pool
+   */
+  async isGraduated(mint) {
+    const poolAddress = canonicalPumpPoolPda(new import_web33.PublicKey(mint));
+    const accountInfo = await this.connection.getAccountInfo(poolAddress);
+    return accountInfo !== null;
+  }
+  /**
+   * Get a user's token balance for a specific mint.
+   *
+   * @param mint - Token mint address
+   * @param user - User wallet public key
+   * @param tokenProgram - Token program (default: TOKEN_PROGRAM_ID)
+   * @returns Token balance in raw units, or BN(0) if no account exists
+   */
+  async getTokenBalance(mint, user, tokenProgram = import_spl_token.TOKEN_PROGRAM_ID) {
+    const ata = (0, import_spl_token.getAssociatedTokenAddressSync)(mint, user, true, tokenProgram);
+    const accountInfo = await this.connection.getAccountInfo(ata);
+    if (!accountInfo) return new import_bn5.default(0);
+    return new import_bn5.default(accountInfo.data.subarray(64, 72), "le");
   }
 };
 
@@ -18481,7 +18865,7 @@ var PumpSdk = class {
       feeRecipient: getFeeRecipient(global, mayhemMode),
       amount,
       solAmount: solAmount.add(
-        solAmount.mul(new import_bn5.default(Math.floor(slippage * 10))).div(new import_bn5.default(1e3))
+        solAmount.mul(new import_bn6.default(Math.floor(slippage * 10))).div(new import_bn6.default(1e3))
       ),
       tokenProgram
     });
@@ -18516,7 +18900,7 @@ var PumpSdk = class {
         feeRecipient: getFeeRecipient(global, mayhemMode),
         amount,
         solAmount: solAmount.sub(
-          solAmount.mul(new import_bn5.default(Math.floor(slippage * 10))).div(new import_bn5.default(1e3))
+          solAmount.mul(new import_bn6.default(Math.floor(slippage * 10))).div(new import_bn6.default(1e3))
         ),
         tokenProgram,
         cashback
@@ -18935,6 +19319,9 @@ var ammCreatorVaultPda = (creator) => {
     PUMP_AMM_PROGRAM_ID
   )[0];
 };
+
+// src/index.ts
+init_fees();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   AMM_GLOBAL_PDA,
@@ -18966,23 +19353,28 @@ var ammCreatorVaultPda = (creator) => {
   ammCreatorVaultPda,
   bondingCurveMarketCap,
   bondingCurvePda,
+  calculateBuyPriceImpact,
   calculateFeeTier,
+  calculateSellPriceImpact,
   canonicalPumpPoolPda,
   computeFeesBps,
   creatorVaultPda,
   currentDayTokens,
   feeSharingConfigPda,
+  getBondingCurveSummary,
   getBuySolAmountFromTokenAmount,
   getBuyTokenAmountFromSolAmount,
   getEventAuthorityPda,
   getFee,
   getGlobalParamsPda,
+  getGraduationProgress,
   getMayhemStatePda,
   getPumpAmmProgram,
   getPumpFeeProgram,
   getPumpProgram,
   getSellSolAmountFromTokenAmount,
   getSolVaultPda,
+  getTokenPrice,
   getTokenVaultPda,
   isCreatorUsingSharingConfig,
   newBondingCurve,

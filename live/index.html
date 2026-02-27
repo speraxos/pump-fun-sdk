@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🟢</text></svg>">
 <title>PumpFun Live — New Token Launches</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -132,8 +133,7 @@
   <h1>⚡ PumpFun Live</h1>
   <div class="status" id="status">● Disconnected</div>
   <div class="controls">
-    <input type="text" id="rpc" placeholder="wss://atlas-mainnet.helius-rpc.com/?api-key=YOUR_KEY" />
-    <button id="btn-connect">Connect</button>
+    <input type="text" id="rpc" value="wss://api.mainnet-beta.solana.com" style="display:none" />
     <button id="btn-pause">Pause</button>
     <button id="btn-clear">Clear</button>
   </div>
@@ -165,22 +165,18 @@ let paused = false;
 let startTime = 0;
 let stats = { total: 0, github: 0, logsReceived: 0, lastSecondLogs: 0 };
 let rateInterval = null;
+let reconnectDelay = 1000;  // starts at 1s, doubles up to 30s
+let reconnectTimer = null;
+let manualDisconnect = false;
 
 // ── DOM refs ────────────────────────────────────────────────────────
 const $log = document.getElementById('log');
 const $status = document.getElementById('status');
 const $rpc = document.getElementById('rpc');
-const $btnConnect = document.getElementById('btn-connect');
 const $btnPause = document.getElementById('btn-pause');
 const $btnClear = document.getElementById('btn-clear');
 
 // ── Buttons ─────────────────────────────────────────────────────────
-$btnConnect.onclick = () => {
-  if (ws && ws.readyState <= 1) { disconnect(); return; }
-  const url = $rpc.value.trim();
-  if (!url) { sysLog('Enter a WebSocket RPC URL (e.g. wss://your-helius-url)', 'error'); return; }
-  connect(url);
-};
 $btnPause.onclick = () => {
   paused = !paused;
   $btnPause.textContent = paused ? 'Resume' : 'Pause';
@@ -198,8 +194,9 @@ function connect(url) {
   ws = new WebSocket(url);
 
   ws.onopen = () => {
+    reconnectDelay = 1000; // reset backoff on successful connect
     setStatus('● Connected — subscribing to Pump program...', 'connected');
-    startTime = Date.now();
+    if (!startTime) startTime = Date.now();
     startRateCounter();
 
     // Subscribe to logs for the Pump program
@@ -240,20 +237,29 @@ function connect(url) {
   };
 
   ws.onclose = (evt) => {
-    setStatus('● Disconnected', '');
-    sysLog(`Disconnected (code=${evt.code}). ${evt.reason || ''}`);
-    $btnConnect.textContent = 'Connect';
-    stopRateCounter();
     ws = null;
     subId = null;
+    if (!manualDisconnect) {
+      setStatus(`● Reconnecting in ${reconnectDelay/1000}s...`, 'error');
+      sysLog(`Disconnected (code=${evt.code}). Reconnecting in ${reconnectDelay/1000}s...`, 'warn');
+      reconnectTimer = setTimeout(() => {
+        connect($rpc.value.trim());
+      }, reconnectDelay);
+      reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+    } else {
+      setStatus('● Disconnected', '');
+      sysLog(`Disconnected (code=${evt.code}).`);
+      stopRateCounter();
+    }
   };
 }
 
 function disconnect() {
+  manualDisconnect = true;
+  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
   if (ws) {
-    // Unsubscribe first
     if (subId !== null) {
-      ws.send(JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'logsUnsubscribe', params: [subId] }));
+      try { ws.send(JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'logsUnsubscribe', params: [subId] })); } catch {}
     }
     ws.close();
   }
@@ -473,9 +479,11 @@ function esc(s) {
 }
 
 // ── Init ────────────────────────────────────────────────────────────
-sysLog('PumpFun Live Monitor — paste a Solana WebSocket RPC URL and click Connect');
-sysLog('Free RPCs are rate-limited. Recommended: Helius, QuickNode, or Triton.');
+sysLog('PumpFun Live Monitor — always-on, auto-reconnecting');
 sysLog(`Monitoring program: ${PUMP_PROGRAM}`);
+
+// Connect immediately on page load
+connect($rpc.value.trim());
 </script>
 </body>
 </html>
