@@ -1,6 +1,6 @@
 # Pump SDK Tutorials
 
-> 16 hands-on tutorials for building on the Pump protocol with `@pump-fun/pump-sdk`.
+> 19 hands-on tutorials for building on the Pump protocol with `@pump-fun/pump-sdk`.
 
 ## Getting Started
 
@@ -55,6 +55,14 @@ npm install @pump-fun/pump-sdk @solana/web3.js @coral-xyz/anchor bn.js
 | # | Tutorial | Topics |
 |---|---------|--------|
 | 16 | [Monitoring Claims](./16-monitoring-claims.md) | Unclaimed tokens, creator vaults, fee distributions, cashback, polling |
+
+### Full-Stack & Integrations
+
+| # | Tutorial | Topics |
+|---|---------|--------|
+| 17 | [Build a Monitoring Website](./17-monitoring-website.md) | Next.js dashboard, API routes, real-time bonding curve UI |
+| 18 | [Telegram Bot](./18-telegram-bot.md) | Price alerts, claim checking, graduation notifications |
+| 19 | [CoinGecko Integration](./19-coingecko-integration.md) | SOL/USD prices, token discovery, price comparison |
 
 ## Prerequisites
 
