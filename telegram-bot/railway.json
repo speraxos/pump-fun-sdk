@@ -8,12 +8,12 @@
         "runtime": "V2",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10,
-        "healthcheckPath": null,
+        "healthcheckPath": "/api/v1/health",
         "numReplicas": 1,
         "envVars": {
             "TELEGRAM_BOT_TOKEN": {
-                "description": "Telegram bot token from @BotFather",
-                "required": true
+                "description": "Telegram bot token from @BotFather (optional in API-only mode)",
+                "required": false
             },
             "SOLANA_RPC_URL": {
                 "description": "Solana RPC endpoint (mainnet recommended)",
@@ -33,6 +33,30 @@
             },
             "ALLOWED_USER_IDS": {
                 "description": "Comma-separated Telegram user IDs to allow",
+                "required": false
+            },
+            "ENABLE_API": {
+                "description": "Enable the REST API server (true/false)",
+                "required": false
+            },
+            "API_ONLY": {
+                "description": "Run API without Telegram bot (true/false)",
+                "required": false
+            },
+            "API_PORT": {
+                "description": "HTTP port for the API server (default: 3000)",
+                "required": false
+            },
+            "API_KEYS": {
+                "description": "Comma-separated API keys for authentication",
+                "required": false
+            },
+            "WEBHOOK_SECRET": {
+                "description": "HMAC-SHA256 secret for signing webhook payloads",
+                "required": false
+            },
+            "CORS_ORIGINS": {
+                "description": "CORS allowed origins (* = all)",
                 "required": false
             }
         }

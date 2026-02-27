@@ -1,7 +1,8 @@
 /**
  * PumpFun Telegram Bot — Telegram Bot & Command Handlers
  *
- * grammY bot setup with /watch, /unwatch, /list, /status, /help commands.
+ * grammý bot setup with /watch, /unwatch, /list, /status, /help,
+ * /monitor, and /stopmonitor commands.
  * Works in both personal DMs and group chats.
  */
 
@@ -17,11 +18,14 @@ import {
     formatStatus,
     formatWatchList,
     formatWelcome,
+    escapeHtml,
 } from './formatters.js';
 import type { TokenLaunchMonitorState } from './types.js';
 import {
     activateMonitor,
     deactivateMonitor,
+    getActiveMonitorCount,
+    getMonitorEntry,
     isMonitorActive,
 } from './launch-store.js';
 import { log } from './logger.js';
@@ -235,7 +239,11 @@ async function handleStatus(
     const watches = getWatchesForChat(ctx.chat!.id);
     const state = monitor.getState();
     const launchState = launchMonitor?.getState();
-    await ctx.reply(formatStatus(state, watches.length, launchState), { parse_mode: 'HTML' });
+    const activeMonitors = getActiveMonitorCount();
+    await ctx.reply(
+        formatStatus(state, watches.length, launchState, activeMonitors),
+        { parse_mode: 'HTML' },
+    );
 }
 
 // ============================================================================
@@ -247,9 +255,27 @@ async function handleMonitor(ctx: Context): Promise<void> {
     const parts = text.split(/\s+/).slice(1); // strip /monitor
     const githubOnly = parts.some((p) => p.toLowerCase() === 'github');
 
-    activateMonitor(ctx.chat!.id, ctx.from!.id, githubOnly);
+    const existing = getMonitorEntry(ctx.chat!.id);
+    const wasActive = existing?.active ?? false;
 
-    await ctx.reply(formatMonitorActivated(githubOnly), { parse_mode: 'HTML' });
+    activateMonitor(ctx.chat!.id, ctx.from!.id, githubOnly);
+    const activeCount = getActiveMonitorCount();
+
+    if (wasActive) {
+        log.info(
+            'Monitor filter updated for chat %d: githubOnly=%s',
+            ctx.chat!.id,
+            githubOnly,
+        );
+    } else {
+        log.info(
+            'Monitor activated for chat %d: githubOnly=%s',
+            ctx.chat!.id,
+            githubOnly,
+        );
+    }
+
+    await ctx.reply(formatMonitorActivated(githubOnly, activeCount), { parse_mode: 'HTML' });
 }
 
 // ============================================================================
@@ -269,6 +295,7 @@ async function handleStopMonitor(ctx: Context): Promise<void> {
     }
 
     deactivateMonitor(ctx.chat!.id);
+    log.info('Monitor stopped by user for chat %d', ctx.chat!.id);
     await ctx.reply(formatMonitorDeactivated(), { parse_mode: 'HTML' });
 }
 
@@ -373,10 +400,4 @@ export function createCreatorChangeHandler(bot: Bot) {
 // Utility
 // ============================================================================
 
-function escapeHtml(text: string): string {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
+// NOTE: escapeHtml is imported from formatters.ts — no duplicate needed here

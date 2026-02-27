@@ -7,12 +7,14 @@ import {
   PumpAmmAdminSdk,
 } from "@pump-fun/pump-swap-sdk";
 import {
+  createCloseAccountInstruction,
   getAssociatedTokenAddressSync,
   NATIVE_MINT,
   TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
+  AccountInfo,
   Connection,
   PublicKey,
   PublicKeyInitData,
@@ -22,6 +24,19 @@ import {
 } from "@solana/web3.js";
 import BN from "bn.js";
 
+import {
+  calculateBuyPriceImpact,
+  calculateSellPriceImpact,
+  getBondingCurveSummary,
+  getGraduationProgress,
+  getTokenPrice,
+} from "./analytics";
+import type {
+  BondingCurveSummary,
+  GraduationProgress,
+  PriceImpactResult,
+  TokenPriceInfo,
+} from "./analytics";
 import { Pump } from "./idl/pump";
 import { PumpAmm } from "./idl/pump_amm";
 import {
@@ -203,7 +218,7 @@ export class OnlinePumpSdk {
       await this.connection.getMultipleAccountsInfo([
         coinCreatorVaultAta,
         coinCreatorTokenAccount,
-      ]);
+      ]) as [AccountInfo<Buffer> | null, AccountInfo<Buffer> | null];
 
     return [
       await this.offlinePumpProgram.methods
@@ -615,6 +630,259 @@ export class OnlinePumpSdk {
       instructions,
       isGraduated,
     };
+  }
+
+  // ── Analytics & Convenience ───────────────────────────────────────────
+
+  /**
+   * Fetch bonding curve state, global, and fee config, then return a full
+   * summary including market cap, graduation progress, and token price.
+   *
+   * @param mint - The token mint address
+   * @returns Comprehensive bonding curve summary
+   */
+  async fetchBondingCurveSummary(
+    mint: PublicKeyInitData,
+  ): Promise<BondingCurveSummary> {
+    const mintPk = new PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk),
+    ]);
+
+    return getBondingCurveSummary({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+    });
+  }
+
+  /**
+   * Fetch graduation progress for a token — how close it is to moving to AMM.
+   *
+   * @param mint - The token mint address
+   * @returns Graduation progress details (0-10000 bps)
+   */
+  async fetchGraduationProgress(
+    mint: PublicKeyInitData,
+  ): Promise<GraduationProgress> {
+    const [global, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchBondingCurve(mint),
+    ]);
+    return getGraduationProgress(global, bondingCurve);
+  }
+
+  /**
+   * Fetch current token price (cost to buy/sell 1 whole token).
+   *
+   * @param mint - The token mint address
+   * @returns Buy and sell price per token in lamports, plus market cap
+   */
+  async fetchTokenPrice(
+    mint: PublicKeyInitData,
+  ): Promise<TokenPriceInfo> {
+    const mintPk = new PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk),
+    ]);
+
+    return getTokenPrice({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+    });
+  }
+
+  /**
+   * Calculate price impact for a buy trade on a specific token.
+   *
+   * @param mint - Token mint address
+   * @param solAmount - SOL to spend in lamports
+   * @returns Price impact details including before/after prices and impact in bps
+   */
+  async fetchBuyPriceImpact(
+    mint: PublicKeyInitData,
+    solAmount: BN,
+  ): Promise<PriceImpactResult> {
+    const mintPk = new PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk),
+    ]);
+
+    return calculateBuyPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      solAmount,
+    });
+  }
+
+  /**
+   * Calculate price impact for a sell trade on a specific token.
+   *
+   * @param mint - Token mint address
+   * @param tokenAmount - Token amount to sell (raw units)
+   * @returns Price impact details including before/after prices and impact in bps
+   */
+  async fetchSellPriceImpact(
+    mint: PublicKeyInitData,
+    tokenAmount: BN,
+  ): Promise<PriceImpactResult> {
+    const mintPk = new PublicKey(mint);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+      this.fetchGlobal(),
+      this.fetchFeeConfig(),
+      this.fetchBondingCurve(mintPk),
+    ]);
+
+    return calculateSellPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      tokenAmount,
+    });
+  }
+
+  /**
+   * Build instructions to sell a user's entire token balance and close the ATA
+   * to reclaim rent.
+   *
+   * @param mint - Token mint address
+   * @param user - User wallet public key
+   * @param slippage - Slippage tolerance in percent (default: 1%)
+   * @param tokenProgram - Token program (default: TOKEN_PROGRAM_ID)
+   * @returns Sell + close ATA instructions, or empty array if user has no balance
+   */
+  async sellAllInstructions({
+    mint,
+    user,
+    slippage = 1,
+    tokenProgram = TOKEN_PROGRAM_ID,
+  }: {
+    mint: PublicKey;
+    user: PublicKey;
+    slippage?: number;
+    tokenProgram?: PublicKey;
+  }): Promise<TransactionInstruction[]> {
+    const associatedUser = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      tokenProgram,
+    );
+
+    const [bondingCurveAccountInfo, accountInfo, globalState] =
+      await Promise.all([
+        this.connection.getAccountInfo(bondingCurvePda(mint)),
+        this.connection.getAccountInfo(associatedUser),
+        this.fetchGlobal(),
+      ]);
+
+    if (!bondingCurveAccountInfo) {
+      throw new Error(
+        `Bonding curve account not found for mint: ${mint.toBase58()}`,
+      );
+    }
+
+    if (!accountInfo) {
+      return []; // No token account — nothing to sell
+    }
+
+    // Parse the token balance from the account data
+    // SPL Token account data layout: mint (32) + owner (32) + amount (8)
+    const amount = new BN(accountInfo.data.subarray(64, 72), "le");
+    if (amount.isZero()) {
+      // Zero balance — just close the account to reclaim rent
+      return [
+        createCloseAccountInstruction(
+          associatedUser,
+          user,
+          user,
+          [],
+          tokenProgram,
+        ),
+      ];
+    }
+
+    const bondingCurve = PUMP_SDK.decodeBondingCurve(bondingCurveAccountInfo);
+    const feeConfig = await this.fetchFeeConfig();
+
+    const solAmount = (await import("./bondingCurve")).getSellSolAmountFromTokenAmount({
+      global: globalState,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      amount,
+    });
+
+    const sellIxs = await PUMP_SDK.sellInstructions({
+      global: globalState,
+      bondingCurveAccountInfo,
+      bondingCurve,
+      mint,
+      user,
+      amount,
+      solAmount,
+      slippage,
+      tokenProgram,
+      mayhemMode: bondingCurve.isMayhemMode,
+    });
+
+    // Close the ATA after selling to reclaim rent
+    sellIxs.push(
+      createCloseAccountInstruction(
+        associatedUser,
+        user,
+        user,
+        [],
+        tokenProgram,
+      ),
+    );
+
+    return sellIxs;
+  }
+
+  /**
+   * Check if a token has graduated to the AMM by checking if its
+   * canonical pool account exists on-chain.
+   *
+   * @param mint - Token mint address
+   * @returns true if the token has a live AMM pool
+   */
+  async isGraduated(mint: PublicKeyInitData): Promise<boolean> {
+    const poolAddress = canonicalPumpPoolPda(new PublicKey(mint));
+    const accountInfo = await this.connection.getAccountInfo(poolAddress);
+    return accountInfo !== null;
+  }
+
+  /**
+   * Get a user's token balance for a specific mint.
+   *
+   * @param mint - Token mint address
+   * @param user - User wallet public key
+   * @param tokenProgram - Token program (default: TOKEN_PROGRAM_ID)
+   * @returns Token balance in raw units, or BN(0) if no account exists
+   */
+  async getTokenBalance(
+    mint: PublicKey,
+    user: PublicKey,
+    tokenProgram: PublicKey = TOKEN_PROGRAM_ID,
+  ): Promise<BN> {
+    const ata = getAssociatedTokenAddressSync(mint, user, true, tokenProgram);
+    const accountInfo = await this.connection.getAccountInfo(ata);
+    if (!accountInfo) return new BN(0);
+    // SPL Token account data layout: mint (32) + owner (32) + amount (8)
+    return new BN(accountInfo.data.subarray(64, 72), "le");
   }
 }
 

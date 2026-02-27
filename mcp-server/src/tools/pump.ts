@@ -39,6 +39,12 @@ import {
   // Token incentives (pure math)
   totalUnclaimedTokens,
   currentDayTokens,
+  // Analytics
+  calculateBuyPriceImpact,
+  calculateSellPriceImpact,
+  getGraduationProgress,
+  getTokenPrice,
+  getBondingCurveSummary,
   // Constants
   PUMP_PROGRAM_ID,
   PUMP_AMM_PROGRAM_ID,
@@ -323,6 +329,22 @@ export async function handlePumpToolCall(
       // ── Program Info ────────────────────────────────────────────────
       case "get_program_ids":
         return handleGetProgramIds();
+
+      // ── Analytics & Convenience ─────────────────────────────────────
+      case "get_price_impact":
+        return await handleGetPriceImpact(args);
+      case "get_graduation_progress":
+        return await handleGetGraduationProgress(args);
+      case "get_token_price":
+        return await handleGetTokenPrice(args);
+      case "get_token_summary":
+        return await handleGetTokenSummary(args);
+      case "build_sell_all":
+        return await handleBuildSellAll(args);
+      case "is_graduated":
+        return await handleIsGraduated(args);
+      case "get_token_balance":
+        return await handleGetTokenBalance(args);
 
       default:
         return err(`Unknown pump tool: ${name}`);
@@ -1035,5 +1057,166 @@ async function handleFetchFeeConfig(
 function handleGetProgramIds(): ToolResult {
   return ok(
     `🔗 Pump Protocol Program IDs\n\nPump: ${PUMP_PROGRAM_ID.toBase58()}\n  Token creation, bonding curve buy/sell\n\nPumpAMM: ${PUMP_AMM_PROGRAM_ID.toBase58()}\n  AMM pools for graduated tokens\n\nPumpFees: ${PUMP_FEE_PROGRAM_ID.toBase58()}\n  Fee sharing configuration & distribution\n\nMayhem: ${MAYHEM_PROGRAM_ID.toBase58()}\n  Alternate routing mode\n\nPump Token Mint: ${PUMP_TOKEN_MINT.toBase58()}\n  $PUMP incentive token\n\nMax Shareholders: ${MAX_SHAREHOLDERS}`,
+  );
+}
+
+// ============================================================================
+// ANALYTICS & CONVENIENCE
+// ============================================================================
+
+async function handleGetPriceImpact(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const rpcUrl = args.rpcUrl as string | undefined;
+  const side = (args.side as string) || "buy";
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const [global, feeConfig, bondingCurve] = await Promise.all([
+    sdk.fetchGlobal(),
+    sdk.fetchFeeConfig(),
+    sdk.fetchBondingCurve(mint),
+  ]);
+
+  if (side === "sell") {
+    const tokenAmount = requireBN(args.tokenAmount, "tokenAmount");
+    const result = calculateSellPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      tokenAmount,
+    });
+    return ok(
+      `📉 Sell Price Impact\n\nMint: ${mint.toBase58()}\nToken Amount: ${bnToString(tokenAmount)}\nSOL Received: ${formatLamports(result.outputAmount)}\nPrice Before: ${bnToString(result.priceBefore)} (scaled)\nPrice After: ${bnToString(result.priceAfter)} (scaled)\nPrice Impact: ${(result.impactBps / 100).toFixed(2)}% (${result.impactBps} bps)`,
+    );
+  } else {
+    const solAmount = requireBN(args.solAmount, "solAmount");
+    const result = calculateBuyPriceImpact({
+      global,
+      feeConfig,
+      mintSupply: bondingCurve.tokenTotalSupply,
+      bondingCurve,
+      solAmount,
+    });
+    return ok(
+      `📈 Buy Price Impact\n\nMint: ${mint.toBase58()}\nSOL Input: ${formatLamports(solAmount)}\nTokens Received: ${bnToString(result.outputAmount)}\nPrice Before: ${bnToString(result.priceBefore)} (scaled)\nPrice After: ${bnToString(result.priceAfter)} (scaled)\nPrice Impact: ${(result.impactBps / 100).toFixed(2)}% (${result.impactBps} bps)`,
+    );
+  }
+}
+
+async function handleGetGraduationProgress(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const progress = await sdk.fetchGraduationProgress(mint);
+
+  const progressPct = (progress.progressBps / 100).toFixed(2);
+
+  return ok(
+    `🎓 Graduation Progress\n\nMint: ${mint.toBase58()}\nProgress: ${progressPct}% (${progress.progressBps} / 10000 bps)\nGraduated: ${progress.isGraduated ? "Yes ✅" : "No"}\nTokens Remaining: ${bnToString(progress.tokensRemaining)}\nTokens Total: ${bnToString(progress.tokensTotal)}\nSOL Accumulated: ${formatLamports(progress.solAccumulated)}`,
+  );
+}
+
+async function handleGetTokenPrice(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const price = await sdk.fetchTokenPrice(mint);
+
+  return ok(
+    `💲 Token Price\n\nMint: ${mint.toBase58()}\nBuy Price (1 token): ${formatLamports(price.buyPricePerToken)}\nSell Price (1 token): ${formatLamports(price.sellPricePerToken)}\nSpread: ${formatLamports(price.buyPricePerToken.sub(price.sellPricePerToken))}\nMarket Cap: ${formatLamports(price.marketCap)}\nGraduated: ${price.isGraduated ? "Yes ✅" : "No"}`,
+  );
+}
+
+async function handleGetTokenSummary(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const summary = await sdk.fetchBondingCurveSummary(mint);
+
+  const progressPct = (summary.progressBps / 100).toFixed(2);
+
+  return ok(
+    `📊 Token Summary\n\nMint: ${mint.toBase58()}\n\n── Price ──\nBuy Price (1 token): ${formatLamports(summary.buyPricePerToken)}\nSell Price (1 token): ${formatLamports(summary.sellPricePerToken)}\nMarket Cap: ${formatLamports(summary.marketCap)}\n\n── Progress ──\nGraduated: ${summary.isGraduated ? "Yes ✅" : "No"}\nGraduation Progress: ${progressPct}%\n\n── Reserves ──\nVirtual SOL: ${formatLamports(summary.virtualSolReserves)}\nVirtual Tokens: ${bnToString(summary.virtualTokenReserves)}\nReal SOL: ${formatLamports(summary.realSolReserves)}\nReal Tokens: ${bnToString(summary.realTokenReserves)}`,
+  );
+}
+
+async function handleBuildSellAll(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const user = requirePubkey(args.user, "user");
+  const slippage = (args.slippage as number) ?? 1;
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const instructions = await sdk.sellAllInstructions({
+    mint,
+    user,
+    slippage,
+  });
+
+  if (instructions.length === 0) {
+    return ok("ℹ️ No token balance found — nothing to sell.");
+  }
+
+  return ok(
+    `🏷️ Sell All Instructions Built\n\nMint: ${mint.toBase58()}\nUser: ${user.toBase58()}\nSlippage: ${slippage}%\nInstructions: ${instructions.length}\n\n${serializeInstructions(instructions)}`,
+  );
+}
+
+async function handleIsGraduated(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const graduated = await sdk.isGraduated(mint);
+
+  return ok(
+    `🎓 Graduation Status\n\nMint: ${mint.toBase58()}\nGraduated: ${graduated ? "Yes ✅ — Token has moved to AMM pool" : "No — Still on bonding curve"}`,
+  );
+}
+
+async function handleGetTokenBalance(
+  args: Record<string, unknown>,
+): Promise<ToolResult> {
+  const mint = requirePubkey(args.mint, "mint");
+  const user = requirePubkey(args.user, "user");
+  const rpcUrl = args.rpcUrl as string | undefined;
+
+  const connection = getConnection(rpcUrl);
+  const sdk = new OnlinePumpSdk(connection);
+
+  const balance = await sdk.getTokenBalance(mint, user);
+
+  const wholeTokens = balance.div(new BN(1_000_000));
+  const remainder = balance.mod(new BN(1_000_000));
+
+  return ok(
+    `💰 Token Balance\n\nMint: ${mint.toBase58()}\nUser: ${user.toBase58()}\nBalance: ${bnToString(balance)} raw units\nBalance: ${bnToString(wholeTokens)}.${remainder.toString(10).padStart(6, "0")} tokens`,
   );
 }

@@ -1,7 +1,29 @@
 node_modules/
+dist/
+coverage/
 .env
+.env.*
 *.log
+*.tsbuildinfo
 .DS_Store
+Thumbs.db
 
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Rust
+rust/target/
+
+# Keypairs — never commit
+*.keypair
+id_*.json
+
+# Registry tokens
 .mcpregistry_github_token
 .mcpregistry_registry_token
+
+# ESLint cache
+.eslintcache

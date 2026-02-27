@@ -490,6 +490,98 @@ export const TOOLS: ToolDefinition[] = [
       required: [],
     },
   },
+
+  // ── Analytics & Convenience ─────────────────────────────────────────
+  {
+    name: 'get_price_impact',
+    description: 'Calculate the price impact (slippage) of a buy or sell trade on a bonding curve token.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        side: { type: 'string', description: '"buy" or "sell" (default: "buy")' },
+        solAmount: { type: 'string', description: 'SOL amount in lamports (for buy side)' },
+        tokenAmount: { type: 'string', description: 'Token amount in raw units (for sell side)' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint'],
+    },
+  },
+  {
+    name: 'get_graduation_progress',
+    description: 'Get how close a token is to graduating from the bonding curve to an AMM pool (0-100%).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint'],
+    },
+  },
+  {
+    name: 'get_token_price',
+    description: 'Get the current buy and sell price per whole token (1 token = 10^6 raw units) in SOL.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint'],
+    },
+  },
+  {
+    name: 'get_token_summary',
+    description: 'Get a comprehensive summary of a token: price, market cap, graduation progress, and reserves — all in one call.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint'],
+    },
+  },
+  {
+    name: 'build_sell_all',
+    description: 'Build instructions to sell a user\'s entire token balance and close the ATA to reclaim rent.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        user: { type: 'string', description: 'User wallet public key' },
+        slippage: { type: 'number', description: 'Slippage tolerance in percent (default: 1)' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint', 'user'],
+    },
+  },
+  {
+    name: 'is_graduated',
+    description: 'Check if a token has graduated from the bonding curve to an AMM pool.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint'],
+    },
+  },
+  {
+    name: 'get_token_balance',
+    description: 'Get a user\'s token balance for a specific mint.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mint: { type: 'string', description: 'Token mint address' },
+        user: { type: 'string', description: 'User wallet public key' },
+        rpcUrl: { type: 'string', description: 'Custom Solana RPC URL (optional)' },
+      },
+      required: ['mint', 'user'],
+    },
+  },
 ];
 
 export function registerToolHandlers(server: Server, state: ServerState): void {

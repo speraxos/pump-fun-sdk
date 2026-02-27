@@ -357,6 +357,8 @@ export interface TokenLaunchEvent {
     name: string;
     /** Token symbol/ticker */
     symbol: string;
+    /** Token description (from metadata) */
+    description: string;
     /** Metadata URI */
     metadataUri: string;
     /** Whether this token has a GitHub link */
@@ -388,4 +390,6 @@ export interface TokenLaunchMonitorState {
     startedAt: number;
     /** Whether to only notify for GitHub-linked tokens */
     githubOnly: boolean;
+    /** Total errors encountered (metadata fetches, tx parsing, etc.) */
+    errorsEncountered: number;
 }

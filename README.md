@@ -24,7 +24,7 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
   <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/v/@pump-fun/pump-sdk.svg?style=flat-square&color=cb3837&label=npm" alt="npm version"></a>&nbsp;
   <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/dm/@pump-fun/pump-sdk.svg?style=flat-square&color=cb3837&label=downloads" alt="npm downloads"></a>&nbsp;
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"></a>&nbsp;
-  <a href="https://github.com/pump-fun/pump-sdk"><img src="https://img.shields.io/github/stars/pump-fun/pump-sdk?style=flat-square&color=f5c542&label=stars" alt="Stars"></a>
+  <a href="https://github.com/nirholas/pump-fun-sdk"><img src="https://img.shields.io/github/stars/nirholas/pump-fun-sdk?style=flat-square&color=f5c542&label=stars" alt="Stars"></a>
 </p>
 
 <p>
@@ -531,11 +531,17 @@ See [mcp-server/README.md](mcp-server/README.md) for setup instructions.
 | Guide | Description |
 |-------|-------------|
 | [Getting Started](docs/getting-started.md) | Installation, setup, and first transaction |
+| [End-to-End Workflow](docs/end-to-end-workflow.md) | Full lifecycle: create → buy → graduate → migrate → fees → rewards |
 | [Architecture](docs/architecture.md) | SDK structure, lifecycle, and design patterns |
 | [API Reference](docs/api-reference.md) | Full class, function, and type documentation |
 | [Examples](docs/examples.md) | Practical code examples for common operations |
+| [Bonding Curve Math](docs/bonding-curve-math.md) | Virtual reserves, price formulas, and graduation |
 | [Fee Sharing](docs/fee-sharing.md) | Creator fee distribution to shareholders |
+| [Fee Tiers](docs/fee-tiers.md) | Market-cap-based fee tier mechanics |
 | [Token Incentives](docs/token-incentives.md) | Volume-based trading rewards |
+| [Mayhem Mode](docs/mayhem-mode.md) | Alternate routing mode and fee recipients |
+| [Security](docs/security.md) | Security model, key handling, and best practices |
+| [Testing](docs/testing.md) | Test suites, commands, and CI pipelines |
 | [CLI Guide](docs/cli-guide.md) | Vanity address generation with Solana CLI |
 
 ---

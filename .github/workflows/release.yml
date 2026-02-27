@@ -79,6 +79,9 @@ jobs:
           - os: macos-13
             target: x86_64-apple-darwin
             artifact: solana-vanity-macos-amd64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: solana-vanity-windows-amd64.exe
 
     steps:
       - name: Checkout

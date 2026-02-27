@@ -13,6 +13,9 @@ RUN npm run build
 # ── Production stage ──────────────────────────────────────────────────────────
 FROM node:20-alpine
 
+LABEL org.opencontainers.image.title="PumpFun Fee Monitor"
+LABEL org.opencontainers.image.description="Telegram bot + REST API for PumpFun fee claim monitoring"
+
 WORKDIR /app
 
 # Create non-root user
@@ -27,6 +30,14 @@ COPY --from=build /app/dist dist/
 RUN mkdir -p /app/data && chown bot:bot /app/data
 VOLUME /app/data
 
+# API server port (only used when ENABLE_API=true)
+ENV API_PORT=3000
+EXPOSE 3000
+
 USER bot
+
+# Health check against the API (noop when API disabled)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${API_PORT}/api/v1/health || exit 0
 
 CMD ["node", "dist/index.js"]

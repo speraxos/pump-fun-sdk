@@ -1,13 +1,16 @@
 /**
  * PumpFun API — REST Server
  *
- * Scalable HTTP API built with Hono. Features:
- * - API key authentication
- * - Per-client rate limiting (sliding window)
- * - Paginated list endpoints
- * - SSE real-time claim streaming
- * - Webhook delivery for claim events
- * - Health check endpoint (no auth)
+ * Scalable HTTP API using Node.js http. Features:
+ * - API key authentication (X-API-Key or Bearer)
+ * - Per-client sliding-window rate limiting
+ * - Paginated list endpoints with filtering
+ * - SSE real-time claim streaming with heartbeat
+ * - Webhook delivery for claim events with HMAC signatures
+ * - Health check endpoint (no auth required)
+ * - Request logging with timing
+ * - Graceful shutdown with connection draining
+ * - Security headers (HSTS, X-Content-Type-Options, etc.)
  *
  * Designed for horizontal scaling:
  * - Stateless request handling (swap file store for Redis/Postgres)
@@ -122,6 +125,17 @@ export class PumpFunApi {
         this.startedAt = Date.now();
 
         this.server = createServer(async (req, res) => {
+            const start = Date.now();
+            const method = req.method || 'GET';
+            const url = req.url || '/';
+
+            // Log request on completion
+            res.on('finish', () => {
+                const duration = Date.now() - start;
+                const level = res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'debug';
+                log[level]('%s %s → %d (%dms)', method, url, res.statusCode, duration);
+            });
+
             try {
                 await this.handleRequest(req, res);
             } catch (err) {
@@ -134,6 +148,11 @@ export class PumpFunApi {
             }
         });
 
+        // Keep-alive configuration for high-concurrency
+        this.server.keepAliveTimeout = 65_000;
+        this.server.headersTimeout = 66_000;
+        this.server.maxHeadersCount = 100;
+
         return new Promise((resolve) => {
             this.server!.listen(this.config.port, () => {
                 log.info('API server listening on port %d', this.config.port);
@@ -142,12 +161,17 @@ export class PumpFunApi {
         });
     }
 
-    /** Stop the HTTP server. */
+    /** Stop the HTTP server with graceful connection draining. */
     stop(): void {
         this.rateLimiter.stop();
         if (this.server) {
-            this.server.close();
-            log.info('API server stopped');
+            this.server.close(() => {
+                log.info('API server stopped (all connections drained)');
+            });
+            // Force close after 10s if connections don't drain
+            setTimeout(() => {
+                this.server?.closeAllConnections?.();
+            }, 10_000).unref();
         }
     }
 
@@ -163,11 +187,16 @@ export class PumpFunApi {
         const method = req.method?.toUpperCase() || 'GET';
         const path = url.pathname;
 
+        // Security headers
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('X-Frame-Options', 'DENY');
+        res.setHeader('X-Request-Id', `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
+
         // CORS headers
         res.setHeader('Access-Control-Allow-Origin', this.config.corsOrigins);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key');
-        res.setHeader('Access-Control-Expose-Headers', 'X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset');
+        res.setHeader('Access-Control-Expose-Headers', 'X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-Request-Id');
 
         if (method === 'OPTIONS') {
             res.writeHead(204);
@@ -175,9 +204,13 @@ export class PumpFunApi {
             return;
         }
 
-        // ── Health check (no auth) ──────────────────────────────────────
+        // ── Public routes (no auth) ─────────────────────────────────────
         if (path === '/api/v1/health' && method === 'GET') {
             return this.handleHealth(res);
+        }
+
+        if (path === '/api/v1/openapi' && method === 'GET') {
+            return this.handleOpenApi(res);
         }
 
         // ── Auth ────────────────────────────────────────────────────────
@@ -289,18 +322,105 @@ export class PumpFunApi {
 
     private handleHealth(res: import('node:http').ServerResponse): void {
         const state = this.monitor.getState();
+        const watchCounts = getApiWatchCount();
         const response: HealthResponse = {
             monitor: {
                 claimsDetected: state.claimsDetected,
                 mode: state.mode,
                 running: state.isRunning,
             },
+            watches: watchCounts,
             status: state.isRunning ? 'ok' : 'degraded',
             timestamp: new Date().toISOString(),
             uptime: this.startedAt ? Date.now() - this.startedAt : 0,
             version: '1.0.0',
         };
         this.sendJson(res, 200, response);
+    }
+
+    private handleOpenApi(res: import('node:http').ServerResponse): void {
+        const spec = {
+            openapi: '3.0.3',
+            info: {
+                title: 'PumpFun Fee Claim API',
+                version: '1.0.0',
+                description: 'REST API for monitoring PumpFun creator fee & cashback claims on Solana',
+            },
+            servers: [{ url: '/api/v1', description: 'API v1' }],
+            paths: {
+                '/health': {
+                    get: { summary: 'Health check', tags: ['System'], security: [],
+                        responses: { '200': { description: 'Service health status' } } },
+                },
+                '/status': {
+                    get: { summary: 'Detailed status', tags: ['System'],
+                        responses: { '200': { description: 'Monitor, watch, and claim statistics' } } },
+                },
+                '/claims': {
+                    get: { summary: 'Query claim events', tags: ['Claims'],
+                        parameters: [
+                            { name: 'wallet', in: 'query', schema: { type: 'string' } },
+                            { name: 'tokenMint', in: 'query', schema: { type: 'string' } },
+                            { name: 'claimType', in: 'query', schema: { type: 'string' } },
+                            { name: 'isCashback', in: 'query', schema: { type: 'boolean' } },
+                            { name: 'minAmountSol', in: 'query', schema: { type: 'number' } },
+                            { name: 'maxAmountSol', in: 'query', schema: { type: 'number' } },
+                            { name: 'since', in: 'query', schema: { type: 'string', format: 'date-time' } },
+                            { name: 'until', in: 'query', schema: { type: 'string', format: 'date-time' } },
+                            { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+                            { name: 'limit', in: 'query', schema: { type: 'integer', default: 50, maximum: 100 } },
+                        ],
+                        responses: { '200': { description: 'Paginated claim events' } } },
+                },
+                '/claims/stream': {
+                    get: { summary: 'Real-time SSE claim stream', tags: ['Claims'],
+                        parameters: [
+                            { name: 'wallet', in: 'query', schema: { type: 'string' } },
+                            { name: 'isCashback', in: 'query', schema: { type: 'boolean' } },
+                        ],
+                        responses: { '200': { description: 'Server-Sent Events stream' } } },
+                },
+                '/watches': {
+                    get: { summary: 'List watches', tags: ['Watches'],
+                        parameters: [
+                            { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+                            { name: 'limit', in: 'query', schema: { type: 'integer', default: 50 } },
+                            { name: 'active', in: 'query', schema: { type: 'boolean', default: true } },
+                        ],
+                        responses: { '200': { description: 'Paginated watch list' } } },
+                    post: { summary: 'Create a watch', tags: ['Watches'],
+                        requestBody: { required: true, content: { 'application/json': { schema: {
+                            type: 'object', required: ['wallet'],
+                            properties: {
+                                wallet: { type: 'string', description: 'Solana wallet address' },
+                                label: { type: 'string' },
+                                tokenFilter: { type: 'array', items: { type: 'string' } },
+                                webhookUrl: { type: 'string', format: 'uri' },
+                            },
+                        } } } },
+                        responses: { '201': { description: 'Watch created' } } },
+                },
+                '/watches/{id}': {
+                    get: { summary: 'Get a watch', tags: ['Watches'],
+                        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                        responses: { '200': { description: 'Watch details' } } },
+                    patch: { summary: 'Update a watch', tags: ['Watches'],
+                        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                        responses: { '200': { description: 'Watch updated' } } },
+                    delete: { summary: 'Delete a watch', tags: ['Watches'],
+                        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+                        responses: { '200': { description: 'Watch deleted' } } },
+                },
+            },
+            components: {
+                securitySchemes: {
+                    apiKey: { type: 'apiKey', in: 'header', name: 'X-API-Key' },
+                    bearer: { type: 'http', scheme: 'bearer' },
+                },
+            },
+            security: [{ apiKey: [] }, { bearer: [] }],
+        };
+        this.sendJson(res, 200, spec);
     }
 
     private handleStatus(res: import('node:http').ServerResponse): void {

@@ -36,8 +36,30 @@ import {
 /** Metadata fetch timeout in milliseconds */
 const METADATA_FETCH_TIMEOUT_MS = 5_000;
 
+/** Minimum interval between metadata fetches (ms) — rate limiter */
+const METADATA_FETCH_INTERVAL_MS = 200;
+
+/** Maximum consecutive WebSocket errors before falling back to polling */
+const MAX_WS_ERRORS = 5;
+
+/** WebSocket reconnection delay (ms) */
+const WS_RECONNECT_DELAY_MS = 5_000;
+
 /** GitHub URL detection pattern */
-const GITHUB_URL_REGEX = /https?:\/\/(?:www\.)?github\.com\/[^\s"'<>)}\]]+/gi;
+const GITHUB_URL_REGEX = /https?:\/\/(?:www\.)?github\.com\/[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)?/gi;
+
+/** Well-known system programs to exclude when searching for the mint address */
+const SYSTEM_PROGRAMS = new Set([
+    '11111111111111111111111111111111',
+    'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',   // SPL Token
+    'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',   // Token-2022
+    'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',  // ATA
+    'SysvarRent111111111111111111111111111111111',
+    'SysvarC1ock11111111111111111111111111111111',
+    'ComputeBudget111111111111111111111111111111',
+    'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',   // Token Metadata
+    PUMP_PROGRAM_ID,
+]);
 
 // ============================================================================
 // Token Launch Monitor Class
@@ -56,6 +78,12 @@ export class TokenLaunchMonitor {
     /** Track processed signatures to avoid duplicate notifications */
     private processedSignatures = new Set<string>();
     private readonly MAX_PROCESSED_CACHE = 10_000;
+    /** Rate limiter: timestamp of last metadata fetch */
+    private lastMetadataFetchTime = 0;
+    /** Consecutive WebSocket errors for reconnection logic */
+    private wsErrorCount = 0;
+    /** Whether the monitor has been explicitly stopped */
+    private stopped = false;
 
     constructor(
         config: BotConfig,
@@ -67,6 +95,7 @@ export class TokenLaunchMonitor {
         this.programPubkey = new PublicKey(PUMP_PROGRAM_ID);
 
         this.state = {
+            errorsEncountered: 0,
             githubOnly: config.githubOnlyFilter,
             isRunning: false,
             lastSlot: 0,
@@ -121,6 +150,7 @@ export class TokenLaunchMonitor {
     }
 
     stop(): void {
+        this.stopped = true;
         this.state.isRunning = false;
 
         // Remove WebSocket subscription
@@ -136,7 +166,11 @@ export class TokenLaunchMonitor {
             this.pollTimer = undefined;
         }
 
-        log.info('Token launch monitor stopped');
+        log.info(
+            'Token launch monitor stopped (detected=%d, github=%d)',
+            this.state.tokensDetected,
+            this.state.tokensWithGithub,
+        );
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -152,13 +186,24 @@ export class TokenLaunchMonitor {
             },
         );
 
+        this.wsErrorCount = 0;
+
         this.wsSubscriptionId = this.wsConnection.onLogs(
             this.programPubkey,
             async (logInfo: Logs) => {
                 try {
                     await this.handleLogEvent(logInfo);
+                    this.wsErrorCount = 0; // Reset on success
                 } catch (err) {
                     log.error('Error handling token launch log event:', err);
+                    this.wsErrorCount++;
+                    if (this.wsErrorCount >= MAX_WS_ERRORS) {
+                        log.warn(
+                            'Too many WebSocket errors (%d), switching to polling',
+                            this.wsErrorCount,
+                        );
+                        await this.fallbackToPolling();
+                    }
                 }
             },
             'confirmed',
@@ -169,6 +214,26 @@ export class TokenLaunchMonitor {
             this.programPubkey.toBase58().slice(0, 8),
             this.wsSubscriptionId,
         );
+    }
+
+    /**
+     * Tear down the WebSocket subscription and switch to polling.
+     * Called when too many consecutive WS errors occur.
+     */
+    private async fallbackToPolling(): Promise<void> {
+        if (this.stopped || !this.state.isRunning) return;
+
+        // Clean up WS
+        if (this.wsConnection && this.wsSubscriptionId !== undefined) {
+            this.wsConnection
+                .removeOnLogsListener(this.wsSubscriptionId)
+                .catch(() => {});
+            this.wsSubscriptionId = undefined;
+        }
+
+        this.state.mode = 'polling';
+        this.startPolling();
+        log.info('Token launch monitor switched to polling mode');
     }
 
     private async handleLogEvent(logInfo: Logs): Promise<void> {
@@ -262,7 +327,11 @@ export class TokenLaunchMonitor {
 
             const { transaction, slot, blockTime } = tx;
 
-            // ── Verify this is a create instruction via discriminator ────
+            // ── Single pass: match discriminator AND parse instruction data ─
+            let name = '';
+            let symbol = '';
+            let metadataUri = '';
+            let mayhemMode = false;
             let isCreate = false;
 
             for (const ix of transaction.message.instructions) {
@@ -274,14 +343,21 @@ export class TokenLaunchMonitor {
 
                     if (programId !== PUMP_PROGRAM_ID) continue;
 
-                    if (this.matchCreateDiscriminator((ix as { data: string }).data)) {
+                    const parsed = this.parseCreateInstructionData(
+                        (ix as { data: string }).data,
+                    );
+                    if (parsed) {
                         isCreate = true;
+                        name = parsed.name;
+                        symbol = parsed.symbol;
+                        metadataUri = parsed.uri;
+                        mayhemMode = parsed.mayhemMode;
                         break;
                     }
                 }
             }
 
-            // Also check logs for the instruction keyword (fallback)
+            // Fallback: check logs for the instruction keyword
             if (!isCreate && tx.meta.logMessages) {
                 const logsJoined = tx.meta.logMessages.join('\n');
                 if (this.isCreateInstruction(logsJoined)) {
@@ -300,36 +376,7 @@ export class TokenLaunchMonitor {
             const creatorWallet = accountKeys[0] || '';
 
             // Mint address: the newly created token mint
-            // In createV2, the mint is typically account index 1 (after the user/creator)
             const mintAddress = this.findMintAddress(accountKeys);
-
-            // ── Extract token data from instruction ──────────────────────
-            let name = '';
-            let symbol = '';
-            let metadataUri = '';
-            let mayhemMode = false;
-
-            for (const ix of transaction.message.instructions) {
-                if ('data' in ix && 'programId' in ix) {
-                    const programId =
-                        typeof ix.programId === 'string'
-                            ? ix.programId
-                            : ix.programId.toBase58();
-
-                    if (programId !== PUMP_PROGRAM_ID) continue;
-
-                    const parsed = this.parseCreateInstructionData(
-                        (ix as { data: string }).data,
-                    );
-                    if (parsed) {
-                        name = parsed.name;
-                        symbol = parsed.symbol;
-                        metadataUri = parsed.uri;
-                        mayhemMode = parsed.mayhemMode;
-                        break;
-                    }
-                }
-            }
 
             // ── Fetch metadata and detect GitHub links ───────────────────
             let metadata: Record<string, unknown> | undefined;
@@ -380,6 +427,7 @@ export class TokenLaunchMonitor {
 
             const event: TokenLaunchEvent = {
                 creatorWallet,
+                description: (metadata?.description as string) || '',
                 githubUrls,
                 hasGithub,
                 mayhemMode,
@@ -415,10 +463,19 @@ export class TokenLaunchMonitor {
 
     /**
      * Check if transaction logs indicate a create instruction.
-     * Covers both `Create` and `CreateV2` Anchor instruction names.
+     *
+     * Matches "Instruction: Create" and "Instruction: CreateV2" but
+     * explicitly rejects false positives like "Instruction: CreatePool"
+     * or "Instruction: CreateIdempotent".
      */
     private isCreateInstruction(logsJoined: string): boolean {
-        return logsJoined.includes('Instruction: Create');
+        // Anchor logs the instruction name as "Program log: Instruction: <Name>"
+        return (
+            logsJoined.includes('Instruction: Create\n') ||
+            logsJoined.includes('Instruction: CreateV2') ||
+            // End-of-string match for last log line
+            logsJoined.endsWith('Instruction: Create')
+        );
     }
 
     /**
@@ -469,19 +526,19 @@ export class TokenLaunchMonitor {
             let offset = 8;
 
             // Read name (Borsh string: u32 LE length + bytes)
-            const name = this.readBorshString(bytes, offset);
-            if (!name) return null;
-            offset += 4 + name.length;
+            const nameResult = this.readBorshString(bytes, offset);
+            if (!nameResult) return null;
+            offset += nameResult.bytesConsumed;
 
             // Read symbol (Borsh string: u32 LE length + bytes)
-            const symbol = this.readBorshString(bytes, offset);
-            if (!symbol) return null;
-            offset += 4 + symbol.length;
+            const symbolResult = this.readBorshString(bytes, offset);
+            if (!symbolResult) return null;
+            offset += symbolResult.bytesConsumed;
 
             // Read uri (Borsh string: u32 LE length + bytes)
-            const uri = this.readBorshString(bytes, offset);
-            if (!uri) return null;
-            offset += 4 + uri.length;
+            const uriResult = this.readBorshString(bytes, offset);
+            if (!uriResult) return null;
+            offset += uriResult.bytesConsumed;
 
             let mayhemMode = false;
 
@@ -495,7 +552,12 @@ export class TokenLaunchMonitor {
                 }
             }
 
-            return { mayhemMode, name, symbol, uri };
+            return {
+                mayhemMode,
+                name: nameResult.value,
+                symbol: symbolResult.value,
+                uri: uriResult.value,
+            };
         } catch {
             return null;
         }
@@ -503,11 +565,15 @@ export class TokenLaunchMonitor {
 
     /**
      * Read a Borsh-encoded string (u32 LE length prefix + UTF-8 bytes).
+     *
+     * Returns the decoded string and the total number of bytes consumed
+     * (4 length-prefix bytes + the raw byte count), since multi-byte
+     * UTF-8 characters mean `string.length !== byteLength`.
      */
     private readBorshString(
         bytes: Uint8Array,
         offset: number,
-    ): string | null {
+    ): { value: string; bytesConsumed: number } | null {
         if (offset + 4 > bytes.length) return null;
 
         const len =
@@ -516,12 +582,14 @@ export class TokenLaunchMonitor {
             (bytes[offset + 2] << 16) |
             (bytes[offset + 3] << 24);
 
-        if (len < 0 || len > 1024) return null; // Sanity check
+        if (len < 0 || len > 4096) return null; // Sanity check
         if (offset + 4 + len > bytes.length) return null;
 
-        return Buffer.from(bytes.slice(offset + 4, offset + 4 + len)).toString(
+        const value = Buffer.from(bytes.slice(offset + 4, offset + 4 + len)).toString(
             'utf-8',
         );
+
+        return { bytesConsumed: 4 + len, value };
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -535,18 +603,6 @@ export class TokenLaunchMonitor {
      * We filter out well-known system programs and the Pump program itself.
      */
     private findMintAddress(accountKeys: string[]): string {
-        const SYSTEM_PROGRAMS = new Set([
-            '11111111111111111111111111111111',
-            'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',   // SPL Token
-            'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',   // Token-2022
-            'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',  // ATA
-            'SysvarRent111111111111111111111111111111111',
-            'SysvarC1ock11111111111111111111111111111111',
-            'ComputeBudget111111111111111111111111111111',
-            'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',   // Token Metadata
-            PUMP_PROGRAM_ID,
-        ]);
-
         // The mint is typically the second account (index 1) for createV2
         // but verify it's not a system program
         for (let i = 1; i < Math.min(accountKeys.length, 5); i++) {
@@ -557,7 +613,7 @@ export class TokenLaunchMonitor {
         }
 
         // Broader fallback
-        for (let i = 1; i < accountKeys.length; i++) {
+        for (let i = 5; i < accountKeys.length; i++) {
             const key = accountKeys[i];
             if (!SYSTEM_PROGRAMS.has(key) && key.length >= 32) {
                 return key;
@@ -572,14 +628,35 @@ export class TokenLaunchMonitor {
     // ──────────────────────────────────────────────────────────────────────
 
     /**
-     * Fetch token metadata from the given URI with a timeout.
+     * Fetch token metadata from the given URI with a timeout and rate limiting.
      *
      * Uses Node's built-in `fetch` (available in Node 18+).
+     * Rewrites IPFS URIs through the configured gateway.
      * Returns null if the fetch fails or times out.
      */
     private async fetchMetadata(
         uri: string,
     ): Promise<Record<string, unknown> | null> {
+        // ── Rate limiting ────────────────────────────────────────────────
+        const now = Date.now();
+        const elapsed = now - this.lastMetadataFetchTime;
+        if (elapsed < METADATA_FETCH_INTERVAL_MS) {
+            await new Promise((r) => setTimeout(r, METADATA_FETCH_INTERVAL_MS - elapsed));
+        }
+        this.lastMetadataFetchTime = Date.now();
+
+        // ── Rewrite IPFS URIs through the configured gateway ─────────────
+        let fetchUrl = uri;
+        if (uri.startsWith('ipfs://')) {
+            const cid = uri.slice('ipfs://'.length);
+            fetchUrl = `${this.config.ipfsGateway}${cid}`;
+        } else if (uri.includes('/ipfs/') && this.config.ipfsGateway) {
+            // Rewrite known IPFS gateways to the configured one
+            const ipfsIdx = uri.indexOf('/ipfs/');
+            const path = uri.slice(ipfsIdx + '/ipfs/'.length);
+            fetchUrl = `${this.config.ipfsGateway}${path}`;
+        }
+
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(
@@ -587,7 +664,7 @@ export class TokenLaunchMonitor {
                 METADATA_FETCH_TIMEOUT_MS,
             );
 
-            const response = await fetch(uri, {
+            const response = await fetch(fetchUrl, {
                 headers: {
                     'Accept': 'application/json',
                     'User-Agent': 'PumpFun-Monitor/1.0',
@@ -600,7 +677,7 @@ export class TokenLaunchMonitor {
             if (!response.ok) {
                 log.debug(
                     'Metadata fetch failed for %s: HTTP %d',
-                    uri.slice(0, 60),
+                    fetchUrl.slice(0, 80),
                     response.status,
                 );
                 return null;
@@ -610,11 +687,11 @@ export class TokenLaunchMonitor {
             return json;
         } catch (err) {
             if (err instanceof Error && err.name === 'AbortError') {
-                log.debug('Metadata fetch timed out for %s', uri.slice(0, 60));
+                log.debug('Metadata fetch timed out for %s', fetchUrl.slice(0, 80));
             } else {
                 log.debug(
                     'Metadata fetch error for %s: %s',
-                    uri.slice(0, 60),
+                    fetchUrl.slice(0, 80),
                     err instanceof Error ? err.message : String(err),
                 );
             }
@@ -628,21 +705,27 @@ export class TokenLaunchMonitor {
 
     /**
      * Extract GitHub URLs from all string fields in the metadata object.
+     * Recursively checks nested objects (e.g. `extensions`, `attributes`).
      */
     private extractGithubUrls(metadata: Record<string, unknown>): string[] {
         const urls = new Set<string>();
 
-        for (const value of Object.values(metadata)) {
-            if (typeof value === 'string') {
-                const matches = value.match(GITHUB_URL_REGEX);
-                if (matches) {
-                    for (const match of matches) {
-                        urls.add(match);
+        const scan = (obj: Record<string, unknown>): void => {
+            for (const value of Object.values(obj)) {
+                if (typeof value === 'string') {
+                    const matches = value.match(GITHUB_URL_REGEX);
+                    if (matches) {
+                        for (const match of matches) {
+                            urls.add(match);
+                        }
                     }
+                } else if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    scan(value as Record<string, unknown>);
                 }
             }
-        }
+        };
 
+        scan(metadata);
         return [...urls];
     }
 

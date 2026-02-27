@@ -1,11 +1,13 @@
 /**
- * PumpFun Telegram Bot — Entry Point
+ * PumpFun Telegram Bot + REST API — Entry Point
  *
- * Wires together config → monitor → bot and starts everything.
+ * Wires together config → monitor → bot → API and starts everything.
  *
  * Run:
- *   npm run dev      (tsx watch, hot reload)
- *   npm run build && npm start   (production)
+ *   npm run dev                 (bot only, tsx watch)
+ *   ENABLE_API=true npm run dev (bot + API)
+ *   npm run api                 (API-only, no Telegram bot)
+ *   npm run build && npm start  (production)
  */
 
 import { loadConfig } from './config.js';
@@ -61,7 +63,9 @@ async function main(): Promise<void> {
     let launchMonitor: TokenLaunchMonitorLike | undefined;
     try {
         const { TokenLaunchMonitor } = await import('./token-launch-monitor.js');
-        launchMonitor = new TokenLaunchMonitor(config, async (event: TokenLaunchEvent) => {            if (!bot) return;            const monitors = getActiveMonitors();
+        launchMonitor = new TokenLaunchMonitor(config, async (event: TokenLaunchEvent) => {
+            if (!bot) return;
+            const monitors = getActiveMonitors();
             for (const entry of monitors) {
                 // Apply github filter
                 if (entry.githubOnly && !event.hasGithub) continue;
@@ -115,7 +119,7 @@ async function main(): Promise<void> {
     await monitor.start();
 
     // ── Start token launch monitor (if available and enabled) ────────────
-    if (launchMonitor && (config as unknown as Record<string, unknown>).enableLaunchMonitor) {
+    if (launchMonitor && config.enableLaunchMonitor) {
         try {
             await (launchMonitor as unknown as { start(): Promise<void> }).start();
             log.info('Token launch monitor started');

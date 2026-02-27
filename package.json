@@ -1,18 +1,29 @@
 {
   "name": "@pump-fun/pump-sdk",
   "version": "1.28.0",
-  "description": "Pump Bonding Curve SDK",
-  "keywords": [],
-  "homepage": "https://github.com/pump-fun/pump-sdk#readme",
+  "description": "TypeScript SDK for the Pump protocol on Solana — token creation, bonding curves, AMM pools, fee sharing, and volume rewards",
+  "keywords": [
+    "solana",
+    "pump",
+    "pumpfun",
+    "bonding-curve",
+    "token",
+    "amm",
+    "defi",
+    "sdk",
+    "typescript",
+    "mcp"
+  ],
+  "homepage": "https://github.com/nirholas/pump-fun-sdk#readme",
   "bugs": {
-    "url": "https://github.com/pump-fun/pump-sdk/issues"
+    "url": "https://github.com/nirholas/pump-fun-sdk/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pump-fun/pump-sdk.git"
+    "url": "git+https://github.com/nirholas/pump-fun-sdk.git"
   },
   "license": "MIT",
-  "author": "pump-fun",
+  "author": "nirholas",
   "main": "./dist/index.js",
   "module": "./dist/esm/index.js",
   "exports": {
@@ -37,15 +48,16 @@
     "clean": "rm -rf dist",
     "test": "jest",
     "lint": "eslint --cache --quiet \"${@:-.}\"",
-    "lint:fix": "eslint --cache --fix --quiet \"${@:-.}\""
+    "lint:fix": "eslint --cache --fix --quiet \"${@:-.}\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.31.1",
     "@pump-fun/pump-swap-sdk": "^1.13.0",
     "@solana/spl-token": "^0.4.13",
     "@solana/web3.js": "^1.98.2",
-    "bn.js": "^5.2.2",
-    "undici-types": "^6.20.0"
+    "bn.js": "^5.2.2"
   },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
@@ -72,6 +84,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-unicorn": "^54.0.0",
     "globals": "^15.12.0",
+    "undici-types": "^6.20.0",
     "typescript-eslint": "^8.29.1"
   },
   "publishConfig": {

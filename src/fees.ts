@@ -84,6 +84,9 @@ export function calculateFeeTier({
   marketCap: BN;
 }): Fees {
   const firstTier = feeTiers[0];
+  if (!firstTier) {
+    throw new Error("feeTiers must not be empty");
+  }
 
   if (marketCap.lt(firstTier.marketCapLamportsThreshold)) {
     return firstTier.fees;
@@ -115,9 +118,9 @@ export function getFeeRecipient(
       global.reservedFeeRecipient,
       ...global.reservedFeeRecipients,
     ];
-    return feeRecipients[Math.floor(Math.random() * feeRecipients.length)];
+    return feeRecipients[Math.floor(Math.random() * feeRecipients.length)]!;
   }
   const feeRecipients = [global.feeRecipient, ...global.feeRecipients];
-  return feeRecipients[Math.floor(Math.random() * feeRecipients.length)];
+  return feeRecipients[Math.floor(Math.random() * feeRecipients.length)]!;
 }
 

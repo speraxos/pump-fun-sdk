@@ -7,12 +7,33 @@
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<title>PumpOS</title>
+	<meta name="description" content="PumpOS — Web desktop for the Pump Fun SDK. Token creation, bonding curves, DeFi tools, and wallet management on Solana.">
+	<meta name="theme-color" content="#00e87b">
+	<meta name="color-scheme" content="dark">
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="PumpOS — Solana DeFi Desktop">
+	<meta property="og:description" content="Web-native desktop for the Pump Fun SDK. Create tokens, trade bonding curves, and manage DeFi on Solana.">
+	<meta property="og:image" content="/pump.png">
+	<meta property="og:url" content="https://pumpos.app">
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="PumpOS — Solana DeFi Desktop">
+	<meta name="twitter:description" content="Web-native desktop for the Pump Fun SDK. Create tokens, trade bonding curves, and manage DeFi on Solana.">
+	<meta name="twitter:image" content="/pump.png">
+	<title>PumpOS — Solana DeFi Desktop</title>
 	<script src="scripts/readwrite.js" defer></script>
 	<script src="system32.js" defer></script>
+	<!-- Preconnect to external origins for faster loading -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net">
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+	<!-- Critical CSS -->
 	<link rel="stylesheet" href="pump.css">
 	<link rel="stylesheet" href="style.css">
-	<link rel="icon" type="image/webp" href="pump.png">
+	<link rel="icon" type="image/png" href="pump.png">
+	<link rel="apple-touch-icon" href="pump.png">
 	<!--PumpOS scripts-->
 	<script src="scripts/featureflags.js"></script>
 	<script src="scripts/utility.js"></script>
@@ -46,8 +67,8 @@
 	</script>
 	<!--PWA Manifest-->
 	<link href="webmanifest.json" rel="manifest">
-	<!--Google Icons-->
-	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+	<!--Google Icons — loaded async to prevent render blocking-->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 	<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDCY366HWB"></script>
 <script>
@@ -82,6 +103,7 @@
 </head>
 
 <body>
+	<a href="#desktop" class="skip-link">Skip to Desktop</a>
 	<div id="main">
 		<div class="container2">
 			<div id="bgimage">
@@ -185,16 +207,14 @@
 			</script>
 
 			<noscript>
-				<h1>I can't even know what time is it now.<br>Blame your browser for it.</h1>
-				<p>Well your browser seems to be messing around saying you turned off JS. Javascript is required for the functioning of the modern web. </p>
-				<b>If you have set JS to be disabled:</b>
-				<p>PumpOS requires JS to run.
-				<li>You can always <b><a href="https://www.larimer.gov/it/enable-javascript" style="color:white;"> turn JS back on</a>.</b>
-				</li>
-				<li>Or try a different browser.
-				</li>
-				</ul>
-			</p>
+				<div style="text-align:center;padding:3rem;font-family:sans-serif;color:#fff;background:#0a0a0a;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+					<h1 style="color:#00e87b;">JavaScript Required</h1>
+					<p>PumpOS is a web desktop that requires JavaScript to run.</p>
+					<ul style="text-align:left;display:inline-block;">
+						<li>Enable JavaScript in your browser settings, then reload.</li>
+						<li>Or try a modern browser like Chrome, Firefox, or Edge.</li>
+					</ul>
+				</div>
 			</noscript>
 
 			<div class="layer44 ctxAvail" id="desktop">

@@ -45,9 +45,7 @@
 
 @media (max-width: 768px) {
 	:root {
-		----time1: .5s;
-	}
-}
+                --time1: .5s;
 
 ::-webkit-scrollbar {
 	width: .5rem;
@@ -827,5 +825,70 @@ textarea::placeholder {
 @media (max-width: 768px) {
 	.pump-sidebar {
 		display: none;
+	}
+}
+
+/* ═══════════════════════════════════════════
+   Focus & Accessibility
+   ═══════════════════════════════════════════ */
+
+:focus-visible {
+	outline: 2px solid var(--col-bgh);
+	outline-offset: 2px;
+}
+
+/* skip-link for keyboard users */
+.skip-link {
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 0.6rem 1.2rem;
+	background: var(--col-bgh);
+	color: var(--col-txth);
+	font-weight: 800;
+	border-radius: 0 0 8px 8px;
+	z-index: 10000;
+	text-decoration: none;
+	transition: top 0.2s;
+}
+
+.skip-link:focus {
+	top: 0;
+}
+
+/* ═══════════════════════════════════════════
+   Reduced Motion — respect user preference
+   ═══════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* ═══════════════════════════════════════════
+   Print — clean output
+   ═══════════════════════════════════════════ */
+
+@media print {
+	.pump-sidebar,
+	#pumpnav,
+	#quick-actions-panel,
+	#notification-center,
+	#lock-screen,
+	#command-palette,
+	.wallet-dropdown,
+	.wallet-chain-dropdown {
+		display: none !important;
+	}
+	body {
+		background: #fff !important;
+		color: #000 !important;
 	}
 }

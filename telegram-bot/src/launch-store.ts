@@ -22,6 +22,8 @@ export interface LaunchMonitorEntry {
     active: boolean;
     /** When activated (unix ms) */
     activatedAt: number;
+    /** When deactivated (unix ms), 0 if still active */
+    deactivatedAt: number;
 }
 
 // ============================================================================
@@ -40,19 +42,32 @@ export function activateMonitor(
     userId: number,
     githubOnly: boolean,
 ): LaunchMonitorEntry {
+    const existing = monitors.get(chatId);
+    const wasActive = existing?.active ?? false;
+
     const entry: LaunchMonitorEntry = {
         activatedAt: Date.now(),
         activatedBy: userId,
         active: true,
         chatId,
+        deactivatedAt: 0,
         githubOnly,
     };
     monitors.set(chatId, entry);
-    log.info(
-        'Launch monitor activated for chat %d (githubOnly=%s)',
-        chatId,
-        githubOnly,
-    );
+
+    if (wasActive) {
+        log.info(
+            'Launch monitor updated for chat %d (githubOnly=%s)',
+            chatId,
+            githubOnly,
+        );
+    } else {
+        log.info(
+            'Launch monitor activated for chat %d (githubOnly=%s)',
+            chatId,
+            githubOnly,
+        );
+    }
     return entry;
 }
 
@@ -61,6 +76,7 @@ export function deactivateMonitor(chatId: number): boolean {
     const entry = monitors.get(chatId);
     if (!entry || !entry.active) return false;
     entry.active = false;
+    entry.deactivatedAt = Date.now();
     log.info('Launch monitor deactivated for chat %d', chatId);
     return true;
 }
@@ -68,6 +84,15 @@ export function deactivateMonitor(chatId: number): boolean {
 /** Return all active monitor entries. */
 export function getActiveMonitors(): LaunchMonitorEntry[] {
     return Array.from(monitors.values()).filter((e) => e.active);
+}
+
+/** Return the number of active monitors. */
+export function getActiveMonitorCount(): number {
+    let count = 0;
+    for (const e of monitors.values()) {
+        if (e.active) count++;
+    }
+    return count;
 }
 
 /** Check whether a chat has an active monitor. */

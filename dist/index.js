@@ -1,3 +1,4 @@
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -7241,6 +7242,9 @@ function calculateFeeTier({
   marketCap
 }) {
   const firstTier = feeTiers[0];
+  if (!firstTier) {
+    throw new Error("feeTiers must not be empty");
+  }
   if (marketCap.lt(firstTier.marketCapLamportsThreshold)) {
     return firstTier.fees;
   }
@@ -7408,7 +7412,8 @@ function getSellSolAmountFromTokenAmount({
 }
 function getStaticRandomFeeRecipient() {
   const randomIndex = Math.floor(Math.random() * CURRENT_FEE_RECIPIENTS.length);
-  return new import_web32.PublicKey(CURRENT_FEE_RECIPIENTS[randomIndex]);
+  const recipient = CURRENT_FEE_RECIPIENTS[randomIndex];
+  return new import_web32.PublicKey(recipient);
 }
 var CURRENT_FEE_RECIPIENTS = [
   "62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV",
@@ -17758,12 +17763,6 @@ function currentDayTokens(globalVolumeAccumulator, userVolumeAccumulator, curren
 // src/onlineSdk.ts
 var OFFLINE_PUMP_PROGRAM = getPumpProgram(null);
 var OnlinePumpSdk = class {
-  connection;
-  pumpProgram;
-  offlinePumpProgram;
-  pumpAmmProgram;
-  pumpAmmSdk;
-  pumpAmmAdminSdk;
   constructor(connection) {
     this.connection = connection;
     this.pumpProgram = getPumpProgram(connection);
@@ -18051,7 +18050,6 @@ var OnlinePumpSdk = class {
   async getMinimumDistributableFee(mint, simulationSigner = new import_web33.PublicKey(
     "UqN2p5bAzBqYdHXcgB6WLtuVrdvmy9JSAtgqZb3CMKw"
   )) {
-    var _a;
     const sharingConfigPubkey = feeSharingConfigPda(mint);
     const poolAddress = canonicalPumpPoolPda(mint);
     const coinCreatorVaultAuthority = (0, import_pump_swap_sdk.coinCreatorVaultAuthorityPda)(sharingConfigPubkey);
@@ -18102,7 +18100,7 @@ var OnlinePumpSdk = class {
       canDistribute: false
     };
     if (!result.value.err) {
-      const [data, encoding] = ((_a = result.value.returnData) == null ? void 0 : _a.data) ?? [];
+      const [data, encoding] = result.value.returnData?.data ?? [];
       if (data) {
         const buffer = Buffer.from(data, encoding);
         minimumDistributableFee = PUMP_SDK.decodeMinimumDistributableFee(buffer);
@@ -18203,9 +18201,6 @@ var PUMP_TOKEN_MINT = new import_web34.PublicKey(
 );
 var MAX_SHAREHOLDERS = 10;
 var PumpSdk = class {
-  offlinePumpProgram;
-  offlinePumpFeeProgram;
-  offlinePumpAmmProgram;
   constructor() {
     this.offlinePumpProgram = OFFLINE_PUMP_PROGRAM;
     this.offlinePumpFeeProgram = new import_anchor.Program(
@@ -18996,3 +18991,4 @@ var ammCreatorVaultPda = (creator) => {
   totalUnclaimedTokens,
   userVolumeAccumulatorPda
 });
+//# sourceMappingURL=index.js.map

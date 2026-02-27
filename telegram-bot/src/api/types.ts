@@ -94,6 +94,10 @@ export interface HealthResponse {
         mode: string;
         claimsDetected: number;
     };
+    watches: {
+        total: number;
+        active: number;
+    };
     timestamp: string;
 }
 

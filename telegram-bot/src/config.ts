@@ -52,8 +52,12 @@ export function loadConfig(): BotConfig {
     const githubOnlyFilter =
         (process.env.GITHUB_ONLY_FILTER || 'false').toLowerCase() === 'true';
 
-    const ipfsGateway =
+    let ipfsGateway =
         process.env.IPFS_GATEWAY || 'https://cf-ipfs.com/ipfs/';
+    // Ensure gateway ends with a slash for clean concatenation
+    if (!ipfsGateway.endsWith('/')) {
+        ipfsGateway += '/';
+    }
 
     return {
         allowedUserIds,

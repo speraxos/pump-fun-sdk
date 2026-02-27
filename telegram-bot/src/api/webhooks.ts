@@ -2,15 +2,22 @@
  * PumpFun API — Webhook Dispatcher
  *
  * Delivers claim events to registered webhook URLs with retry logic.
- * Uses exponential backoff and a concurrent delivery queue.
+ * Uses exponential backoff, HMAC-SHA256 payload signing, and concurrent delivery.
+ *
+ * Receivers can verify webhooks by:
+ *   1. Read the `X-PumpFun-Signature` header
+ *   2. HMAC-SHA256 the raw body with WEBHOOK_SECRET
+ *   3. Compare using timingSafeEqual
  */
 
+import { createHmac } from 'node:crypto';
 import { log } from '../logger.js';
 import type { FeeClaimEvent } from '../types.js';
 import type { ApiWatchEntry, ClaimResponse } from './types.js';
 
 const MAX_RETRIES = 3;
 const BASE_DELAY_MS = 1_000;
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '';
 
 /** Dispatch a claim event to all matching webhook URLs. */
 export async function dispatchWebhooks(
@@ -49,14 +56,27 @@ async function deliverWithRetry(
     attempt = 0,
 ): Promise<void> {
     try {
+        const body = JSON.stringify(payload);
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'PumpFun-API/1.0',
+            'X-PumpFun-Event': 'claim.detected',
+            'X-PumpFun-Timestamp': Date.now().toString(),
+        };
+
+        // HMAC-SHA256 signature so receivers can verify authenticity
+        if (WEBHOOK_SECRET) {
+            const sig = createHmac('sha256', WEBHOOK_SECRET)
+                .update(body)
+                .digest('hex');
+            headers['X-PumpFun-Signature'] = `sha256=${sig}`;
+        }
+
         const response = await fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'PumpFun-API/1.0',
-                'X-PumpFun-Event': 'claim.detected',
-            },
-            body: JSON.stringify(payload),
+            headers,
+            body,
             signal: AbortSignal.timeout(10_000),
         });
 

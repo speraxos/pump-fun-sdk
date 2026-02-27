@@ -149,6 +149,7 @@ export function formatStatus(
     state: MonitorState,
     watchCount: number,
     launchState?: TokenLaunchMonitorState,
+    activeMonitorCount?: number,
 ): string {
     const uptime = state.startedAt
         ? formatDuration(Date.now() - state.startedAt)
@@ -172,7 +173,7 @@ export function formatStatus(
         `⏱️ <b>Uptime:</b> ${uptime}`;
 
     if (launchState) {
-        text += `\n\n${formatMonitorStatus(launchState)}`;
+        text += `\n\n${formatMonitorStatus(launchState, activeMonitorCount)}`;
     }
 
     return text;
@@ -231,26 +232,31 @@ export function formatTokenLaunchNotification(event: TokenLaunchEvent): string {
     const creator = shortAddr(event.creatorWallet);
     const mint = shortAddr(event.mintAddress);
 
-    const githubLine = event.hasGithub && event.githubUrls.length > 0
-        ? `🌐 <b>GitHub:</b> ${event.githubUrls.map((l: string) => `<a href="${escapeHtml(l)}">${escapeHtml(l)}</a>`).join(', ')}\n`
-        : '';
+    const solscanTx = `https://solscan.io/tx/${event.txSignature}`;
+    const solscanMint = `https://solscan.io/token/${event.mintAddress}`;
+    const solscanCreator = `https://solscan.io/account/${event.creatorWallet}`;
+    const pumpfun = `https://pump.fun/coin/${event.mintAddress}`;
+
+    let githubSection = '';
+    if (event.hasGithub && event.githubUrls.length > 0) {
+        const githubLinks = event.githubUrls
+            .map((url: string) => `<a href="${escapeHtml(url)}">${escapeHtml(url)}</a>`)
+            .join('\n  ');
+        githubSection = `\n🌐 <b>GitHub:</b> ${githubLinks}\n`;
+    }
 
     const mayhemIcon = event.mayhemMode ? '✅' : '❌';
     const timeStr = event.timestamp
         ? formatTime(event.timestamp)
         : new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
-    const solscanTx = `https://solscan.io/tx/${event.txSignature}`;
-    const solscanMint = `https://solscan.io/token/${event.mintAddress}`;
-    const pumpfun = `https://pump.fun/coin/${event.mintAddress}`;
-
     return (
         `🚀 <b>New Token Launched!</b>\n\n` +
         `🪙 <b>Name:</b> ${name} (${symbol})\n` +
-        `👤 <b>Creator:</b> <code>${creator}</code>\n` +
-        `🔗 <b>Mint:</b> <code>${mint}</code>\n\n` +
-        githubLine +
-        `⚡ <b>Mayhem Mode:</b> ${mayhemIcon}\n` +
+        `👤 <b>Creator:</b> <a href="${solscanCreator}"><code>${creator}</code></a>\n` +
+        `🔗 <b>Mint:</b> <a href="${solscanMint}"><code>${mint}</code></a>\n` +
+        githubSection +
+        `\n⚡ <b>Mayhem Mode:</b> ${mayhemIcon}\n` +
         `🕐 <b>Time:</b> ${timeStr}\n\n` +
         `🔗 <a href="${solscanTx}">View TX</a> · ` +
         `<a href="${solscanMint}">Solscan</a> · ` +
@@ -259,12 +265,14 @@ export function formatTokenLaunchNotification(event: TokenLaunchEvent): string {
 }
 
 /** Confirmation message when /monitor is activated. */
-export function formatMonitorActivated(githubOnly: boolean): string {
+export function formatMonitorActivated(githubOnly: boolean, activeCount: number): string {
     const mode = githubOnly ? 'GitHub-linked only' : 'All launches';
     return (
         `✅ <b>Token Launch Monitor Activated!</b>\n\n` +
         `<b>Mode:</b> ${mode}\n` +
+        `<b>Active subscribers:</b> ${activeCount}\n\n` +
         `You'll receive real-time notifications for new PumpFun token launches.\n\n` +
+        `💡 Switch mode: <code>/monitor</code> (all) or <code>/monitor github</code> (filtered)\n` +
         `Stop with: /stopmonitor`
     );
 }
@@ -279,19 +287,29 @@ export function formatMonitorDeactivated(): string {
 }
 
 /** Stats display for the token launch monitor. */
-export function formatMonitorStatus(state: TokenLaunchMonitorState): string {
+export function formatMonitorStatus(state: TokenLaunchMonitorState, activeSubscribers?: number): string {
     const uptime = state.startedAt
         ? formatDuration(Date.now() - state.startedAt)
         : 'not started';
 
-    return (
+    const githubPct = state.tokensDetected > 0
+        ? ` (${((state.tokensWithGithub / state.tokensDetected) * 100).toFixed(1)}%)`
+        : '';
+
+    let text =
         `📡 <b>Token Launch Monitor</b>\n` +
         `⚡ <b>Running:</b> ${state.isRunning ? '✅ Yes' : '❌ No'}\n` +
+        `🔌 <b>Mode:</b> ${state.mode}\n` +
         `🚀 <b>Tokens Detected:</b> ${state.tokensDetected}\n` +
-        `🌐 <b>With GitHub:</b> ${state.tokensWithGithub}\n` +
+        `🌐 <b>With GitHub:</b> ${state.tokensWithGithub}${githubPct}\n` +
         `📦 <b>Last Slot:</b> ${state.lastSlot || 'N/A'}\n` +
-        `⏱️ <b>Uptime:</b> ${uptime}`
-    );
+        `⏱️ <b>Uptime:</b> ${uptime}`;
+
+    if (activeSubscribers !== undefined) {
+        text += `\n👥 <b>Subscribers:</b> ${activeSubscribers}`;
+    }
+
+    return text;
 }
 
 // ============================================================================

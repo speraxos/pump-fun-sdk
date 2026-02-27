@@ -211,7 +211,8 @@ export function getSellSolAmountFromTokenAmount({
 
 export function getStaticRandomFeeRecipient(): PublicKey {
   const randomIndex = Math.floor(Math.random() * CURRENT_FEE_RECIPIENTS.length);
-  return new PublicKey(CURRENT_FEE_RECIPIENTS[randomIndex]);
+  const recipient = CURRENT_FEE_RECIPIENTS[randomIndex]!;
+  return new PublicKey(recipient);
 }
 
 const CURRENT_FEE_RECIPIENTS = [
