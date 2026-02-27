@@ -74,7 +74,7 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Trading &nbsp;·
 - [Live Dashboards](#-live-dashboards) — Browser-based monitoring
 - [MCP Server](#-mcp-server) — 47+ tools for AI agents
 - [Telegram Bot](#-telegram-bot--api) — Fee claim & CTO alerts
-- [PumpOS Web Desktop](#-pumpos-web-desktop) — 143+ Pump-Store apps
+- [PumpOS Web Desktop](#-pumpos-web-desktop) — 169 Pump-Store apps
 - [x402 Payments](#-x402-payment-protocol) — HTTP 402 micropayments
 - [DeFi Agents](#-defi-agents) — 58 production-ready AI agent definitions
 - [Lair Platform](#-lair-telegram-platform) — Unified DeFi Telegram bot

@@ -394,14 +394,18 @@ const closeIx = await PUMP_SDK.closeUserVolumeAccumulator(wallet.publicKey);
 ## Full Lifecycle Summary
 
 ```
-1. createV2Instruction()           → Token on bonding curve
-2. buyInstructions()               → Buy tokens, price increases
-3. bondingCurveMarketCap()         → Monitor price & market cap
-4. sellInstructions()              → Sell tokens, price decreases
-5. migrateInstruction()            → Graduate to AMM pool
-6. collectCoinCreatorFeeInstructions()  → Collect creator fees
-7. createFeeSharingConfig()        → Set up fee sharing
-8. claimTokenIncentivesBothPrograms()   → Claim volume rewards
+ 1. createV2Instruction()                → Token on bonding curve
+ 2. buyInstructions()                    → Buy tokens, price increases
+ 3. bondingCurveMarketCap()              → Monitor price & market cap
+ 4. sellInstructions()                   → Sell tokens, price decreases
+ 5. migrateInstruction()                 → Graduate to AMM pool
+5b. ammBuyInstruction() / ammSellInstruction()  → Trade on AMM
+5c. ammDepositInstruction()              → Provide liquidity
+ 6. collectCoinCreatorFeeInstructions()  → Collect creator fees
+ 7. createFeeSharingConfig()             → Set up fee sharing
+ 8. claimTokenIncentivesBothPrograms()   → Claim volume rewards
+ 9. claimCashbackInstruction()           → Claim cashback (Pump + AMM)
+10. createSocialFeePdaInstruction()      → Social fee integration
 ```
 
 Each step builds `TransactionInstruction[]` — you combine them into transactions and sign with your wallet.
