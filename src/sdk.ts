@@ -1337,7 +1337,7 @@ export class PumpSdk {
       tokenProgram,
     );
     return await this.offlinePumpProgram.methods
-      .buyExactSolIn(solAmount, minTokenAmount)
+      .buyExactSolIn(solAmount, minTokenAmount, { 0: true })
       .accountsPartial({
         feeRecipient,
         mint,
@@ -1431,42 +1431,33 @@ export class PumpSdk {
   // ─── Creator Management ─────────────────────────────────────────────
 
   /**
-   * Migrate bonding curve creator to a new address.
+   * Migrate bonding curve creator — updates creator based on fee sharing config.
    */
   async migrateBondingCurveCreatorInstruction({
-    authority,
     mint,
-    newCreator,
   }: {
-    authority: PublicKey;
     mint: PublicKey;
-    newCreator: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpProgram.methods
-      .migrateBondingCurveCreator(newCreator)
+      .migrateBondingCurveCreator()
       .accountsPartial({
-        authority,
         mint,
+        sharingConfig: feeSharingConfigPda(mint),
       })
       .instruction();
   }
 
   /**
-   * Set the Metaplex creator metadata for a token.
+   * Set the Metaplex creator metadata for a token from bonding curve.
    */
   async setMetaplexCreatorInstruction({
-    authority,
     mint,
-    creator,
   }: {
-    authority: PublicKey;
     mint: PublicKey;
-    creator: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpProgram.methods
-      .setMetaplexCreator(creator)
+      .setMetaplexCreator()
       .accountsPartial({
-        authority,
         mint,
       })
       .instruction();
@@ -1477,13 +1468,13 @@ export class PumpSdk {
    */
   async setReservedFeeRecipientsInstruction({
     authority,
-    recipients,
+    whitelistPda,
   }: {
     authority: PublicKey;
-    recipients: PublicKey[];
+    whitelistPda: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpProgram.methods
-      .setReservedFeeRecipients(recipients)
+      .setReservedFeeRecipients(whitelistPda)
       .accountsPartial({
         authority,
       })
@@ -1501,9 +1492,10 @@ export class PumpSdk {
     newAuthority: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpProgram.methods
-      .updateGlobalAuthority(newAuthority)
+      .updateGlobalAuthority()
       .accountsPartial({
         authority,
+        newAuthority,
       })
       .instruction();
   }
@@ -1539,12 +1531,12 @@ export class PumpSdk {
       TOKEN_PROGRAM_ID,
     );
     return await this.offlinePumpAmmProgram.methods
-      .buy(baseAmountOut, maxQuoteAmountIn)
+      .buy(baseAmountOut, maxQuoteAmountIn, { 0: true })
       .accountsPartial({
         user,
         pool,
-        userBaseAccount: userBaseAta,
-        userQuoteAccount: userQuoteAta,
+        userBaseTokenAccount: userBaseAta,
+        userQuoteTokenAccount: userQuoteAta,
       })
       .instruction();
   }
@@ -1578,12 +1570,12 @@ export class PumpSdk {
       TOKEN_PROGRAM_ID,
     );
     return await this.offlinePumpAmmProgram.methods
-      .buyExactQuoteIn(quoteAmountIn, minBaseAmountOut)
+      .buyExactQuoteIn(quoteAmountIn, minBaseAmountOut, { 0: true })
       .accountsPartial({
         user,
         pool,
-        userBaseAccount: userBaseAta,
-        userQuoteAccount: userQuoteAta,
+        userBaseTokenAccount: userBaseAta,
+        userQuoteTokenAccount: userQuoteAta,
       })
       .instruction();
   }
@@ -1621,8 +1613,8 @@ export class PumpSdk {
       .accountsPartial({
         user,
         pool,
-        userBaseAccount: userBaseAta,
-        userQuoteAccount: userQuoteAta,
+        userBaseTokenAccount: userBaseAta,
+        userQuoteTokenAccount: userQuoteAta,
       })
       .instruction();
   }
@@ -1658,12 +1650,12 @@ export class PumpSdk {
       TOKEN_PROGRAM_ID,
     );
     return await this.offlinePumpAmmProgram.methods
-      .deposit(maxBaseAmountIn, maxQuoteAmountIn, minLpTokenAmountOut)
+      .deposit(minLpTokenAmountOut, maxBaseAmountIn, maxQuoteAmountIn)
       .accountsPartial({
         user,
         pool,
-        userBaseAccount: userBaseAta,
-        userQuoteAccount: userQuoteAta,
+        userBaseTokenAccount: userBaseAta,
+        userQuoteTokenAccount: userQuoteAta,
       })
       .instruction();
   }
@@ -1703,29 +1695,28 @@ export class PumpSdk {
       .accountsPartial({
         user,
         pool,
-        userBaseAccount: userBaseAta,
-        userQuoteAccount: userQuoteAta,
+        userBaseTokenAccount: userBaseAta,
+        userQuoteTokenAccount: userQuoteAta,
       })
       .instruction();
   }
 
   /**
-   * Migrate AMM pool coin creator to a new address.
+   * Migrate AMM pool coin creator — updates the pool's creator
+   * based on the fee sharing config.
    */
   async ammMigratePoolCoinCreatorInstruction({
-    authority,
     pool,
-    newCreator,
+    mint,
   }: {
-    authority: PublicKey;
     pool: PublicKey;
-    newCreator: PublicKey;
+    mint: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpAmmProgram.methods
-      .migratePoolCoinCreator(newCreator)
+      .migratePoolCoinCreator()
       .accountsPartial({
-        authority,
         pool,
+        sharingConfig: feeSharingConfigPda(mint),
       })
       .instruction();
   }
@@ -1734,17 +1725,15 @@ export class PumpSdk {
    * Transfer creator fees from AMM pool to the Pump program.
    */
   async ammTransferCreatorFeesToPumpInstruction({
-    pool,
-    mint,
+    coinCreator,
   }: {
-    pool: PublicKey;
-    mint: PublicKey;
+    coinCreator: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpAmmProgram.methods
       .transferCreatorFeesToPump()
       .accountsPartial({
-        pool,
-        mint,
+        coinCreator,
+        pumpCreatorVault: creatorVaultPda(coinCreator),
       })
       .instruction();
   }
@@ -1754,37 +1743,32 @@ export class PumpSdk {
    */
   async ammCollectCoinCreatorFeeInstruction({
     creator,
-    pool,
   }: {
     creator: PublicKey;
-    pool: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpAmmProgram.methods
       .collectCoinCreatorFee()
       .accountsPartial({
         coinCreator: creator,
-        pool,
       })
       .instruction();
   }
 
   /**
-   * Set the coin creator for an AMM pool.
+   * Set the coin creator for an AMM pool from bonding curve metadata.
    */
   async ammSetCoinCreatorInstruction({
-    authority,
     pool,
-    coinCreator,
+    mint,
   }: {
-    authority: PublicKey;
     pool: PublicKey;
-    coinCreator: PublicKey;
+    mint: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpAmmProgram.methods
-      .setCoinCreator(coinCreator)
+      .setCoinCreator()
       .accountsPartial({
-        authority,
         pool,
+        bondingCurve: bondingCurvePda(mint),
       })
       .instruction();
   }

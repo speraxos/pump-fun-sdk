@@ -61,6 +61,7 @@ export function createBot(
     config: BotConfig,
     monitor: PumpFunMonitor,
     launchMonitor?: TokenLaunchMonitorLike,
+    eventMonitor?: PumpEventMonitorLike,
 ): Bot {
     const bot = new Bot(config.telegramToken);
 
@@ -87,7 +88,7 @@ export function createBot(
     bot.command('watch', handleWatch);
     bot.command('unwatch', handleUnwatch);
     bot.command('list', handleList);
-    bot.command('status', (ctx) => handleStatus(ctx, monitor, launchMonitor));
+    bot.command('status', (ctx) => handleStatus(ctx, monitor, launchMonitor, eventMonitor));
     bot.command('cto', (ctx) => handleCto(ctx, monitor));
     bot.command('monitor', (ctx) => handleMonitor(ctx));
     bot.command('stopmonitor', (ctx) => handleStopMonitor(ctx));
@@ -383,13 +384,15 @@ async function handleStatus(
     ctx: Context,
     monitor: PumpFunMonitor,
     launchMonitor?: TokenLaunchMonitorLike,
+    eventMonitor?: PumpEventMonitorLike,
 ): Promise<void> {
     const watches = getWatchesForChat(ctx.chat!.id);
     const state = monitor.getState();
     const launchState = launchMonitor?.getState();
+    const eventState = eventMonitor?.getState();
     const activeMonitors = getActiveMonitorCount();
     await ctx.reply(
-        formatStatus(state, watches.length, launchState, activeMonitors),
+        formatStatus(state, watches.length, launchState, activeMonitors, eventState),
         { parse_mode: 'HTML' },
     );
 }

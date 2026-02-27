@@ -68,59 +68,34 @@ export class SolanaMonitor {
 
   private async pollPumpApi(): Promise<void> {
     try {
-      // PumpFun API: get latest coins sorted by creation time
-      const url = `${PUMP_API}/coins/latest?limit=${POLL_LIMIT}&offset=0&includeNsfw=true`;
+      // Primary: /coins?sort=created_timestamp (confirmed working, returns full data)
+      const url = `${PUMP_API}/coins?offset=0&limit=${POLL_LIMIT}&sort=created_timestamp&order=DESC&includeNsfw=true`;
       const resp = await fetch(url, {
         headers: {
           'Accept': 'application/json',
           'User-Agent': 'PumpFun-SDK/1.0',
         },
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(10000),
       });
 
       if (!resp.ok) {
         console.error(`[pump] API HTTP ${resp.status}`);
-        // Try fallback endpoint
-        await this.pollPumpApiFallback();
         return;
       }
 
-      const data = await resp.json() as any;
-      const coins = Array.isArray(data) ? data : data?.coins || data?.data || [];
-      if (!Array.isArray(coins) || coins.length === 0) {
-        console.log(`[pump] No coins in response, trying fallback`);
-        await this.pollPumpApiFallback();
+      const text = await resp.text();
+      if (!text || text.length === 0) {
+        // Empty response — skip silently
         return;
       }
 
-      this.processPumpCoins(coins);
-    } catch (err: any) {
-      console.error(`[pump] Poll error: ${err.message}`);
-      await this.pollPumpApiFallback().catch(() => {});
-    }
-  }
-
-  private async pollPumpApiFallback(): Promise<void> {
-    try {
-      // Fallback: try the /coins?sort=created_timestamp&order=DESC endpoint
-      const url = `${PUMP_API}/coins?offset=0&limit=${POLL_LIMIT}&sort=created_timestamp&order=DESC&includeNsfw=true`;
-      const resp = await fetch(url, {
-        headers: { 'Accept': 'application/json', 'User-Agent': 'PumpFun-SDK/1.0' },
-        signal: AbortSignal.timeout(8000),
-      });
-
-      if (!resp.ok) {
-        console.error(`[pump-fb] HTTP ${resp.status}`);
-        return;
-      }
-
-      const data = await resp.json() as any;
+      const data = JSON.parse(text);
       const coins = Array.isArray(data) ? data : data?.coins || data?.data || [];
       if (!Array.isArray(coins) || coins.length === 0) return;
 
       this.processPumpCoins(coins);
     } catch (err: any) {
-      console.error(`[pump-fb] Error: ${err.message}`);
+      console.error(`[pump] Poll error: ${err.message}`);
     }
   }
 
@@ -153,7 +128,7 @@ export class SolanaMonitor {
         githubUrls,
         imageUri: coin.image_uri || coin.profile_image || coin.logo || null,
         description: coin.description ? coin.description.slice(0, 200) : null,
-        marketCapSol: coin.market_cap_sol ?? null,
+        marketCapSol: coin.market_cap ?? coin.market_cap_sol ?? null,
         website: coin.website || null,
         twitter: coin.twitter || null,
         telegram: coin.telegram || null,

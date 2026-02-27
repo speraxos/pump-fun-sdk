@@ -12,9 +12,14 @@
 
 import { loadConfig } from './config.js';
 import { createBot, createClaimHandler, createCreatorChangeHandler } from './bot.js';
-import type { TokenLaunchMonitorLike } from './bot.js';
-import { formatTokenLaunchNotification } from './formatters.js';
-import type { TokenLaunchEvent } from './types.js';
+import type { TokenLaunchMonitorLike, PumpEventMonitorLike } from './bot.js';
+import {
+    formatTokenLaunchNotification,
+    formatGraduationNotification,
+    formatTradeAlertNotification,
+    formatFeeDistributionNotification,
+} from './formatters.js';
+import type { TokenLaunchEvent, GraduationEvent, TradeAlertEvent, FeeDistributionEvent } from './types.js';
 import { getActiveMonitors } from './launch-store.js';
 import { log, setLogLevel } from './logger.js';
 import { PumpFunMonitor } from './monitor.js';
@@ -86,11 +91,53 @@ async function main(): Promise<void> {
         log.info('Token launch monitor not available (token-launch-monitor.ts not built yet)');
     }
 
+    // ── Create Pump Event Monitor (graduation, whale trades, fee distributions)
+    let eventMonitor: PumpEventMonitorLike | undefined;
+    const hasEventFeatures =
+        config.enableGraduationAlerts ||
+        config.enableTradeAlerts ||
+        config.enableFeeDistributionAlerts;
+
+    if (hasEventFeatures) {
+        try {
+            const { PumpEventMonitor } = await import('./pump-event-monitor.js');
+
+            const broadcastToMonitors = async (
+                formatFn: (event: never) => string,
+                event: GraduationEvent | TradeAlertEvent | FeeDistributionEvent,
+            ) => {
+                if (!bot) return;
+                const monitors = getActiveMonitors();
+                for (const entry of monitors) {
+                    try {
+                        const message = formatFn(event as never);
+                        await bot.api.sendMessage(entry.chatId, message, {
+                            parse_mode: 'HTML',
+                            link_preview_options: { is_disabled: true },
+                        });
+                    } catch (err) {
+                        log.error('Failed to send event notification to chat %d:', entry.chatId, err);
+                    }
+                }
+            };
+
+            eventMonitor = new PumpEventMonitor(
+                config,
+                (event: GraduationEvent) => broadcastToMonitors(formatGraduationNotification, event),
+                (event: TradeAlertEvent) => broadcastToMonitors(formatTradeAlertNotification, event),
+                (event: FeeDistributionEvent) => broadcastToMonitors(formatFeeDistributionNotification, event),
+            );
+            log.info('Pump event monitor loaded');
+        } catch {
+            log.info('Pump event monitor not available (pump-event-monitor.ts not built yet)');
+        }
+    }
+
     let bot: import('grammy').Bot | null = null;
     let botClaimHandler: ((event: import('./types.js').FeeClaimEvent) => Promise<void>) | null = null;
 
     if (!apiOnly) {
-        bot = createBot(config, monitor, launchMonitor);
+        bot = createBot(config, monitor, launchMonitor, eventMonitor);
 
         // Wire up the claim handler now that bot exists
         const handler = createClaimHandler(bot);
@@ -125,6 +172,16 @@ async function main(): Promise<void> {
             log.info('Token launch monitor started');
         } catch (err) {
             log.error('Failed to start token launch monitor:', err);
+        }
+    }
+
+    // ── Start pump event monitor (if available and features enabled) ─────
+    if (eventMonitor && hasEventFeatures) {
+        try {
+            await (eventMonitor as unknown as { start(): Promise<void> }).start();
+            log.info('Pump event monitor started');
+        } catch (err) {
+            log.error('Failed to start pump event monitor:', err);
         }
     }
 
@@ -165,6 +222,9 @@ async function main(): Promise<void> {
         if (api) api.stop();
         if (launchMonitor && typeof (launchMonitor as unknown as { stop(): void }).stop === 'function') {
             (launchMonitor as unknown as { stop(): void }).stop();
+        }
+        if (eventMonitor && typeof (eventMonitor as unknown as { stop(): void }).stop === 'function') {
+            (eventMonitor as unknown as { stop(): void }).stop();
         }
         if (bot) bot.stop();
         process.exit(0);

@@ -146,7 +146,7 @@
   <a href="/trades" style="color:#4a9eff; text-decoration:none; font-size:12px; border:1px solid #333; padding:4px 10px; border-radius:3px;">📊 Trades Dashboard</a>
   <div class="status" id="status">● Disconnected</div>
   <div class="controls">
-    <input type="text" id="rpc" value="wss://api.mainnet-beta.solana.com" style="display:none" />
+    <input type="text" id="rpc" value="" placeholder="wss:// custom RPC" style="display:none" />
     <button id="btn-connect">Disconnect</button>
     <button id="btn-pause">Pause</button>
     <button id="btn-clear">Clear</button>
@@ -172,11 +172,13 @@
 const PUMP_PROGRAM = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 const MAX_LOG_ENTRIES = 500;
 
-// ── Endpoints (PumpPortal primary, Solana RPC fallback) ──────────
+// ── Endpoints (PumpPortal primary, relay fallback) ──────────────
+// PumpPortal is a free, purpose-built WebSocket API for Pump.fun.
+// The Railway relay server proxies Solana RPC logsSubscribe server-side
+// and re-broadcasts parsed events, avoiding public RPC rate limits.
 const RPC_ENDPOINTS = [
-  { url: 'wss://pumpportal.fun/api/data', protocol: 'pumpportal', label: 'PumpPortal' },
-  { url: 'wss://api.mainnet-beta.solana.com', protocol: 'solana-rpc', label: 'Solana Public' },
-  { url: 'wss://solana-rpc.publicnode.com', protocol: 'solana-rpc', label: 'PublicNode' },
+  { url: 'wss://pumpportal.fun/api/data',                          protocol: 'pumpportal', label: 'PumpPortal' },
+  { url: 'wss://pump-fun-websocket-production.up.railway.app/ws',  protocol: 'relay',      label: 'Relay Server' },
 ];
 let rpcIndex = 0;
 let connectAttempts = 0;
@@ -271,6 +273,10 @@ function connect() {
       ws.send(JSON.stringify({ method: 'subscribeNewToken' }));
       setStatus(`● Live — PumpPortal`, 'connected');
       sysLog('Subscribed via PumpPortal — streaming new token launches');
+    } else if (currentProtocol === 'relay') {
+      // Railway relay: already subscribed server-side, just listen
+      setStatus('● Live — Relay', 'connected');
+      sysLog('Connected to relay server — receiving proxied token launches');
     } else {
       // Solana RPC: subscribe to program logs
       setStatus('● Connected — subscribing to Pump program...', 'connected');
@@ -285,6 +291,34 @@ function connect() {
   ws.onmessage = (evt) => {
     let msg;
     try { msg = JSON.parse(evt.data); } catch { return; }
+
+    if (currentProtocol === 'relay') {
+      // Relay server sends { type:'token-launch', mint, name, symbol, ... }
+      if (msg.type === 'heartbeat' || msg.type === 'status') return;
+      if (msg.type === 'token-launch' || msg.mint) {
+        stats.logsReceived++;
+        const info = {
+          signature: msg.signature || '',
+          time: new Date().toLocaleTimeString(),
+          name: msg.name || null,
+          symbol: msg.symbol || null,
+          metadataUri: msg.metadataUri || null,
+          mint: msg.mint || 'unknown',
+          creator: msg.creator || null,
+          user: msg.creator || null,
+          hasGithub: msg.hasGithub || false,
+          githubUrls: msg.githubUrls || [],
+          rawLogs: [],
+          isV2: msg.isV2 !== false,
+          imageUrl: msg.imageUri || null,
+        };
+        stats.total++;
+        if (info.hasGithub) stats.github++;
+        if (!paused) renderEntry(info);
+        updateStats();
+      }
+      return;
+    }
 
     if (currentProtocol === 'pumpportal') {
       // PumpPortal sends flat objects: { txType:'create', mint, name, symbol, uri, signature, ... }

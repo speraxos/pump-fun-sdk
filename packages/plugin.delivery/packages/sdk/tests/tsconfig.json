@@ -6,7 +6,7 @@
     "baseUrl": "..",
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
@@ -17,8 +17,7 @@
       "@sperax/chat-plugin-sdk": ["./src"],
       "@sperax/chat-plugin-sdk/client": ["./src/client"],
       "@sperax/chat-plugin-sdk/openapi": ["./src/openapi"]
-    },
-    "types": ["vitest/globals"]
+    }
   },
-  "include": ["./client"]
+  "include": ["./client", "./test-setup.ts"]
 }
