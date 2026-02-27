@@ -18,7 +18,7 @@ import {
     formatWatchList,
     formatWelcome,
 } from './formatters.js';
-import type { TokenLaunchMonitorState } from './formatters.js';
+import type { TokenLaunchMonitorState } from './types.js';
 import {
     activateMonitor,
     deactivateMonitor,
