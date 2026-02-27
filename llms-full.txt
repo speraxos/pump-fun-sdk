@@ -20,7 +20,7 @@ The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol â€
 |---------|-----|---------|
 | Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve (create/buy/sell) |
 | PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Graduated AMM pools |
-| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing |
+| PumpFees | `pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ` | Fee sharing |
 
 ## Architecture
 
@@ -207,7 +207,7 @@ DO NOT add: web3.py, solders, or any third-party crypto libraries.
 
 ## Agent Skill Files
 
-See `.github/skills/` for 15 detailed skill documents:
+See `.github/skills/` for 28 detailed skill documents:
 - pump-sdk-core, bonding-curve, bonding-curve-math, token-lifecycle
 - fee-system, fee-sharing, token-incentives
 - solana-program-architecture, solana-wallet, security-practices

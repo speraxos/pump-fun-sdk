@@ -530,6 +530,17 @@ See [mcp-server/README.md](mcp-server/README.md) for setup instructions.
 | [Security](docs/security.md) | Security model, key handling, and best practices |
 | [Testing](docs/testing.md) | Test suites, commands, and CI pipelines |
 | [CLI Guide](docs/cli-guide.md) | Vanity address generation with Solana CLI |
+| [Migration Guide](docs/MIGRATION.md) | Upgrading between SDK versions |
+| [Troubleshooting](docs/TROUBLESHOOTING.md) | Common issues and solutions |
+| [**Tutorials** (19)](tutorials/README.md) | Hands-on guides: tokens, fees, bots, vanity addresses, x402, and more |
+
+### Additional Components
+
+| Component | Description |
+|-----------|-------------|
+| [Telegram Bot](telegram-bot/README.md) | PumpFun fee claim monitoring with Telegram notifications |
+| [x402 Payment Protocol](x402/README.md) | HTTP 402 micropayments with Solana USDC |
+| [MCP Server](mcp-server/README.md) | Model Context Protocol server for AI agent integration |
 
 ---
 
