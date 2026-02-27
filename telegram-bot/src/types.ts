@@ -112,6 +112,76 @@ export const CLAIM_INSTRUCTIONS: InstructionDef[] = [
     },
 ];
 
+// ============================================================================
+// CTO (Creator Takeover) Instruction Discriminators
+// ============================================================================
+
+/** Creator change type identifiers */
+export type CreatorChangeType =
+    | 'set_creator'                  // Pump: set creator from metadata
+    | 'admin_set_creator'            // Pump: admin override creator
+    | 'set_coin_creator'             // AMM: set coin creator from metadata/bonding curve
+    | 'admin_set_coin_creator'       // AMM: admin override coin creator
+    | 'migrate_pool_coin_creator';   // AMM: migrate pool coin creator to sharing config
+
+export interface CreatorChangeInstructionDef {
+    /** Hex string of the 8-byte Anchor discriminator */
+    discriminator: string;
+    /** Human-readable label */
+    label: string;
+    /** Which creator change type this instruction represents */
+    changeType: CreatorChangeType;
+    /** Which program this instruction belongs to */
+    programId: string;
+    /** Whether the new creator pubkey is in the instruction args (vs derived from metadata) */
+    hasCreatorArg: boolean;
+}
+
+/**
+ * All set_creator / admin_set_creator instructions across Pump and PumpSwap.
+ * These change who receives future creator fees for a token (CTO).
+ * Discriminators extracted from official IDL files.
+ */
+export const CTO_INSTRUCTIONS: CreatorChangeInstructionDef[] = [
+    // ── Pump Bonding Curve Program ──────────────────────────────────────
+    {
+        changeType: 'admin_set_creator',
+        discriminator: '4519ab8e39ef0d04',
+        hasCreatorArg: true,
+        label: 'Admin Set Creator (Pump)',
+        programId: PUMP_PROGRAM_ID,
+    },
+    {
+        changeType: 'set_creator',
+        discriminator: 'fe94ff70cf8eaaa5',
+        hasCreatorArg: true,
+        label: 'Set Creator (Pump)',
+        programId: PUMP_PROGRAM_ID,
+    },
+    // ── PumpSwap AMM Program ────────────────────────────────────────────
+    {
+        changeType: 'admin_set_coin_creator',
+        discriminator: 'f228759149606968',
+        hasCreatorArg: true,
+        label: 'Admin Set Coin Creator (PumpSwap)',
+        programId: PUMP_AMM_PROGRAM_ID,
+    },
+    {
+        changeType: 'set_coin_creator',
+        discriminator: 'd295802dbc3a4eaf',
+        hasCreatorArg: false,
+        label: 'Set Coin Creator (PumpSwap)',
+        programId: PUMP_AMM_PROGRAM_ID,
+    },
+    {
+        changeType: 'migrate_pool_coin_creator',
+        discriminator: 'd0089f044aaf103a',
+        hasCreatorArg: false,
+        label: 'Migrate Pool Coin Creator (PumpSwap)',
+        programId: PUMP_AMM_PROGRAM_ID,
+    },
+];
+
 /**
  * Event discriminators emitted by Anchor CPI self-invoke (logged in program data).
  * These can be used to detect claims from transaction logs.
@@ -155,6 +225,32 @@ export interface FeeClaimEvent {
     programId: string;
     /** Human-readable label for the claim type */
     claimLabel: string;
+}
+
+// ============================================================================
+// Creator Change Event (CTO)
+// ============================================================================
+
+/** Represents a detected creator takeover / fee redirection event */
+export interface CreatorChangeEvent {
+    /** Transaction signature on Solana */
+    txSignature: string;
+    /** Solana slot number */
+    slot: number;
+    /** Block timestamp (unix seconds) */
+    timestamp: number;
+    /** The wallet that signed/initiated the creator change (authority) */
+    signerWallet: string;
+    /** The new creator wallet (fees will go here) — may be empty if derived from metadata */
+    newCreatorWallet: string;
+    /** The token mint address affected */
+    tokenMint: string;
+    /** Specific creator change type detected */
+    changeType: CreatorChangeType;
+    /** Which program processed this change */
+    programId: string;
+    /** Human-readable label for the change type */
+    changeLabel: string;
 }
 
 // ============================================================================
@@ -217,6 +313,8 @@ export interface MonitorState {
     creatorFeeClaims: number;
     /** Breakdown: cashback claims detected */
     cashbackClaims: number;
+    /** Breakdown: creator change (CTO) events detected */
+    creatorChanges: number;
     /** Uptime start (unix ms) */
     startedAt: number;
     /** Programs being monitored */

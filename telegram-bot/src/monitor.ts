@@ -22,15 +22,17 @@ import {
 import bs58 from 'bs58';
 
 import { log } from './logger.js';
-import type { BotConfig, ClaimType, FeeClaimEvent, MonitorState } from './types.js';
+import type { BotConfig, ClaimType, CreatorChangeEvent, FeeClaimEvent, MonitorState } from './types.js';
 import {
     CLAIM_INSTRUCTIONS,
     CLAIM_EVENT_DISCRIMINATORS,
+    CTO_INSTRUCTIONS,
     MONITORED_PROGRAM_IDS,
     PUMPFUN_FEE_ACCOUNT,
     PUMPFUN_MIGRATION_AUTHORITY,
     PUMP_PROGRAM_ID,
     PUMP_AMM_PROGRAM_ID,
+    type CreatorChangeInstructionDef,
     type InstructionDef,
 } from './types.js';
 
@@ -44,6 +46,7 @@ export class PumpFunMonitor {
     private config: BotConfig;
     private state: MonitorState;
     private onClaim: (event: FeeClaimEvent) => void;
+    private onCreatorChange: (event: CreatorChangeEvent) => void;
     private pollTimer?: ReturnType<typeof setInterval>;
     private wsSubscriptionIds: number[] = [];
     private lastSignatures: Map<string, string | undefined> = new Map();
@@ -52,15 +55,21 @@ export class PumpFunMonitor {
     private processedSignatures = new Set<string>();
     private readonly MAX_PROCESSED_CACHE = 10_000;
 
-    constructor(config: BotConfig, onClaim: (event: FeeClaimEvent) => void) {
+    constructor(
+        config: BotConfig,
+        onClaim: (event: FeeClaimEvent) => void,
+        onCreatorChange?: (event: CreatorChangeEvent) => void,
+    ) {
         this.config = config;
         this.onClaim = onClaim;
+        this.onCreatorChange = onCreatorChange ?? (() => {});
         this.connection = new Connection(config.solanaRpcUrl, 'confirmed');
         this.programPubkeys = MONITORED_PROGRAM_IDS.map((id) => new PublicKey(id));
 
         this.state = {
             cashbackClaims: 0,
             claimsDetected: 0,
+            creatorChanges: 0,
             creatorFeeClaims: 0,
             isRunning: false,
             lastSlot: 0,
@@ -201,7 +210,14 @@ export class PumpFunMonitor {
             logsJoined.includes('distribute_creator_fees') ||
             logsJoined.includes('collect_coin_creator_fee') ||
             logsJoined.includes('transfer_creator_fees') ||
-            logsJoined.includes('Transfer');
+            logsJoined.includes('Transfer') ||
+            logsJoined.includes('set_creator') ||
+            logsJoined.includes('admin_set_creator') ||
+            logsJoined.includes('set_coin_creator') ||
+            logsJoined.includes('admin_set_coin_creator') ||
+            logsJoined.includes('migrate_pool_coin_creator') ||
+            logsJoined.includes('SetCreator') ||
+            logsJoined.includes('AdminSetCreator');
 
         if (!hasEventMatch && !hasKeywordMatch) return;
 
@@ -310,6 +326,24 @@ export class PumpFunMonitor {
                 );
 
                 this.onClaim(event);
+            }
+
+            // ── CTO (Creator Change) Detection ──────────────────────────
+            const ctoEvents = this.extractCreatorChangeEvents(signature, tx);
+            for (const ctoEvent of ctoEvents) {
+                this.state.creatorChanges++;
+                this.state.lastSlot = tx.slot;
+
+                log.info(
+                    '%s: signer=%s newCreator=%s mint=%s (tx: %s)',
+                    ctoEvent.changeLabel,
+                    ctoEvent.signerWallet.slice(0, 8),
+                    ctoEvent.newCreatorWallet ? ctoEvent.newCreatorWallet.slice(0, 8) : 'from-metadata',
+                    ctoEvent.tokenMint ? ctoEvent.tokenMint.slice(0, 8) : 'unknown',
+                    signature.slice(0, 12) + '...',
+                );
+
+                this.onCreatorChange(ctoEvent);
             }
         } catch (err) {
             log.error('Error processing tx %s:', signature, err);
