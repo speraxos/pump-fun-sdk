@@ -657,7 +657,7 @@ async function handleBuildBuy(
     global,
     bondingCurveAccountInfo,
     bondingCurve,
-    associatedUserAccountInfo,
+    associatedUserAccountInfo: associatedUserAccountInfo ?? null,
     mint,
     user,
     solAmount,

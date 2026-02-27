@@ -304,6 +304,8 @@ var init_bondingCurve = __esm({
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  AMM_FEE_CONFIG_PDA: () => AMM_FEE_CONFIG_PDA2,
+  AMM_GLOBAL_CONFIG_PDA: () => AMM_GLOBAL_CONFIG_PDA,
   AMM_GLOBAL_PDA: () => AMM_GLOBAL_PDA,
   AMM_GLOBAL_VOLUME_ACCUMULATOR_PDA: () => AMM_GLOBAL_VOLUME_ACCUMULATOR_PDA,
   BONDING_CURVE_NEW_SIZE: () => BONDING_CURVE_NEW_SIZE,
@@ -315,8 +317,9 @@ __export(index_exports, {
   MAX_SHAREHOLDERS: () => MAX_SHAREHOLDERS,
   MAYHEM_PROGRAM_ID: () => MAYHEM_PROGRAM_ID,
   NoShareholdersError: () => NoShareholdersError,
+  ONE_BILLION_SUPPLY: () => ONE_BILLION_SUPPLY,
   OnlinePumpSdk: () => OnlinePumpSdk,
-  PUMP_AMM_EVENT_AUTHORITY_PDA: () => PUMP_AMM_EVENT_AUTHORITY_PDA,
+  PUMP_AMM_EVENT_AUTHORITY_PDA: () => PUMP_AMM_EVENT_AUTHORITY_PDA2,
   PUMP_AMM_PROGRAM_ID: () => PUMP_AMM_PROGRAM_ID,
   PUMP_EVENT_AUTHORITY_PDA: () => PUMP_EVENT_AUTHORITY_PDA,
   PUMP_FEE_CONFIG_PDA: () => PUMP_FEE_CONFIG_PDA,
@@ -331,6 +334,7 @@ __export(index_exports, {
   TooManyShareholdersError: () => TooManyShareholdersError,
   ZeroShareError: () => ZeroShareError,
   ammCreatorVaultPda: () => ammCreatorVaultPda,
+  ammUserVolumeAccumulatorPda: () => ammUserVolumeAccumulatorPda,
   bondingCurveMarketCap: () => bondingCurveMarketCap,
   bondingCurvePda: () => bondingCurvePda,
   calculateBuyPriceImpact: () => calculateBuyPriceImpact,
@@ -340,6 +344,7 @@ __export(index_exports, {
   computeFeesBps: () => computeFeesBps,
   creatorVaultPda: () => creatorVaultPda,
   currentDayTokens: () => currentDayTokens,
+  feeProgramGlobalPda: () => feeProgramGlobalPda,
   feeSharingConfigPda: () => feeSharingConfigPda,
   getBondingCurveSummary: () => getBondingCurveSummary,
   getBuySolAmountFromTokenAmount: () => getBuySolAmountFromTokenAmount,
@@ -354,12 +359,14 @@ __export(index_exports, {
   getPumpProgram: () => getPumpProgram,
   getSellSolAmountFromTokenAmount: () => getSellSolAmountFromTokenAmount,
   getSolVaultPda: () => getSolVaultPda,
+  getStaticRandomFeeRecipient: () => getStaticRandomFeeRecipient,
   getTokenPrice: () => getTokenPrice,
   getTokenVaultPda: () => getTokenVaultPda,
   isCreatorUsingSharingConfig: () => isCreatorUsingSharingConfig,
   newBondingCurve: () => newBondingCurve,
   pumpIdl: () => pump_default,
   pumpPoolAuthorityPda: () => pumpPoolAuthorityPda,
+  socialFeePda: () => socialFeePda,
   totalUnclaimedTokens: () => totalUnclaimedTokens,
   userVolumeAccumulatorPda: () => userVolumeAccumulatorPda
 });
@@ -17948,6 +17955,7 @@ var OnlinePumpSdk = class {
     this.pumpProgram = getPumpProgram(connection);
     this.offlinePumpProgram = OFFLINE_PUMP_PROGRAM;
     this.pumpAmmProgram = getPumpAmmProgram(connection);
+    this.pumpFeeProgram = getPumpFeeProgram(connection);
     this.pumpAmmSdk = new import_pump_swap_sdk.OnlinePumpAmmSdk(connection);
     this.pumpAmmAdminSdk = new import_pump_swap_sdk.PumpAmmAdminSdk(connection);
   }
@@ -18534,6 +18542,46 @@ var OnlinePumpSdk = class {
     const accountInfo = await this.connection.getAccountInfo(poolAddress);
     return accountInfo !== null;
   }
+  // ─── AMM / Fee Program Fetchers ──────────────────────────────────────
+  /**
+   * Fetch a graduated AMM pool account by mint address.
+   */
+  async fetchPool(mint) {
+    const poolAddress = canonicalPumpPoolPda(new import_web33.PublicKey(mint));
+    return await this.pumpAmmProgram.account.pool.fetch(poolAddress);
+  }
+  /**
+   * Fetch a graduated AMM pool account by pool address.
+   */
+  async fetchPoolByAddress(poolAddress) {
+    return await this.pumpAmmProgram.account.pool.fetch(
+      new import_web33.PublicKey(poolAddress)
+    );
+  }
+  /**
+   * Fetch the AMM global config account.
+   */
+  async fetchAmmGlobalConfig() {
+    return await this.pumpAmmProgram.account.globalConfig.fetch(
+      AMM_GLOBAL_CONFIG_PDA
+    );
+  }
+  /**
+   * Fetch the PumpFees program global account.
+   */
+  async fetchFeeProgramGlobal() {
+    return await this.pumpFeeProgram.account.feeProgramGlobal.fetch(
+      feeProgramGlobalPda()
+    );
+  }
+  /**
+   * Fetch a social fee PDA account by user ID and platform.
+   */
+  async fetchSocialFeePda(userId, platform) {
+    return await this.pumpFeeProgram.account.socialFeePda.fetch(
+      socialFeePda(userId, platform)
+    );
+  }
   /**
    * Get a user's token balance for a specific mint.
    *
@@ -18656,6 +18704,30 @@ var PumpSdk = class {
   decodeSharingConfig(accountInfo) {
     return this.offlinePumpFeeProgram.coder.accounts.decode(
       "sharingConfig",
+      accountInfo.data
+    );
+  }
+  decodePool(accountInfo) {
+    return this.offlinePumpAmmProgram.coder.accounts.decode(
+      "pool",
+      accountInfo.data
+    );
+  }
+  decodeAmmGlobalConfig(accountInfo) {
+    return this.offlinePumpAmmProgram.coder.accounts.decode(
+      "globalConfig",
+      accountInfo.data
+    );
+  }
+  decodeFeeProgramGlobal(accountInfo) {
+    return this.offlinePumpFeeProgram.coder.accounts.decode(
+      "feeProgramGlobal",
+      accountInfo.data
+    );
+  }
+  decodeSocialFeePdaAccount(accountInfo) {
+    return this.offlinePumpFeeProgram.coder.accounts.decode(
+      "socialFeePda",
       accountInfo.data
     );
   }
@@ -19208,6 +19280,165 @@ var PumpSdk = class {
       data
     );
   }
+  // ─── Pump Program Event Decoders ──────────────────────────────────
+  decodeTradeEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "tradeEvent",
+      data
+    );
+  }
+  decodeCreateEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "createEvent",
+      data
+    );
+  }
+  decodeCompleteEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "completeEvent",
+      data
+    );
+  }
+  decodeCompletePumpAmmMigrationEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "completePumpAmmMigrationEvent",
+      data
+    );
+  }
+  decodeSetCreatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "setCreatorEvent",
+      data
+    );
+  }
+  decodeCollectCreatorFeeEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "collectCreatorFeeEvent",
+      data
+    );
+  }
+  decodeClaimTokenIncentivesEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "claimTokenIncentivesEvent",
+      data
+    );
+  }
+  decodeClaimCashbackEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "claimCashbackEvent",
+      data
+    );
+  }
+  decodeExtendAccountEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "extendAccountEvent",
+      data
+    );
+  }
+  decodeInitUserVolumeAccumulatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "initUserVolumeAccumulatorEvent",
+      data
+    );
+  }
+  decodeSyncUserVolumeAccumulatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "syncUserVolumeAccumulatorEvent",
+      data
+    );
+  }
+  decodeCloseUserVolumeAccumulatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "closeUserVolumeAccumulatorEvent",
+      data
+    );
+  }
+  decodeAdminSetCreatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "adminSetCreatorEvent",
+      data
+    );
+  }
+  decodeMigrateBondingCurveCreatorEvent(data) {
+    return this.offlinePumpProgram.coder.types.decode(
+      "migrateBondingCurveCreatorEvent",
+      data
+    );
+  }
+  // ─── PumpAMM Event Decoders ───────────────────────────────────────
+  decodeAmmBuyEvent(data) {
+    return this.offlinePumpAmmProgram.coder.types.decode(
+      "buyEvent",
+      data
+    );
+  }
+  decodeAmmSellEvent(data) {
+    return this.offlinePumpAmmProgram.coder.types.decode(
+      "sellEvent",
+      data
+    );
+  }
+  decodeDepositEvent(data) {
+    return this.offlinePumpAmmProgram.coder.types.decode(
+      "depositEvent",
+      data
+    );
+  }
+  decodeWithdrawEvent(data) {
+    return this.offlinePumpAmmProgram.coder.types.decode(
+      "withdrawEvent",
+      data
+    );
+  }
+  decodeCreatePoolEvent(data) {
+    return this.offlinePumpAmmProgram.coder.types.decode(
+      "createPoolEvent",
+      data
+    );
+  }
+  // ─── PumpFees Event Decoders ──────────────────────────────────────
+  decodeCreateFeeSharingConfigEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "createFeeSharingConfigEvent",
+      data
+    );
+  }
+  decodeUpdateFeeSharesEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "updateFeeSharesEvent",
+      data
+    );
+  }
+  decodeResetFeeSharingConfigEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "resetFeeSharingConfigEvent",
+      data
+    );
+  }
+  decodeRevokeFeeSharingAuthorityEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "revokeFeeSharingAuthorityEvent",
+      data
+    );
+  }
+  decodeTransferFeeSharingAuthorityEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "transferFeeSharingAuthorityEvent",
+      data
+    );
+  }
+  decodeSocialFeePdaCreatedEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "socialFeePdaCreated",
+      data
+    );
+  }
+  decodeSocialFeePdaClaimedEvent(data) {
+    return this.offlinePumpFeeProgram.coder.types.decode(
+      "socialFeePdaClaimed",
+      data
+    );
+  }
   async getMinimumDistributableFee({
     mint,
     sharingConfig,
@@ -19229,6 +19460,448 @@ var PumpSdk = class {
   }) {
     return await this.offlinePumpProgram.methods.claimCashback().accountsPartial({
       user
+    }).instruction();
+  }
+  // ─── Buy Exact SOL In ───────────────────────────────────────────────
+  /**
+   * Buy tokens by specifying the exact SOL amount to spend.
+   * More intuitive for users who think in SOL terms.
+   *
+   * @param params.user - The buyer's public key
+   * @param params.mint - The token mint address
+   * @param params.creator - The token creator
+   * @param params.feeRecipient - Fee recipient address
+   * @param params.solAmount - Exact SOL amount to spend (lamports)
+   * @param params.minTokenAmount - Minimum tokens to receive (slippage protection)
+   * @param params.tokenProgram - Token program (TOKEN_PROGRAM_ID or TOKEN_2022_PROGRAM_ID)
+   */
+  async buyExactSolInInstruction({
+    user,
+    mint,
+    creator,
+    feeRecipient,
+    solAmount,
+    minTokenAmount,
+    tokenProgram = import_spl_token2.TOKEN_PROGRAM_ID
+  }) {
+    const associatedUser = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      tokenProgram
+    );
+    return await this.offlinePumpProgram.methods.buyExactSolIn(solAmount, minTokenAmount, { 0: true }).accountsPartial({
+      feeRecipient,
+      mint,
+      associatedUser,
+      user,
+      creatorVault: creatorVaultPda(creator),
+      tokenProgram
+    }).instruction();
+  }
+  // ─── Mayhem Mode ────────────────────────────────────────────────────
+  /**
+   * Set virtual parameters for mayhem mode on a bonding curve.
+   * The solVaultAuthority PDA is the signer for this instruction.
+   */
+  async setMayhemVirtualParamsInstruction({
+    mint
+  }) {
+    return await this.offlinePumpProgram.methods.setMayhemVirtualParams().accountsPartial({
+      mint
+    }).instruction();
+  }
+  /**
+   * Toggle mayhem mode on/off for the protocol.
+   */
+  async toggleMayhemModeInstruction({
+    authority,
+    enabled
+  }) {
+    return await this.offlinePumpProgram.methods.toggleMayhemMode(enabled).accountsPartial({
+      authority
+    }).instruction();
+  }
+  /**
+   * Toggle cashback feature on/off.
+   */
+  async toggleCashbackEnabledInstruction({
+    authority,
+    enabled
+  }) {
+    return await this.offlinePumpProgram.methods.toggleCashbackEnabled(enabled).accountsPartial({
+      authority
+    }).instruction();
+  }
+  /**
+   * Toggle the create_v2 instruction on/off.
+   */
+  async toggleCreateV2Instruction({
+    authority,
+    enabled
+  }) {
+    return await this.offlinePumpProgram.methods.toggleCreateV2(enabled).accountsPartial({
+      authority
+    }).instruction();
+  }
+  // ─── Creator Management ─────────────────────────────────────────────
+  /**
+   * Migrate bonding curve creator — updates creator based on fee sharing config.
+   */
+  async migrateBondingCurveCreatorInstruction({
+    mint
+  }) {
+    return await this.offlinePumpProgram.methods.migrateBondingCurveCreator().accountsPartial({
+      mint,
+      sharingConfig: feeSharingConfigPda(mint)
+    }).instruction();
+  }
+  /**
+   * Set the Metaplex creator metadata for a token from bonding curve.
+   */
+  async setMetaplexCreatorInstruction({
+    mint
+  }) {
+    return await this.offlinePumpProgram.methods.setMetaplexCreator().accountsPartial({
+      mint
+    }).instruction();
+  }
+  /**
+   * Set reserved fee recipients for the protocol.
+   */
+  async setReservedFeeRecipientsInstruction({
+    authority,
+    whitelistPda
+  }) {
+    return await this.offlinePumpProgram.methods.setReservedFeeRecipients(whitelistPda).accountsPartial({
+      authority
+    }).instruction();
+  }
+  /**
+   * Update the global authority address.
+   */
+  async updateGlobalAuthorityInstruction({
+    authority,
+    newAuthority
+  }) {
+    return await this.offlinePumpProgram.methods.updateGlobalAuthority().accountsPartial({
+      authority,
+      newAuthority
+    }).instruction();
+  }
+  // ─── PumpAMM Instructions ──────────────────────────────────────────
+  /**
+   * Buy tokens on a graduated AMM pool.
+   */
+  async ammBuyInstruction({
+    user,
+    pool,
+    mint,
+    baseAmountOut,
+    maxQuoteAmountIn
+  }) {
+    const userBaseAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      import_spl_token2.TOKEN_2022_PROGRAM_ID
+    );
+    const userQuoteAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      import_spl_token2.NATIVE_MINT,
+      user,
+      true,
+      import_spl_token2.TOKEN_PROGRAM_ID
+    );
+    return await this.offlinePumpAmmProgram.methods.buy(baseAmountOut, maxQuoteAmountIn, { 0: true }).accountsPartial({
+      user,
+      pool,
+      userBaseTokenAccount: userBaseAta,
+      userQuoteTokenAccount: userQuoteAta
+    }).instruction();
+  }
+  /**
+   * Buy tokens on AMM by specifying exact SOL (quote) input.
+   */
+  async ammBuyExactQuoteInInstruction({
+    user,
+    pool,
+    mint,
+    quoteAmountIn,
+    minBaseAmountOut
+  }) {
+    const userBaseAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      import_spl_token2.TOKEN_2022_PROGRAM_ID
+    );
+    const userQuoteAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      import_spl_token2.NATIVE_MINT,
+      user,
+      true,
+      import_spl_token2.TOKEN_PROGRAM_ID
+    );
+    return await this.offlinePumpAmmProgram.methods.buyExactQuoteIn(quoteAmountIn, minBaseAmountOut, { 0: true }).accountsPartial({
+      user,
+      pool,
+      userBaseTokenAccount: userBaseAta,
+      userQuoteTokenAccount: userQuoteAta
+    }).instruction();
+  }
+  /**
+   * Sell tokens on a graduated AMM pool.
+   */
+  async ammSellInstruction({
+    user,
+    pool,
+    mint,
+    baseAmountIn,
+    minQuoteAmountOut
+  }) {
+    const userBaseAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      import_spl_token2.TOKEN_2022_PROGRAM_ID
+    );
+    const userQuoteAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      import_spl_token2.NATIVE_MINT,
+      user,
+      true,
+      import_spl_token2.TOKEN_PROGRAM_ID
+    );
+    return await this.offlinePumpAmmProgram.methods.sell(baseAmountIn, minQuoteAmountOut).accountsPartial({
+      user,
+      pool,
+      userBaseTokenAccount: userBaseAta,
+      userQuoteTokenAccount: userQuoteAta
+    }).instruction();
+  }
+  /**
+   * Deposit liquidity into an AMM pool (LP provision).
+   */
+  async ammDepositInstruction({
+    user,
+    pool,
+    mint,
+    maxBaseAmountIn,
+    maxQuoteAmountIn,
+    minLpTokenAmountOut
+  }) {
+    const userBaseAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      import_spl_token2.TOKEN_2022_PROGRAM_ID
+    );
+    const userQuoteAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      import_spl_token2.NATIVE_MINT,
+      user,
+      true,
+      import_spl_token2.TOKEN_PROGRAM_ID
+    );
+    return await this.offlinePumpAmmProgram.methods.deposit(minLpTokenAmountOut, maxBaseAmountIn, maxQuoteAmountIn).accountsPartial({
+      user,
+      pool,
+      userBaseTokenAccount: userBaseAta,
+      userQuoteTokenAccount: userQuoteAta
+    }).instruction();
+  }
+  /**
+   * Withdraw liquidity from an AMM pool.
+   */
+  async ammWithdrawInstruction({
+    user,
+    pool,
+    mint,
+    lpTokenAmountIn,
+    minBaseAmountOut,
+    minQuoteAmountOut
+  }) {
+    const userBaseAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      mint,
+      user,
+      true,
+      import_spl_token2.TOKEN_2022_PROGRAM_ID
+    );
+    const userQuoteAta = (0, import_spl_token2.getAssociatedTokenAddressSync)(
+      import_spl_token2.NATIVE_MINT,
+      user,
+      true,
+      import_spl_token2.TOKEN_PROGRAM_ID
+    );
+    return await this.offlinePumpAmmProgram.methods.withdraw(lpTokenAmountIn, minBaseAmountOut, minQuoteAmountOut).accountsPartial({
+      user,
+      pool,
+      userBaseTokenAccount: userBaseAta,
+      userQuoteTokenAccount: userQuoteAta
+    }).instruction();
+  }
+  /**
+   * Migrate AMM pool coin creator — updates the pool's creator
+   * based on the fee sharing config.
+   */
+  async ammMigratePoolCoinCreatorInstruction({
+    pool,
+    mint
+  }) {
+    return await this.offlinePumpAmmProgram.methods.migratePoolCoinCreator().accountsPartial({
+      pool,
+      sharingConfig: feeSharingConfigPda(mint)
+    }).instruction();
+  }
+  /**
+   * Transfer creator fees from AMM pool to the Pump program.
+   */
+  async ammTransferCreatorFeesToPumpInstruction({
+    coinCreator
+  }) {
+    return await this.offlinePumpAmmProgram.methods.transferCreatorFeesToPump().accountsPartial({
+      coinCreator,
+      pumpCreatorVault: creatorVaultPda(coinCreator)
+    }).instruction();
+  }
+  /**
+   * Collect creator fees from an AMM pool.
+   */
+  async ammCollectCoinCreatorFeeInstruction({
+    creator
+  }) {
+    return await this.offlinePumpAmmProgram.methods.collectCoinCreatorFee().accountsPartial({
+      coinCreator: creator
+    }).instruction();
+  }
+  /**
+   * Set the coin creator for an AMM pool from bonding curve metadata.
+   */
+  async ammSetCoinCreatorInstruction({
+    pool,
+    mint
+  }) {
+    return await this.offlinePumpAmmProgram.methods.setCoinCreator().accountsPartial({
+      pool,
+      bondingCurve: bondingCurvePda(mint)
+    }).instruction();
+  }
+  /**
+   * Claim cashback from AMM trading.
+   */
+  async ammClaimCashbackInstruction({
+    user
+  }) {
+    return await this.offlinePumpAmmProgram.methods.claimCashback().accountsPartial({
+      user
+    }).instruction();
+  }
+  /**
+   * Sync user volume accumulator on the AMM program.
+   */
+  async ammSyncUserVolumeAccumulatorInstruction(user) {
+    return await this.offlinePumpAmmProgram.methods.syncUserVolumeAccumulator().accountsPartial({ user }).instruction();
+  }
+  // ─── PumpFees Instructions ─────────────────────────────────────────
+  /**
+   * Create a social fee PDA for referral/social fee sharing.
+   */
+  async createSocialFeePdaInstruction({
+    payer,
+    userId,
+    platform
+  }) {
+    return await this.offlinePumpFeeProgram.methods.createSocialFeePda(userId, platform).accountsPartial({
+      payer
+    }).instruction();
+  }
+  /**
+   * Claim accumulated social/referral fees.
+   */
+  async claimSocialFeePdaInstruction({
+    recipient,
+    socialClaimAuthority,
+    userId,
+    platform
+  }) {
+    return await this.offlinePumpFeeProgram.methods.claimSocialFeePda(userId, platform).accountsPartial({
+      recipient,
+      socialClaimAuthority
+    }).instruction();
+  }
+  /**
+   * Reset a fee sharing configuration.
+   */
+  async resetFeeSharingConfigInstruction({
+    authority,
+    mint,
+    newAdmin
+  }) {
+    return await this.offlinePumpFeeProgram.methods.resetFeeSharingConfig().accountsPartial({
+      authority,
+      mint,
+      newAdmin,
+      sharingConfig: feeSharingConfigPda(mint)
+    }).instruction();
+  }
+  /**
+   * Transfer fee sharing authority to a new address.
+   */
+  async transferFeeSharingAuthorityInstruction({
+    authority,
+    mint,
+    newAdmin
+  }) {
+    return await this.offlinePumpFeeProgram.methods.transferFeeSharingAuthority().accountsPartial({
+      authority,
+      mint,
+      newAdmin,
+      sharingConfig: feeSharingConfigPda(mint)
+    }).instruction();
+  }
+  /**
+   * Permanently revoke fee sharing authority.
+   * After this, no one can modify the fee sharing configuration.
+   */
+  async revokeFeeSharingAuthorityInstruction({
+    authority,
+    mint
+  }) {
+    return await this.offlinePumpFeeProgram.methods.revokeFeeSharingAuthority().accountsPartial({
+      authority,
+      mint,
+      sharingConfig: feeSharingConfigPda(mint)
+    }).instruction();
+  }
+  /**
+   * Set the claim rate limit for anti-abuse throttling.
+   */
+  async setClaimRateLimitInstruction({
+    authority,
+    claimRateLimit
+  }) {
+    return await this.offlinePumpFeeProgram.methods.setClaimRateLimit(claimRateLimit).accountsPartial({
+      authority
+    }).instruction();
+  }
+  /**
+   * Set the social claim authority.
+   */
+  async setSocialClaimAuthorityInstruction({
+    authority,
+    socialClaimAuthority
+  }) {
+    return await this.offlinePumpFeeProgram.methods.setSocialClaimAuthority(socialClaimAuthority).accountsPartial({
+      authority
+    }).instruction();
+  }
+  /**
+   * Upsert (create or update) fee tiers for the protocol.
+   */
+  async upsertFeeTiersInstruction({
+    admin,
+    feeTiers,
+    offset = 0
+  }) {
+    return await this.offlinePumpFeeProgram.methods.upsertFeeTiers(feeTiers, offset).accountsPartial({
+      admin
     }).instruction();
   }
 };
@@ -19254,7 +19927,7 @@ var AMM_GLOBAL_VOLUME_ACCUMULATOR_PDA = (0, import_pump_swap_sdk3.pumpAmmPda)([
   import_buffer.Buffer.from("global_volume_accumulator")
 ]);
 var PUMP_EVENT_AUTHORITY_PDA = getEventAuthorityPda(PUMP_PROGRAM_ID);
-var PUMP_AMM_EVENT_AUTHORITY_PDA = getEventAuthorityPda(PUMP_AMM_PROGRAM_ID);
+var PUMP_AMM_EVENT_AUTHORITY_PDA2 = getEventAuthorityPda(PUMP_AMM_PROGRAM_ID);
 var PUMP_FEE_EVENT_AUTHORITY_PDA = getEventAuthorityPda(PUMP_FEE_PROGRAM_ID);
 function getEventAuthorityPda(programId) {
   return import_web35.PublicKey.findProgramAddressSync(
@@ -19321,11 +19994,33 @@ var ammCreatorVaultPda = (creator) => {
     PUMP_AMM_PROGRAM_ID
   )[0];
 };
+var feeProgramGlobalPda = () => {
+  return (0, import_pump_swap_sdk3.pumpFeePda)([import_buffer.Buffer.from("fee-program-global")]);
+};
+var socialFeePda = (userId, platform) => {
+  return (0, import_pump_swap_sdk3.pumpFeePda)([
+    import_buffer.Buffer.from("social-fee-pda"),
+    import_buffer.Buffer.from(userId),
+    import_buffer.Buffer.from([platform])
+  ]);
+};
+var ammUserVolumeAccumulatorPda = (user) => {
+  return (0, import_pump_swap_sdk3.pumpAmmPda)([import_buffer.Buffer.from("user_volume_accumulator"), user.toBuffer()]);
+};
+var AMM_FEE_CONFIG_PDA2 = (0, import_pump_swap_sdk3.pumpFeePda)([
+  import_buffer.Buffer.from("fee_config"),
+  PUMP_AMM_PROGRAM_ID.toBuffer()
+]);
+var AMM_GLOBAL_CONFIG_PDA = (0, import_pump_swap_sdk3.pumpAmmPda)([
+  import_buffer.Buffer.from("global_config")
+]);
 
 // src/index.ts
 init_fees();
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  AMM_FEE_CONFIG_PDA,
+  AMM_GLOBAL_CONFIG_PDA,
   AMM_GLOBAL_PDA,
   AMM_GLOBAL_VOLUME_ACCUMULATOR_PDA,
   BONDING_CURVE_NEW_SIZE,
@@ -19337,6 +20032,7 @@ init_fees();
   MAX_SHAREHOLDERS,
   MAYHEM_PROGRAM_ID,
   NoShareholdersError,
+  ONE_BILLION_SUPPLY,
   OnlinePumpSdk,
   PUMP_AMM_EVENT_AUTHORITY_PDA,
   PUMP_AMM_PROGRAM_ID,
@@ -19353,6 +20049,7 @@ init_fees();
   TooManyShareholdersError,
   ZeroShareError,
   ammCreatorVaultPda,
+  ammUserVolumeAccumulatorPda,
   bondingCurveMarketCap,
   bondingCurvePda,
   calculateBuyPriceImpact,
@@ -19362,6 +20059,7 @@ init_fees();
   computeFeesBps,
   creatorVaultPda,
   currentDayTokens,
+  feeProgramGlobalPda,
   feeSharingConfigPda,
   getBondingCurveSummary,
   getBuySolAmountFromTokenAmount,
@@ -19376,12 +20074,14 @@ init_fees();
   getPumpProgram,
   getSellSolAmountFromTokenAmount,
   getSolVaultPda,
+  getStaticRandomFeeRecipient,
   getTokenPrice,
   getTokenVaultPda,
   isCreatorUsingSharingConfig,
   newBondingCurve,
   pumpIdl,
   pumpPoolAuthorityPda,
+  socialFeePda,
   totalUnclaimedTokens,
   userVolumeAccumulatorPda
 });

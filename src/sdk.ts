@@ -1353,22 +1353,16 @@ export class PumpSdk {
 
   /**
    * Set virtual parameters for mayhem mode on a bonding curve.
+   * The solVaultAuthority PDA is the signer for this instruction.
    */
   async setMayhemVirtualParamsInstruction({
-    authority,
     mint,
-    virtualSolReserves,
-    virtualTokenReserves,
   }: {
-    authority: PublicKey;
     mint: PublicKey;
-    virtualSolReserves: BN;
-    virtualTokenReserves: BN;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpProgram.methods
-      .setMayhemVirtualParams(virtualSolReserves, virtualTokenReserves)
+      .setMayhemVirtualParams()
       .accountsPartial({
-        authority,
         mint,
       })
       .instruction();
