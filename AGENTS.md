@@ -10,7 +10,10 @@ The repository also includes:
 - **Rust vanity address generator** — multi-threaded, 100K+ keys/sec with rayon + solana-sdk
 - **TypeScript vanity generator** — educational reference implementation with @solana/web3.js
 - **MCP server** — Model Context Protocol server for AI agent integration
+- **Telegram bot** — PumpFun fee claim monitoring with Telegram notifications
+- **x402 payment protocol** — HTTP 402 micropayments with Solana USDC
 - **Shell scripts** — production Bash wrappers for solana-keygen
+- **Tutorials** — 19 hands-on guides covering the full SDK
 - **Documentation site** — Next.js website
 
 ## Architecture
@@ -21,10 +24,16 @@ The repository also includes:
 | Rust vanity generator | `rust/` | Rust |
 | TypeScript vanity generator | `typescript/` | TypeScript |
 | MCP server | `mcp-server/` | TypeScript |
+| Telegram bot | `telegram-bot/` | TypeScript |
+| x402 payment protocol | `x402/` | TypeScript |
+| Tutorials | `tutorials/` | Markdown |
 | Shell scripts | `scripts/` | Bash |
 | Test suites | `tests/` | Mixed |
 | Documentation | `docs/` | Markdown |
 | Website | `website/` | Next.js |
+| Security audits | `security/` | Markdown |
+| Agent prompts | `prompts/` | Markdown |
+| Audit & verification tools | `tools/` | Mixed |
 
 ## On-Chain Programs
 
@@ -32,7 +41,7 @@ The repository also includes:
 |---------|-----|---------|
 | Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve operations |
 | PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Graduated AMM pools |
-| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing |
+| PumpFees | `pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ` | Fee sharing |
 
 ## SDK Design
 
@@ -42,7 +51,7 @@ The repository also includes:
 
 ## Agent Skill Files
 
-See `.github/skills/` for 15 detailed skill documents covering every domain:
+See `.github/skills/` for 28 detailed skill documents covering every domain:
 - `pump-sdk-core.skill.md` — Core SDK patterns
 - `bonding-curve.skill.md` / `bonding-curve-math.skill.md` — AMM math
 - `token-lifecycle.skill.md` — Create, trade, migrate
@@ -60,7 +69,7 @@ See `.github/skills/` for 15 detailed skill documents covering every domain:
 
 - `.well-known/ai-plugin.json` — AI plugin manifest
 - `.well-known/agent.json` — Agent capabilities and configuration
-- `.well-known/skills.json` — Skills registry with all 15 skills
+- `.well-known/skills.json` — Skills registry
 - `.well-known/security.txt` — Security contact information
 - `llms.txt` — LLM context (quick reference)
 - `llms-full.txt` — LLM context (comprehensive)

@@ -2,7 +2,25 @@
 
 An overview of how the Pump SDK is organized and the key design decisions behind it.
 
-## Module Map
+## Repository Structure
+
+Beyond the core SDK (`src/`), the repository includes several companion components:
+
+| Directory | Purpose |
+|-----------|---------|
+| `src/` | Core SDK — instruction builders, bonding curve math, fees, PDAs, state |
+| `rust/` | High-performance Rust vanity address generator (rayon + solana-sdk) |
+| `typescript/` | TypeScript vanity address generator (@solana/web3.js) |
+| `mcp-server/` | Model Context Protocol server for AI agent integration |
+| `telegram-bot/` | PumpFun fee claim monitoring with Telegram notifications |
+| `x402/` | x402 payment protocol — HTTP 402 micropayments with Solana USDC |
+| `tutorials/` | 19 hands-on tutorial guides |
+| `scripts/` | Production Bash scripts wrapping solana-keygen |
+| `tests/` | Cross-language test suites |
+| `docs/` | API reference, architecture, guides |
+| `website/` | Next.js documentation site |
+
+## Core SDK Module Map
 
 ```
 src/

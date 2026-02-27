@@ -20,8 +20,14 @@ The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol on
 | `rust/` | Rust vanity generator (rayon + solana-sdk) |
 | `typescript/` | TypeScript vanity generator (@solana/web3.js) |
 | `mcp-server/` | MCP server (tools, resources, prompts) |
+| `telegram-bot/` | PumpFun fee claim monitoring bot |
+| `x402/` | x402 payment protocol (HTTP 402 USDC micropayments) |
+| `tutorials/` | 19 hands-on tutorial guides |
 | `scripts/` | Bash scripts (generate, verify, batch) |
-| `.github/skills/` | 15 detailed agent skill documents |
+| `docs/` | API reference, architecture, guides |
+| `tests/` | Cross-language test suites |
+| `website/` | Next.js documentation site |
+| `.github/skills/` | 28 detailed agent skill documents |
 | `.well-known/` | AI plugin, agent config, skills registry, security.txt |
 
 ## On-Chain Programs
@@ -30,7 +36,7 @@ The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol on
 |---------|-----|---------|
 | Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve operations |
 | PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Graduated AMM pools |
-| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing |
+| PumpFees | `pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ` | Fee sharing |
 
 ## Security Rules
 
@@ -50,7 +56,7 @@ The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol on
 
 ## Agent Resources
 
-- `.github/skills/` — 15 skill files covering all domains
+- `.github/skills/` — 28 skill files covering all domains
 - `.well-known/skills.json` — Skills registry
 - `.well-known/agent.json` — Agent capabilities
 - `llms.txt` / `llms-full.txt` — LLM context files

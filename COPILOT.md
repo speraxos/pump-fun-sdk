@@ -17,6 +17,8 @@
 | `security/` | Security audits and checklists |
 | `website/` | Next.js documentation site |
 | `x402/` | x402 payment protocol integration |
+| `tutorials/` | 19 hands-on tutorial guides |
+| `telegram-bot/` | PumpFun fee claim monitoring bot |
 | `prompts/` | Agent prompt templates |
 
 ## Three On-Chain Programs
@@ -25,7 +27,7 @@
 |---------|-----|---------|
 | Pump | `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P` | Bonding curve (create/buy/sell tokens) |
 | PumpAMM | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | Graduated token AMM pools |
-| PumpFees | `FeesoLMvuSJeJdhTpaLMjdiEE9NtNzx5bVHUvgWe7XjB` | Fee sharing and distribution |
+| PumpFees | `pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ` | Fee sharing and distribution |
 
 ## SDK Architecture
 

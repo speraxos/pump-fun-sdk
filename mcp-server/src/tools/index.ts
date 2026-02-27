@@ -10,6 +10,7 @@ import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 import { z } from 'zod';
 import { ServerState, ToolResult } from '../types/index.js';
+import { handlePumpToolCall } from './pump.js';
 
 // Use ToolResult as the call result type
 type CallToolResult = ToolResult;
@@ -20,6 +21,17 @@ import {
   isValidBase58 
 } from '../utils/validation.js';
 
+// Pump protocol tool names
+const PUMP_TOOLS = new Set([
+  'quote_buy', 'quote_sell', 'quote_buy_cost',
+  'get_market_cap', 'get_bonding_curve',
+  'build_create_token', 'build_create_and_buy', 'build_buy', 'build_sell', 'build_migrate',
+  'calculate_fees', 'get_fee_tier', 'build_create_fee_sharing', 'build_update_fee_shares',
+  'build_distribute_fees', 'get_creator_vault_balance', 'build_collect_creator_fees',
+  'build_init_volume_tracker', 'build_claim_incentives', 'get_unclaimed_rewards', 'get_volume_stats',
+  'derive_pda', 'fetch_global_state', 'fetch_fee_config', 'get_program_ids',
+]);
+
 /**
  * Handle a tool call request
  */
@@ -28,6 +40,22 @@ export async function handleToolCall(
   args: Record<string, unknown>,
   state: ServerState
 ): Promise<CallToolResult> {
+  // Route pump tools to the pump handler
+  if (PUMP_TOOLS.has(name)) {
+    // Parse shareholders JSON string if present
+    if (name === 'build_update_fee_shares' && typeof args.shareholders === 'string') {
+      try {
+        args.shareholders = JSON.parse(args.shareholders as string);
+      } catch {
+        return {
+          content: [{ type: 'text', text: 'Invalid shareholders JSON. Expected: [{"address": "pubkey", "shareBps": 5000}, ...]' }],
+          isError: true,
+        };
+      }
+    }
+    return handlePumpToolCall(name, args, state);
+  }
+
   switch (name) {
     case 'generate_keypair':
       return handleGenerateKeypair(args, state);
