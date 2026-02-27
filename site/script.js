@@ -10,9 +10,9 @@ var batteryLevel, winds = {}, memory = {}, _nowapp, fulsapp = false, appsHistory
 	"gallery",
 	"browser",
 	"studio",
-	"speraxai",
-	"speraxbot",
-	"speraxdocs",
+	"pumpai",
+	"pumpbot",
+	"pumpdocs",
 	"dashboard",
 	"cryptonews",
 	"terminal",
@@ -280,7 +280,7 @@ async function startup() {
 			const end = performance.now();
 
 			rllog(
-				`You are using \n\n%cSperaxOS%c\n%cSperaxOS is the web system made for you.%c\n\nStartup: ${(end - start).toFixed(2)}ms\nUsername: ${CurrentUsername}\n12hr Time format: ${timetypecondition}`,
+				`You are using \n\n%cPump Fun SDK%c\n%cPump Fun SDK is the web system made for you.%c\n\nStartup: ${(end - start).toFixed(2)}ms\nUsername: ${CurrentUsername}\n12hr Time format: ${timetypecondition}`,
 				'color: white; background-color: #101010; font-size: 2rem; padding: 0.7rem 1rem; border-radius: 1rem;',
 				'',
 				'padding:5px 0; padding-top:1rem;',
@@ -335,7 +335,7 @@ async function openn() {
 		gid("appdmod").close();
 		let choicetoreinst = await justConfirm(
 			`Re-initialize speraxOS?`,
-			`Did the speraxOS initialization fail? If yes, we can re-initialize your speraxOS and install all the default apps. \n\nSperaxOS did not find any apps while the initial load of Sperax Menu. \n\nRe-initializing your speraxOS may delete your data.`
+			`Did the speraxOS initialization fail? If yes, we can re-initialize your speraxOS and install all the default apps. \n\nPump Fun SDK did not find any apps while the initial load of Sperax Menu. \n\nRe-initializing your speraxOS may delete your data.`
 		);
 		if (choicetoreinst) {
 			initializeOS();
@@ -926,7 +926,7 @@ async function registerApp(appId, capabilities) {
 	}
 
 	if (!initialization && !nonotif)
-		notify(await getFileNameByID(appId) + " installed", "Registered " + capabilities.toString(), "SperaxOS System");
+		notify(await getFileNameByID(appId) + " installed", "Registered " + capabilities.toString(), "Pump Fun SDK System");
 	return capabilities.toString();
 }
 
@@ -1313,9 +1313,9 @@ eventBusWorker.listen({
 async function openFirstTimeWelcomeApps() {
 	const isMobile = matchMedia('(pointer: coarse)').matches;
 	
-	// Open speraxai (www.sperax.surf/chat) for both mobile and desktop
+	// Open pumpai (www.sperax.surf/chat) for both mobile and desktop
 	setTimeout(async () => {
-		await openapp('speraxai', 1);
+		await openapp('pumpai', 1);
 		if (!isMobile) {
 			// On desktop, make it larger and centered
 			const winKeys = Object.keys(winds);
@@ -1337,7 +1337,7 @@ async function initializeOS() {
 	cryptoKeyCache = null;
 	// Modal removed - can be re-added for wallet connect or other prompts
 	// await say(`<h2>...</h2><p>...</p>`);
-	console.log("Setting Up SperaxOS\n\nUsername: " + CurrentUsername + "\nWith: Sample preset\nUsing host: " + location.href)
+	console.log("Setting Up Pump Fun SDK\n\nUsername: " + CurrentUsername + "\nWith: Sample preset\nUsing host: " + location.href)
 	initialization = true
 	memory = {
 		"root": {
@@ -1378,7 +1378,7 @@ async function initializeOS() {
 				setTimeout(() => { 
 					initialization = false; 
 					nonotif = false;
-					notify("Welcome to SperaxOS", "You are now ready to explore the Sperax ecosystem.", "SperaxOS");
+					notify("Welcome to Pump Fun SDK", "You are now ready to explore the Sperax ecosystem.", "Pump Fun SDK");
 				}, 2000);
 			})
 	})
@@ -1386,7 +1386,7 @@ async function initializeOS() {
 
 async function createDesktopShortcuts() {
 	// Sperax ecosystem apps only on desktop
-	const desktopApps = ["terminal", "dashboard", "cryptonews", "speraxai", "speraxdocs", "store", "files", "settings"];
+	const desktopApps = ["terminal", "dashboard", "cryptonews", "pumpai", "pumpdocs", "store", "files", "settings"];
 	
 	try {
 		const allApps = await getFileNamesByFolder("Apps");
@@ -1555,7 +1555,7 @@ async function rlstrtappse(event) {
 
 	if (event.key === "Enter") {
 		event.preventDefault();
-		if (searchValue === "i love speraxos") {
+		if (searchValue === "i love pumpfunsdk") {
 			closeElementedis(gid("searchwindow"));
 			let x = await ask("What can i call you?");
 			say("i love you too, " + x);

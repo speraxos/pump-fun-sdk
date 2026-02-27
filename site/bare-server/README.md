@@ -1,6 +1,6 @@
-# SperaxOS Bare Server
+# Pump Fun SDK Bare Server
 
-A Bare Server implementation for SperaxOS web proxy functionality. This server acts as the backend that fetches web pages and strips restrictive headers, enabling the Ultraviolet client to display any website.
+A Bare Server implementation for Pump Fun SDK web proxy functionality. This server acts as the backend that fetches web pages and strips restrictive headers, enabling the Ultraviolet client to display any website.
 
 ## What is a Bare Server?
 
@@ -26,7 +26,7 @@ A Bare Server is a web server that:
    vercel
    ```
 
-3. **Follow prompts** and get your URL like: `https://speraxos-bare.vercel.app`
+3. **Follow prompts** and get your URL like: `https://pumpfunsdk-bare.vercel.app`
 
 ### Option 2: Railway (Free tier available)
 
@@ -72,7 +72,7 @@ After deployment, test your server:
 curl https://your-bare-server.vercel.app/
 
 # Expected response:
-# {"status":"ok","name":"SperaxOS Bare Server","version":"1.0.0","bare":"/bare/"}
+# {"status":"ok","name":"Pump Fun SDK Bare Server","version":"1.0.0","bare":"/bare/"}
 ```
 
 ## Configuration
@@ -81,13 +81,13 @@ The server runs on port `8080` by default, or uses the `PORT` environment variab
 
 ## Security Notes
 
-- This server is designed to work with SperaxOS
+- This server is designed to work with Pump Fun SDK
 - Consider adding rate limiting for production use
-- You may want to restrict CORS origins to your SperaxOS domain
+- You may want to restrict CORS origins to your Pump Fun SDK domain
 
-## Integration with SperaxOS
+## Integration with Pump Fun SDK
 
-Once deployed, update your SperaxOS configuration to use this bare server URL. The Ultraviolet client will connect to `/bare/` endpoint.
+Once deployed, update your Pump Fun SDK configuration to use this bare server URL. The Ultraviolet client will connect to `/bare/` endpoint.
 
 Example:
 ```javascript

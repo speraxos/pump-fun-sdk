@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>Sperax New Tab</title>
+	<title>Pump Fun SDK New Tab</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<style>
@@ -77,7 +77,7 @@
 			justify-items: center;
 		}
 
-		/* Sperax Shortcuts Section */
+		/* Pump Shortcuts Section */
 		.shortcuts {
 			display: grid;
 			grid-template-columns: repeat(4, 1fr);
@@ -240,27 +240,27 @@
 	<div class="mains">
 		<h1 class="logo" id="titlet">Good afternoon!</h1>
 		
-		<!-- Sperax Shortcuts -->
+		<!-- Pump Shortcuts -->
 		<div class="shortcuts">
-			<div class="shortcut" onclick="openSperaxApp('/Pump-Sdk/apps/speraxdocs.html')">
+			<div class="shortcut" onclick="openPumpApp('/Pump-Store/apps/pumpdocs.html')">
 				<div class="shortcut-icon">📖</div>
-				<div class="shortcut-name">SperaxOS Docs</div>
+				<div class="shortcut-name">Pump Docs</div>
 			</div>
-			<div class="shortcut" onclick="openSperaxApp('/Pump-Sdk/apps/speraxdefi.html')">
+			<div class="shortcut" onclick="openPumpApp('/Pump-Store/apps/pumpdefi.html')">
 				<div class="shortcut-icon">💸</div>
-				<div class="shortcut-name">Sperax DeFi</div>
+				<div class="shortcut-name">Pump DeFi</div>
 			</div>
-			<div class="shortcut" onclick="openSperaxApp('/Pump-Sdk/apps/speraxai.html')">
+			<div class="shortcut" onclick="openPumpApp('/Pump-Store/apps/pumpai.html')">
 				<div class="shortcut-icon">💬</div>
-				<div class="shortcut-name">Sperax AI</div>
+				<div class="shortcut-name">Pump AI</div>
 			</div>
-			<div class="shortcut" onclick="openSperaxApp('/Pump-Sdk/apps/speraxbot.html')">
+			<div class="shortcut" onclick="openPumpApp('/Pump-Store/apps/pumpbot.html')">
 				<div class="shortcut-icon">🤖</div>
 				<div class="shortcut-name">Telegram Bot</div>
 			</div>
-			<div class="shortcut" onclick="openSperaxApp('/Pump-Sdk/apps/portfolio.html')">
+			<div class="shortcut" onclick="openPumpApp('/Pump-Store/apps/portfolio.html')">
 				<div class="shortcut-icon">📊</div>
-				<div class="shortcut-name">Sperax Portfolio</div>
+				<div class="shortcut-name">Pump Portfolio</div>
 			</div>
 		</div>
 
@@ -283,8 +283,8 @@
 	</div>
 	<script>
 
-		// Function to open Sperax apps
-		function openSperaxApp(appPath) {
+		// Function to open Pump apps
+		function openPumpApp(appPath) {
 			if (window.parent && window.parent.newtab) {
 				window.parent.newtab(appPath);
 			} else {

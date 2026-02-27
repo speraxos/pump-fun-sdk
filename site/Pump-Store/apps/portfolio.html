@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sperax DeFi</title>
-    <meta name="sperax-icon" content="../../assets/speraxapp.svg">
+    <title>Sperax Portfolio</title>
+    <meta name="pump-icon" content="../../assets/logo.svg">
     <style>
         * {
             margin: 0;
@@ -48,20 +48,25 @@
 <body>
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
-        <p>Loading Sperax DeFi Platform...</p>
+        <p>Loading Sperax Portfolio</p>
     </div>
-    <iframe id="sperax-frame" src="https://pump-fun-sdk.vercel.app/"></iframe>
-
+    <iframe 
+        id="sperax-frame"
+        src="https://www.sperax.surf/terminal"
+        allow="clipboard-read; clipboard-write"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+    ></iframe>
+    
     <script>
         const iframe = document.getElementById('sperax-frame');
         const loading = document.getElementById('loading');
-
-        iframe.addEventListener('load', () => {
+        
+        iframe.addEventListener('load', function() {
             loading.style.display = 'none';
         });
-
-        // Fallback to hide loading after 5 seconds
-        setTimeout(() => {
+        
+        // Hide loading after 5 seconds even if iframe doesn't fully load
+        setTimeout(function() {
             loading.style.display = 'none';
         }, 5000);
     </script>

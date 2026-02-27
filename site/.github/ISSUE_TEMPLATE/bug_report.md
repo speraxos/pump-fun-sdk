@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug to help us improve SperaxOS
+about: Report a bug to help us improve Pump Fun SDK
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -27,7 +27,7 @@ If applicable, add screenshots to help explain your problem.
 ## Environment
 - **Browser**: [e.g., Chrome 120, Firefox 121, Safari 17]
 - **OS**: [e.g., Windows 11, macOS Sonoma, Ubuntu 22.04]
-- **SperaxOS Version**: [if known]
+- **Pump Fun SDK Version**: [if known]
 - **Device**: [Desktop/Mobile/Tablet]
 
 ## Console Errors

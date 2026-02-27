@@ -1,7 +1,7 @@
 {
-  "name": "speraxos-bare-server",
+  "name": "pumpfunsdk-bare-server",
   "version": "1.0.0",
-  "description": "Bare Server for SperaxOS web proxy",
+  "description": "Bare Server for Pump Fun SDK web proxy",
   "main": "index.js",
   "type": "module",
   "scripts": {

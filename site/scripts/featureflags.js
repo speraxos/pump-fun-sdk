@@ -1,9 +1,9 @@
 /**
- * SperaxOS Feature Flags
+ * Pump Fun SDK Feature Flags
  * Lightweight feature flag system for client-side control
  * 
  * Usage:
- *   FeatureFlags.isEnabled('app.speraxai')   // Check if app is enabled
+ *   FeatureFlags.isEnabled('app.pumpai')   // Check if app is enabled
  *   FeatureFlags.isEnabled('permissions')    // Check if permission prompts are enabled
  *   FeatureFlags.isEnabled('notify.toast')   // Check if toast notifications are enabled
  */
@@ -33,11 +33,11 @@ const FeatureFlags = {
         'app.settings': true,            // Settings
         
         // Sperax Apps
-        'app.speraxai': true,            // Sperax AI
-        'app.speraxbot': true,           // Sperax Bot
-        'app.speraxdefi': true,          // Sperax DeFi
-        'app.speraxdocs': true,          // Sperax Docs
-        'app.speraxchat': true,          // Sperax Chat (embedded from sperax.surf)
+        'app.pumpai': true,            // Sperax AI
+        'app.pumpbot': true,           // Sperax Bot
+        'app.pumpdefi': true,          // Sperax DeFi
+        'app.pumpdocs': true,          // Sperax Docs
+        'app.pumpchat': true,          // Sperax Chat (embedded from sperax.surf)
         'app.portfolio': true,           // Portfolio Tracker
         
         // Utility Apps
@@ -342,7 +342,7 @@ const FeatureFlags = {
             </style>
             <div class="container">
                 <div class="logo">🚀</div>
-                <h1>SperaxOS Beta</h1>
+                <h1>Pump Fun SDK Beta</h1>
                 <p>Enter your beta access code to continue</p>
                 <form id="beta-form">
                     <input type="text" id="beta-code" placeholder="BETA CODE" maxlength="20" autocomplete="off" autofocus>
@@ -431,7 +431,7 @@ const FeatureFlags = {
     
     /**
      * Check if an app is enabled
-     * @param {string} appName - App name (e.g., 'speraxai', 'calculator')
+     * @param {string} appName - App name (e.g., 'pumpai', 'calculator')
      */
     isAppEnabled(appName) {
         const normalized = appName.toLowerCase().replace(/\.html$/, '');
@@ -565,8 +565,8 @@ const FeatureFlags = {
      * Enable only Sperax apps, disable others
      */
     speraxOnlyMode() {
-        const speraxApps = ['store', 'files', 'settings', 'speraxai', 'speraxbot', 
-                           'speraxdefi', 'speraxdocs', 'speraxchat', 'portfolio'];
+        const speraxApps = ['store', 'files', 'settings', 'pumpai', 'pumpbot', 
+                           'pumpdefi', 'pumpdocs', 'pumpchat', 'portfolio'];
         
         for (const [key, _] of Object.entries(this.defaults)) {
             if (key.startsWith('app.')) {

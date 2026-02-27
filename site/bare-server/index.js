@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 const app = express();
 const bareServer = createBareServer("/bare/");
 
-// CORS headers for all origins (SperaxOS needs this)
+// CORS headers for all origins (Pump Fun SDK needs this)
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.json({
     status: "ok",
-    name: "SperaxOS Bare Server",
+    name: "Pump Fun SDK Bare Server",
     version: "1.0.0",
     bare: "/bare/",
     documentation: "https://github.com/tomphttp/bare-server-node"
@@ -58,6 +58,6 @@ server.on("upgrade", (req, socket, head) => {
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
-  console.log(`🚀 SperaxOS Bare Server running on port ${PORT}`);
+  console.log(`🚀 Pump Fun SDK Bare Server running on port ${PORT}`);
   console.log(`   Bare endpoint: http://localhost:${PORT}/bare/`);
 });

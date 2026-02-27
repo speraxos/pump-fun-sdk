@@ -1,5 +1,5 @@
 // ============================================
-// SperaxOS System Features
+// Pump Fun SDK System Features
 // Notification Center, System Sounds, Lock Screen,
 // Screenshot Tool, Clipboard History
 // ============================================
@@ -915,7 +915,7 @@ function initSystemFeatures() {
     // Update notification badge
     updateNotificationBadge();
     
-    console.log('SperaxOS System Features initialized');
+    console.log('Pump Fun SDK System Features initialized');
 }
 
 // Auto-initialize when DOM is ready

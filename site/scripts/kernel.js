@@ -278,7 +278,7 @@ async function prepareIframeContent(cont, appid, winuid) {
     let contentString = isBase64(cont) ? decodeBase64Content(cont) : (cont || "<center><h1>Unavailable</h1>App Data cannot be read.</center>");
 
     let styleBlock = '';
-    if (getMetaTagContent(contentString, 'sperax-include')?.includes('sperax.css')) {
+    if (getMetaTagContent(contentString, 'sperax-include')?.includes('pump.css')) {
         let updatedCss = speraxdotcsscache || '';
         const speraxCssTag = document.getElementById('speraxcsstag');
         if (speraxCssTag) {

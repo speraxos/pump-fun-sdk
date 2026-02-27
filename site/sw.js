@@ -7,7 +7,7 @@ const urlsToCache = [
   '/system32.js',
   '/style.css',
   '/n.png',
-  '/sperax.css',
+  '/pump.css',
   '/scripts/edgecases.js',
   '/scripts/scripties.js',
   '/script.js',

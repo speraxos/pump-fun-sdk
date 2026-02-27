@@ -81,7 +81,7 @@ async function checkAndRunFromURL() {
 	}
 
 	if (run === 'erdbsfull') {
-		let x = await justConfirm("Reset all your data?", "The link you opened SperaxOS had a param to erase your device. Do this only if its instructed to do so by SperaxOS developers.");
+		let x = await justConfirm("Reset all your data?", "The link you opened Pump Fun SDK had a param to erase your device. Do this only if its instructed to do so by Pump Fun SDK developers.");
 		if (x) {
 			erdbsfull();
 		}
@@ -90,7 +90,7 @@ async function checkAndRunFromURL() {
 	const filePath = params.get('path');
 
 	if (filePath) {
-		console.log(`Opening SperaxOS path: ${filePath}`);
+		console.log(`Opening Pump Fun SDK path: ${filePath}`);
 
 		onstartup.push(async () => {
 			let fileid = await getFileByPath(filePath);
@@ -134,7 +134,7 @@ async function getMimeType(extension) {
 }
 
 async function useSperaxOffline() {
-	if (await justConfirm("Turn on offline mode?", "Offline mode saves a copy of SperaxOS (~5MB) in your browser.")) {
+	if (await justConfirm("Turn on offline mode?", "Offline mode saves a copy of Pump Fun SDK (~5MB) in your browser.")) {
 
 		if ('serviceWorker' in navigator) {
 			navigator.serviceWorker.register('sw.js', { scope: '/' })
@@ -167,7 +167,7 @@ async function qsetsRefresh() {
 // themes
 async function checkdmode() {
 	if (!speraxdotcsscache) {
-		const response = await fetch('sperax.css');
+		const response = await fetch('pump.css');
 		speraxdotcsscache = await response.text();
 	}
 

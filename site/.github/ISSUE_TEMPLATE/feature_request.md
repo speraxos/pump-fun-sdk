@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest an idea for SperaxOS
+about: Suggest an idea for Pump Fun SDK
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
@@ -30,12 +30,12 @@ If you have technical ideas on how this could be implemented, share them here.
 
 ## Priority
 How important is this feature to you?
-- [ ] Critical - Can't use SperaxOS without it
+- [ ] Critical - Can't use Pump Fun SDK without it
 - [ ] High - Would significantly improve my experience
 - [ ] Medium - Nice to have
 - [ ] Low - Minor improvement
 
 ## Checklist
 - [ ] I have searched existing issues/feature requests
-- [ ] This feature doesn't already exist in SperaxOS
+- [ ] This feature doesn't already exist in Pump Fun SDK
 - [ ] I would be willing to help implement this feature

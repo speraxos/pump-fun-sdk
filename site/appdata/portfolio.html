@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sperax Portfolio</title>
-    <meta name="sperax-icon" content="../assets/logo.svg">
+    <title>Pump Portfolio</title>
+    <meta name="pump-icon" content="../assets/logo.svg">
     <meta name="permissions" content="unsandboxed">
     <style>
         * {
@@ -67,7 +67,7 @@
     
     <div id="loading">
         <div class="spinner"></div>
-        <div>Loading Sperax Portfolio...</div>
+        <div>Loading Pump Portfolio...</div>
     </div>
     
     <script>
@@ -78,25 +78,25 @@
             frame.classList.add('loaded');
         });
         
-        // Optional: Message passing between SperaxOS and Sperax Portfolio
+        // Optional: Message passing between Pump Fun SDK and Pump Portfolio
         window.addEventListener('message', (event) => {
-            // Handle messages from Sperax Portfolio iframe
+            // Handle messages from Pump Portfolio iframe
             if (event.origin === 'https://www.sperax.surf') {
-                console.log('Message from Sperax Portfolio:', event.data);
+                console.log('Message from Pump Portfolio:', event.data);
                 
-                // Could trigger SperaxOS actions, e.g.:
+                // Could trigger Pump Fun SDK actions, e.g.:
                 // if (event.data.action === 'openFile') {
                 //     window.parent.openFileDialog();
                 // }
             }
         });
         
-        // Send messages to Sperax Portfolio
+        // Send messages to Pump Portfolio
         function sendToPortfolio(message) {
             frame.contentWindow.postMessage(message, 'https://www.sperax.surf');
         }
         
-        // Make available globally for other SperaxOS apps
+        // Make available globally for other Pump Fun SDK apps
         window.sendToPortfolio = sendToPortfolio;
     </script>
 </body>

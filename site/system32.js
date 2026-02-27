@@ -1,6 +1,6 @@
 
 var CurrentUsername = 'Admin';
-var password = "sperax";
+var password = "pump";
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 var lethalpasswordtimes = true;
