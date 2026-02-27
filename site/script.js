@@ -1,4 +1,4 @@
-var batteryLevel, winds = {}, memory = {}, _nowapp, fulsapp = false, appsHistory = [], nowwindow, appicns = {}, fileslist = [], badlaunch = false, initmenuload = true, fileTypeAssociations = {}, handlers = {}, Gtodo, notifLog = {}, initialization = false, onstartup = [], speraxFeaturedImage = `Dev.png`, defAppsList = [
+var batteryLevel, winds = {}, memory = {}, _nowapp, fulsapp = false, appsHistory = [], nowwindow, appicns = {}, fileslist = [], badlaunch = false, initmenuload = true, fileTypeAssociations = {}, handlers = {}, Gtodo, notifLog = {}, initialization = false, onstartup = [], pumpFeaturedImage = `Dev.png`, defAppsList = [
 	"store",
 	"files",
 	"settings",
@@ -93,7 +93,7 @@ function loginscreenbackbtn() {
 async function showloginmod() {
 	if (badlaunch) { return }
 	var imgprvtmp = gid("wallbgpreview");
-	imgprvtmp.src = speraxFeaturedImage;
+	imgprvtmp.src = pumpFeaturedImage;
 	imgprvtmp.onload = function handler() {
 		imgprvtmp.onload = null;
 
@@ -118,7 +118,7 @@ async function showloginmod() {
 					CurrentUsername = cacusername;
 					let isdefaultpass = false;
 					try {
-						isdefaultpass = await checkPassword('sperax');
+						isdefaultpass = await checkPassword('pump');
 					} catch (err) {
 						console.error("Password check failed:", err);
 					}
@@ -334,8 +334,8 @@ async function openn() {
 		initmenuload = false;
 		gid("appdmod").close();
 		let choicetoreinst = await justConfirm(
-			`Re-initialize speraxOS?`,
-			`Did the speraxOS initialization fail? If yes, we can re-initialize your speraxOS and install all the default apps. \n\nPump Fun SDK did not find any apps while the initial load of Sperax Menu. \n\nRe-initializing your speraxOS may delete your data.`
+			`Re-initialize Pump Fun SDK?`,
+			`Did the Pump Fun SDK initialization fail? If yes, we can re-initialize your Pump Fun SDK and install all the default apps. \n\nPump Fun SDK did not find any apps while the initial load of Pump Menu. \n\nRe-initializing your Pump Fun SDK may delete your data.`
 		);
 		if (choicetoreinst) {
 			initializeOS();
@@ -462,7 +462,7 @@ async function loadrecentapps() {
 		gid("serrecentapps").appendChild(appShortcutDiv);
 	})).then(async () => {
 
-		gid("speraxmenusearchinp").focus();
+		gid("pumpmenusearchinp").focus();
 	}).catch((error) => {
 		console.error('An error occurred:', error);
 	});
@@ -818,9 +818,9 @@ async function extractAndRegisterCapabilities(appId, content) {
 		const appFileName = await getFileNameByID(appId);
 		const appNameLower = appFileName?.toLowerCase().replace('.app', '') || '';
 		const isBuiltInApp = defAppsList.some(defApp => appNameLower.includes(defApp.toLowerCase()));
-		const isSperaxApp = appNameLower.startsWith('sperax');
-		if (isBuiltInApp || isSperaxApp) {
-			console.log("Built-in/Sperax app detected, auto-approving permissions:", appFileName);
+		const isPumpApp = appNameLower.startsWith('pump');
+		if (isBuiltInApp || isPumpApp) {
+			console.log("Built-in/Pump app detected, auto-approving permissions:", appFileName);
 			onlyDefPerms = true;
 		}
 
@@ -1378,14 +1378,14 @@ async function initializeOS() {
 				setTimeout(() => { 
 					initialization = false; 
 					nonotif = false;
-					notify("Welcome to Pump Fun SDK", "You are now ready to explore the Sperax ecosystem.", "Pump Fun SDK");
+					notify("Welcome to Pump Fun SDK", "You are now ready to explore the Pump ecosystem.", "Pump Fun SDK");
 				}, 2000);
 			})
 	})
 }
 
 async function createDesktopShortcuts() {
-	// Sperax ecosystem apps only on desktop
+	// Pump ecosystem apps only on desktop
 	const desktopApps = ["terminal", "dashboard", "cryptonews", "pumpai", "pumpdocs", "store", "files", "settings"];
 	
 	try {
@@ -1882,7 +1882,7 @@ function runAsOSL(content) {
 			border: none;
 		}
 	</style>`;
-	openwindow("Sperax OSL Runner", cont);
+	openwindow("Pump OSL Runner", cont);
 }
 function runAsWasm(content) {
 	const wasmBytes = new Uint8Array(content);
@@ -1903,7 +1903,7 @@ function runAsWasm(content) {
 		}
 	`;
 	div.appendChild(script);
-	openwindow("Sperax Wasm Runner", div.innerHTML);
+	openwindow("Pump Wasm Runner", div.innerHTML);
 }
 
 (async () => {
@@ -1925,19 +1925,19 @@ function runAsWasm(content) {
 
 async function realgenTaskBar() {
 	gid("dock").style.display = "none";
-	gid("speraxnav").style.display = "grid";
+	gid("pumpnav").style.display = "grid";
 
 	// nav theme
 	try {
 
-		var SperaxNavCtrl = await getSetting("SperaxNavCtrl")
-		if (SperaxNavCtrl.bg) {
-			gid("speraxnav").style.backgroundColor = "transparent";
+		var PumpNavCtrl = await getSetting("PumpNavCtrl")
+		if (PumpNavCtrl.bg) {
+			gid("pumpnav").style.backgroundColor = "transparent";
 		} else {
-			gid("speraxnav").style.backgroundColor = "var(--col-bg1)";
+			gid("pumpnav").style.backgroundColor = "var(--col-bg1)";
 		}
 
-		gid("speraxnav").style.justifyContent = SperaxNavCtrl.align;
+		gid("pumpnav").style.justifyContent = PumpNavCtrl.align;
 	} catch (e) { }
 
 	var appbarelement = document.getElementById("dock");
@@ -2096,7 +2096,7 @@ async function renderWall() {
 	}
 	document.getElementById("bgimage").onerror = async function (event) {
 		toast("It doesn't seem to work as the wallpaper...")
-		setbgimagetourl(speraxFeaturedImage);
+		setbgimagetourl(pumpFeaturedImage);
 		if (await getSetting("wall")) {
 			remSettingKey("wall");
 		}
@@ -2209,7 +2209,7 @@ async function checkifpassright() {
 	}
 	gid("loginform1").value = '';
 }
-async function logoutofsperax() {
+async function logoutofpump() {
 	await cleanupram();
 	await showloginmod();
 	removeTheme();
@@ -2222,7 +2222,7 @@ async function cleanupram() {
 	document.querySelectorAll('dialog[open].onramcloseable').forEach(dialog => dialog.close());
 	memory = null;
 	CurrentUsername = null;
-	password = 'sperax';
+	password = 'pump';
 	winds = {};
 	MemoryTimeCache = null;
 	lethalpasswordtimes = true;
@@ -2238,7 +2238,7 @@ async function setandinitnewuser() {
 	await initializeOS();
 	gid('loginmod').close();
 }
-async function speraxrefresh() {
+async function pumprefresh() {
 	genDesktop();
 	genTaskBar();
 	cleanupInvalidAssociations();
@@ -2249,7 +2249,7 @@ async function speraxrefresh() {
 	loadSessionSettings();
 }
 function launchbios() {
-	document.getElementById('speraxsetupusernamedisplay').innerText = CurrentUsername;
+	document.getElementById('pumpsetupusernamedisplay').innerText = CurrentUsername;
 	document.getElementById('bios').showModal();
 }
 function domLoad_checkedgecases() {
@@ -2275,7 +2275,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 	genTaskBar = debounce(realgenTaskBar, 500);
 	genDesktop = debounce(realgenDesktop, 500);
 
-	const searchInput5342 = document.querySelector('#speraxmenusearchinp');
+	const searchInput5342 = document.querySelector('#pumpmenusearchinp');
 	let keyHeld = false;
 
 	searchInput5342.addEventListener('keydown', () => {
@@ -2325,7 +2325,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 	await loadScripts();
 
-	setbgimagetourl(speraxFeaturedImage);
+	setbgimagetourl(pumpFeaturedImage);
 
 	gid("nowrunninapps").style.display = "none";
 	gid('seprw-openb').onclick = function () {
@@ -2432,7 +2432,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 	}
 
 	startfunctions();
-	gid("speraxnav").style.display = "none";
+	gid("pumpnav").style.display = "none";
 	async function waitForNonNull() {
 		const startTime = Date.now();
 		const maxWaitTime = 500;
@@ -3070,13 +3070,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		});
 		
-		localStorage.setItem('sperax-desktop-positions', JSON.stringify(positions));
+		localStorage.setItem('pump-desktop-positions', JSON.stringify(positions));
 	}
 	
 	// Restore icon positions from localStorage
 	function restoreIconPositions() {
 		try {
-			const saved = localStorage.getItem('sperax-desktop-positions');
+			const saved = localStorage.getItem('pump-desktop-positions');
 			if (!saved) return;
 			
 			const positions = JSON.parse(saved);

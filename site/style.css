@@ -144,7 +144,7 @@ nav [navobj] {
 	transition: var(--time1);
 }
 
-#speraxic {
+#pumpic {
 	fill: var(--col-txt1);
 }
 
@@ -1146,7 +1146,7 @@ nav [navobj] {
 	font-size: 15px;
 }
 
-input#speraxmenusearchinp {
+input#pumpmenusearchinp {
 	display: flex;
 	width: 60px;
 	font-size: inherit;
@@ -1157,7 +1157,7 @@ input#speraxmenusearchinp {
 	color: inherit;
 }
 
-.speraxmenusearchinpbtn span {
+.pumpmenusearchinpbtn span {
 	font-size: 1rem;
 	display: flex;
 	align-items: center;
@@ -1165,7 +1165,7 @@ input#speraxmenusearchinp {
 	opacity: 0.5;
 }
 
-.speraxmenusearchinpbtn {
+.pumpmenusearchinpbtn {
 	display: flex !important;
 	flex-direction: row;
 	background: var(--col-bg2);
