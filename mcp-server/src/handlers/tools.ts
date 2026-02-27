@@ -708,15 +708,15 @@ export const TOOLS: ToolDefinition[] = [
   // ── Fee Sharing (Social Fees & Authority) ──────────────────────────
   {
     name: 'build_create_social_fee',
-    description: 'Build an instruction to create a social fee PDA that links a user to a fee sharing authority.',
+    description: 'Build an instruction to create a social fee PDA for social/referral fee sharing.',
     inputSchema: {
       type: 'object',
       properties: {
         payer: { type: 'string', description: 'Payer wallet public key (pays rent)' },
-        authority: { type: 'string', description: 'Fee sharing authority public key' },
-        user: { type: 'string', description: 'User wallet public key' },
+        userId: { type: 'string', description: 'Social platform user ID' },
+        platform: { type: 'number', description: 'Platform identifier (0 = default)' },
       },
-      required: ['payer', 'authority', 'user'],
+      required: ['payer', 'userId'],
     },
   },
   {
@@ -725,10 +725,12 @@ export const TOOLS: ToolDefinition[] = [
     inputSchema: {
       type: 'object',
       properties: {
-        authority: { type: 'string', description: 'Fee sharing authority public key' },
-        user: { type: 'string', description: 'User wallet public key' },
+        recipient: { type: 'string', description: 'Recipient wallet public key' },
+        socialClaimAuthority: { type: 'string', description: 'Social claim authority public key' },
+        userId: { type: 'string', description: 'Social platform user ID' },
+        platform: { type: 'number', description: 'Platform identifier (0 = default)' },
       },
-      required: ['authority', 'user'],
+      required: ['recipient', 'socialClaimAuthority', 'userId'],
     },
   },
   {
@@ -739,8 +741,9 @@ export const TOOLS: ToolDefinition[] = [
       properties: {
         authority: { type: 'string', description: 'Current authority wallet public key' },
         mint: { type: 'string', description: 'Token mint address' },
+        newAdmin: { type: 'string', description: 'New admin wallet public key' },
       },
-      required: ['authority', 'mint'],
+      required: ['authority', 'mint', 'newAdmin'],
     },
   },
   {
@@ -751,9 +754,9 @@ export const TOOLS: ToolDefinition[] = [
       properties: {
         authority: { type: 'string', description: 'Current authority wallet public key' },
         mint: { type: 'string', description: 'Token mint address' },
-        newAuthority: { type: 'string', description: 'New authority wallet public key' },
+        newAdmin: { type: 'string', description: 'New admin wallet public key' },
       },
-      required: ['authority', 'mint', 'newAuthority'],
+      required: ['authority', 'mint', 'newAdmin'],
     },
   },
   {
@@ -772,15 +775,13 @@ export const TOOLS: ToolDefinition[] = [
   // ── Creator Management ──────────────────────────────────────────────
   {
     name: 'build_migrate_creator',
-    description: 'Build an instruction to migrate bonding curve creator to a new wallet. Transfers future creator fees.',
+    description: 'Build an instruction to migrate bonding curve creator to match the fee sharing config PDA.',
     inputSchema: {
       type: 'object',
       properties: {
-        authority: { type: 'string', description: 'Current authority (creator) wallet public key' },
         mint: { type: 'string', description: 'Token mint address' },
-        newCreator: { type: 'string', description: 'New creator wallet public key' },
       },
-      required: ['authority', 'mint', 'newCreator'],
+      required: ['mint'],
     },
   },
 ];

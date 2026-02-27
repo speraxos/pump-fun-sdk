@@ -1808,19 +1808,17 @@ export class PumpSdk {
    */
   async createSocialFeePdaInstruction({
     payer,
-    authority,
-    user,
+    userId,
+    platform,
   }: {
     payer: PublicKey;
-    authority: PublicKey;
-    user: PublicKey;
+    userId: string;
+    platform: number;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
-      .createSocialFeePda()
+      .createSocialFeePda(userId, platform)
       .accountsPartial({
         payer,
-        authority,
-        user,
       })
       .instruction();
   }
@@ -1829,17 +1827,21 @@ export class PumpSdk {
    * Claim accumulated social/referral fees.
    */
   async claimSocialFeePdaInstruction({
-    authority,
-    user,
+    recipient,
+    socialClaimAuthority,
+    userId,
+    platform,
   }: {
-    authority: PublicKey;
-    user: PublicKey;
+    recipient: PublicKey;
+    socialClaimAuthority: PublicKey;
+    userId: string;
+    platform: number;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
-      .claimSocialFeePda()
+      .claimSocialFeePda(userId, platform)
       .accountsPartial({
-        authority,
-        user,
+        recipient,
+        socialClaimAuthority,
       })
       .instruction();
   }
@@ -1850,15 +1852,19 @@ export class PumpSdk {
   async resetFeeSharingConfigInstruction({
     authority,
     mint,
+    newAdmin,
   }: {
     authority: PublicKey;
     mint: PublicKey;
+    newAdmin: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
       .resetFeeSharingConfig()
       .accountsPartial({
         authority,
         mint,
+        newAdmin,
+        sharingConfig: feeSharingConfigPda(mint),
       })
       .instruction();
   }
@@ -1869,17 +1875,19 @@ export class PumpSdk {
   async transferFeeSharingAuthorityInstruction({
     authority,
     mint,
-    newAuthority,
+    newAdmin,
   }: {
     authority: PublicKey;
     mint: PublicKey;
-    newAuthority: PublicKey;
+    newAdmin: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
-      .transferFeeSharingAuthority(newAuthority)
+      .transferFeeSharingAuthority()
       .accountsPartial({
         authority,
         mint,
+        newAdmin,
+        sharingConfig: feeSharingConfigPda(mint),
       })
       .instruction();
   }
@@ -1900,6 +1908,7 @@ export class PumpSdk {
       .accountsPartial({
         authority,
         mint,
+        sharingConfig: feeSharingConfigPda(mint),
       })
       .instruction();
   }
@@ -1908,16 +1917,16 @@ export class PumpSdk {
    * Set the claim rate limit for anti-abuse throttling.
    */
   async setClaimRateLimitInstruction({
-    admin,
+    authority,
     claimRateLimit,
   }: {
-    admin: PublicKey;
+    authority: PublicKey;
     claimRateLimit: BN;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
       .setClaimRateLimit(claimRateLimit)
       .accountsPartial({
-        admin,
+        authority,
       })
       .instruction();
   }
@@ -1926,16 +1935,16 @@ export class PumpSdk {
    * Set the social claim authority.
    */
   async setSocialClaimAuthorityInstruction({
-    admin,
+    authority,
     socialClaimAuthority,
   }: {
-    admin: PublicKey;
+    authority: PublicKey;
     socialClaimAuthority: PublicKey;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
       .setSocialClaimAuthority(socialClaimAuthority)
       .accountsPartial({
-        admin,
+        authority,
       })
       .instruction();
   }
@@ -1946,15 +1955,17 @@ export class PumpSdk {
   async upsertFeeTiersInstruction({
     admin,
     feeTiers,
+    offset = 0,
   }: {
     admin: PublicKey;
     feeTiers: Array<{
       marketCapLamportsThreshold: BN;
       fees: { lpFeeBps: BN; protocolFeeBps: BN; creatorFeeBps: BN };
     }>;
+    offset?: number;
   }): Promise<TransactionInstruction> {
     return await this.offlinePumpFeeProgram.methods
-      .upsertFeeTiers(feeTiers)
+      .upsertFeeTiers(feeTiers, offset)
       .accountsPartial({
         admin,
       })

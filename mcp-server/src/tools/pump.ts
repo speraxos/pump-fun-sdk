@@ -1454,33 +1454,39 @@ async function handleBuildCreateSocialFee(
   args: Record<string, unknown>,
 ): Promise<ToolResult> {
   const payer = requirePubkey(args.payer, "payer");
-  const authority = requirePubkey(args.authority, "authority");
-  const user = requirePubkey(args.user, "user");
+  const userId = args.userId as string;
+  if (!userId) return err("Missing required argument: userId");
+  const platform = Number(args.platform ?? 0);
 
   const ix = await PUMP_SDK.createSocialFeePdaInstruction({
     payer,
-    authority,
-    user,
+    userId,
+    platform,
   });
 
   return ok(
-    `🔗 Create Social Fee PDA Instruction Built\n\nPayer: ${payer.toBase58()}\nAuthority: ${authority.toBase58()}\nUser: ${user.toBase58()}\n\n${serializeInstructions([ix])}`,
+    `🔗 Create Social Fee PDA Instruction Built\n\nPayer: ${payer.toBase58()}\nUser ID: ${userId}\nPlatform: ${platform}\n\n${serializeInstructions([ix])}`,
   );
 }
 
 async function handleBuildClaimSocialFee(
   args: Record<string, unknown>,
 ): Promise<ToolResult> {
-  const authority = requirePubkey(args.authority, "authority");
-  const user = requirePubkey(args.user, "user");
+  const recipient = requirePubkey(args.recipient, "recipient");
+  const socialClaimAuthority = requirePubkey(args.socialClaimAuthority, "socialClaimAuthority");
+  const userId = args.userId as string;
+  if (!userId) return err("Missing required argument: userId");
+  const platform = Number(args.platform ?? 0);
 
   const ix = await PUMP_SDK.claimSocialFeePdaInstruction({
-    authority,
-    user,
+    recipient,
+    socialClaimAuthority,
+    userId,
+    platform,
   });
 
   return ok(
-    `💰 Claim Social Fee Instruction Built\n\nAuthority: ${authority.toBase58()}\nUser: ${user.toBase58()}\n\n${serializeInstructions([ix])}`,
+    `💰 Claim Social Fee Instruction Built\n\nRecipient: ${recipient.toBase58()}\nAuthority: ${socialClaimAuthority.toBase58()}\nUser ID: ${userId}\nPlatform: ${platform}\n\n${serializeInstructions([ix])}`,
   );
 }
 
@@ -1489,14 +1495,16 @@ async function handleBuildResetFeeSharing(
 ): Promise<ToolResult> {
   const authority = requirePubkey(args.authority, "authority");
   const mint = requirePubkey(args.mint, "mint");
+  const newAdmin = requirePubkey(args.newAdmin, "newAdmin");
 
   const ix = await PUMP_SDK.resetFeeSharingConfigInstruction({
     authority,
     mint,
+    newAdmin,
   });
 
   return ok(
-    `🔄 Reset Fee Sharing Config Instruction Built\n\nAuthority: ${authority.toBase58()}\nMint: ${mint.toBase58()}\n\n${serializeInstructions([ix])}`,
+    `🔄 Reset Fee Sharing Config Instruction Built\n\nAuthority: ${authority.toBase58()}\nMint: ${mint.toBase58()}\nNew Admin: ${newAdmin.toBase58()}\n\n${serializeInstructions([ix])}`,
   );
 }
 
@@ -1505,16 +1513,16 @@ async function handleBuildTransferFeeAuthority(
 ): Promise<ToolResult> {
   const authority = requirePubkey(args.authority, "authority");
   const mint = requirePubkey(args.mint, "mint");
-  const newAuthority = requirePubkey(args.newAuthority, "newAuthority");
+  const newAdmin = requirePubkey(args.newAdmin, "newAdmin");
 
   const ix = await PUMP_SDK.transferFeeSharingAuthorityInstruction({
     authority,
     mint,
-    newAuthority,
+    newAdmin,
   });
 
   return ok(
-    `🔑 Transfer Fee Sharing Authority Instruction Built\n\nMint: ${mint.toBase58()}\nCurrent Authority: ${authority.toBase58()}\nNew Authority: ${newAuthority.toBase58()}\n\n${serializeInstructions([ix])}`,
+    `🔑 Transfer Fee Sharing Authority Instruction Built\n\nMint: ${mint.toBase58()}\nCurrent Authority: ${authority.toBase58()}\nNew Admin: ${newAdmin.toBase58()}\n\n${serializeInstructions([ix])}`,
   );
 }
 
@@ -1541,17 +1549,13 @@ async function handleBuildRevokeFeeAuthority(
 async function handleBuildMigrateCreator(
   args: Record<string, unknown>,
 ): Promise<ToolResult> {
-  const authority = requirePubkey(args.authority, "authority");
   const mint = requirePubkey(args.mint, "mint");
-  const newCreator = requirePubkey(args.newCreator, "newCreator");
 
   const ix = await PUMP_SDK.migrateBondingCurveCreatorInstruction({
-    authority,
     mint,
-    newCreator,
   });
 
   return ok(
-    `👤 Migrate Bonding Curve Creator Instruction Built\n\nMint: ${mint.toBase58()}\nAuthority: ${authority.toBase58()}\nNew Creator: ${newCreator.toBase58()}\n\n${serializeInstructions([ix])}`,
+    `👤 Migrate Bonding Curve Creator Instruction Built\n\nMint: ${mint.toBase58()}\n\nThis migrates the bonding curve creator to match the fee sharing config.\n\n${serializeInstructions([ix])}`,
   );
 }
