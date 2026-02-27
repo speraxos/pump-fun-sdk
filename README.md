@@ -21,17 +21,17 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
 </p>
 
 <p>
-  <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/v/@pump-fun/pump-sdk.svg?style=flat-square&color=cb3837&label=npm" alt="npm version"></a>&nbsp;
-  <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/dm/@pump-fun/pump-sdk.svg?style=flat-square&color=cb3837&label=downloads" alt="npm downloads"></a>&nbsp;
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"></a>&nbsp;
-  <a href="https://github.com/pump-fun/pump-sdk"><img src="https://img.shields.io/github/stars/pump-fun/pump-sdk?style=flat-square&color=f5c542&label=stars" alt="Stars"></a>
+  <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/v/@pump-fun/pump-sdk.svg?style=flat-square&color=00e87b&labelColor=ffffff&label=npm" alt="npm version"></a>&nbsp;
+  <a href="https://www.npmjs.com/package/@pump-fun/pump-sdk"><img src="https://img.shields.io/npm/dm/@pump-fun/pump-sdk.svg?style=flat-square&color=00e87b&labelColor=ffffff&label=downloads" alt="npm downloads"></a>&nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-00e87b?style=flat-square&labelColor=ffffff" alt="MIT License"></a>&nbsp;
+  <a href="https://github.com/nirholas/pump-fun-sdk"><img src="https://img.shields.io/github/stars/nirholas/pump-fun-sdk?style=flat-square&color=00e87b&labelColor=ffffff&label=stars" alt="Stars"></a>
 </p>
 
 <p>
-  <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-mainnet-9945FF?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMyAxNUw2IDEyTDE3IDEyTDE0IDE1WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=&logoColor=white" alt="Solana"></a>&nbsp;
-  <a href="src/"><img src="https://img.shields.io/badge/TypeScript-types_included-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>&nbsp;
-  <a href="mcp-server/"><img src="https://img.shields.io/badge/MCP_Server-included-8B5CF6?style=flat-square" alt="MCP Server"></a>&nbsp;
-  <a href="rust/"><img src="https://img.shields.io/badge/Rust-CLI-E8590C?style=flat-square&logo=rust&logoColor=white" alt="Rust CLI"></a>
+  <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-mainnet-00e87b?style=flat-square&labelColor=ffffff&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMyAxNUw2IDEyTDE3IDEyTDE0IDE1WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=&logoColor=00e87b" alt="Solana"></a>&nbsp;
+  <a href="src/"><img src="https://img.shields.io/badge/TypeScript-types_included-00e87b?style=flat-square&labelColor=ffffff&logo=typescript&logoColor=00e87b" alt="TypeScript"></a>&nbsp;
+  <a href="mcp-server/"><img src="https://img.shields.io/badge/MCP_Server-included-00e87b?style=flat-square&labelColor=ffffff" alt="MCP Server"></a>&nbsp;
+  <a href="rust/"><img src="https://img.shields.io/badge/Rust-CLI-00e87b?style=flat-square&labelColor=ffffff&logo=rust&logoColor=00e87b" alt="Rust CLI"></a>
 </p>
 
 <br>
