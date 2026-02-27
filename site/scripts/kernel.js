@@ -278,7 +278,7 @@ async function prepareIframeContent(cont, appid, winuid) {
     let contentString = isBase64(cont) ? decodeBase64Content(cont) : (cont || "<center><h1>Unavailable</h1>App Data cannot be read.</center>");
 
     let styleBlock = '';
-    if (getMetaTagContent(contentString, 'sperax-include')?.includes('pump.css')) {
+    if (getMetaTagContent(contentString, 'pump-include')?.includes('pump.css')) {
         let updatedCss = speraxdotcsscache || '';
         const speraxCssTag = document.getElementById('speraxcsstag');
         if (speraxCssTag) {
@@ -318,13 +318,13 @@ async function prepareIframeContent(cont, appid, winuid) {
         }
     }
 
-    if (getMetaTagContent(contentString, 'sperax-include')?.includes('material-symbols-rounded')) {
+    if (getMetaTagContent(contentString, 'pump-include')?.includes('material-symbols-rounded')) {
         const fontUrl = `${location.origin}/libs/MaterialSymbolsRounded.woff2`;
         cacheFont(fontUrl, 'material-symbols-rounded');
         styleBlock += `<style>@font-face{font-family:'Material Symbols Rounded';font-style:normal;src:url(${fontUrl}) format('woff2');}.material-symbols-rounded{font-family:'Material Symbols Rounded';font-weight:normal;font-style:normal;font-size:24px;line-height:1;display:inline-block;white-space:nowrap;direction:ltr;-webkit-font-smoothing:antialiased;}</style>`;
     }
 
-    const ctxScript = getMetaTagContent(contentString, 'sperax-include')?.includes('contextMenu') ? await fetch('scripts/ctxmenu.js').then(res => res.text()) : '';
+    const ctxScript = getMetaTagContent(contentString, 'pump-include')?.includes('contextMenu') ? await fetch('scripts/ctxmenu.js').then(res => res.text()) : '';
 
     const ntxScript = `<script defer>
 document.addEventListener('mousedown', () => {

@@ -16,7 +16,7 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
-        #sperax-frame {
+        #pump-frame {
             width: 100%;
             height: 100%;
             border: none;
@@ -50,14 +50,14 @@
         <p>Loading Sperax Telegram Bot...</p>
     </div>
     <iframe 
-        id="sperax-frame"
+        id="pump-frame"
         src="https://sperax.surf"
         allow="clipboard-read; clipboard-write"
         sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
     ></iframe>
     
     <script>
-        const iframe = document.getElementById('sperax-frame');
+        const iframe = document.getElementById('pump-frame');
         const loading = document.getElementById('loading');
         
         iframe.addEventListener('load', function() {

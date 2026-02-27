@@ -1,6 +1,6 @@
 ---
 name: App Submission
-about: Submit an app to the Sperax Store
+about: Submit an app to the Pump Store
 title: '[APP] App Name'
 labels: app-submission
 assignees: ''
@@ -25,7 +25,7 @@ Add 1-3 screenshots of your app in action.
 - [ ] External URL
 
 **Source**: 
-<!-- For local: /Pump-Sdk/apps/yourapp.html -->
+<!-- For local: /Pump-Store/apps/yourapp.html -->
 <!-- For external: https://your-app-url.com -->
 
 **Permissions Required**:
@@ -43,7 +43,7 @@ Add 1-3 screenshots of your app in action.
     "name": "Your App Name",
     "author": "your-username",
     "description": "Short description of your app",
-    "src": "/Pump-Sdk/apps/yourapp.html",
+    "src": "/Pump-Store/apps/yourapp.html",
     "category": "category",
     "tags": ["tag1", "tag2"],
     "version": "1.0.0"
@@ -58,7 +58,7 @@ Add 1-3 screenshots of your app in action.
 - [ ] My app doesn't contain malicious code
 - [ ] My app respects user privacy
 - [ ] I have tested my app thoroughly
-- [ ] My app has an appropriate icon (sperax-icon meta tag)
+- [ ] My app has an appropriate icon (pump-icon meta tag)
 
 ## Additional Notes
 Any other information about your app.
