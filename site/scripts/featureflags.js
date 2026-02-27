@@ -222,7 +222,7 @@ const FeatureFlags = {
     
     _loadFromStorage() {
         try {
-            const stored = localStorage.getItem('sperax_feature_flags');
+            const stored = localStorage.getItem('pump_feature_flags');
             if (stored) {
                 this._flags = { ...this.defaults, ...JSON.parse(stored) };
             } else {
@@ -236,7 +236,7 @@ const FeatureFlags = {
     
     _saveToStorage() {
         try {
-            localStorage.setItem('sperax_feature_flags', JSON.stringify(this._flags));
+            localStorage.setItem('pump_feature_flags', JSON.stringify(this._flags));
         } catch (e) {
             console.error('[FeatureFlags] Failed to save to storage:', e);
         }
@@ -277,7 +277,7 @@ const FeatureFlags = {
     _checkBetaAccess() {
         if (!this.isEnabled('beta_required')) return;
         
-        const storedCode = localStorage.getItem('sperax_beta_code');
+        const storedCode = localStorage.getItem('pump_beta_code');
         const validCodes = this.get('beta_codes') || [];
         
         if (!storedCode || !validCodes.includes(storedCode.toUpperCase())) {
@@ -364,7 +364,7 @@ const FeatureFlags = {
             const validCodes = this.get('beta_codes') || [];
             
             if (validCodes.includes(code)) {
-                localStorage.setItem('sperax_beta_code', code);
+                localStorage.setItem('pump_beta_code', code);
                 overlay.remove();
             } else {
                 document.getElementById('beta-error').style.display = 'block';
@@ -396,7 +396,7 @@ const FeatureFlags = {
      * Check if user has beta access
      */
     hasBetaAccess() {
-        const storedCode = localStorage.getItem('sperax_beta_code');
+        const storedCode = localStorage.getItem('pump_beta_code');
         const validCodes = this.get('beta_codes') || [];
         return storedCode && validCodes.includes(storedCode.toUpperCase());
     },
@@ -414,7 +414,7 @@ const FeatureFlags = {
      */
     grantBetaAccess(code) {
         if (this.validateBetaCode(code)) {
-            localStorage.setItem('sperax_beta_code', code.toUpperCase());
+            localStorage.setItem('pump_beta_code', code.toUpperCase());
             return true;
         }
         return false;
@@ -424,7 +424,7 @@ const FeatureFlags = {
      * Revoke beta access
      */
     revokeBetaAccess() {
-        localStorage.removeItem('sperax_beta_code');
+        localStorage.removeItem('pump_beta_code');
     },
     
     // ============ App Helpers ============
@@ -564,14 +564,14 @@ const FeatureFlags = {
     /**
      * Enable only Sperax apps, disable others
      */
-    speraxOnlyMode() {
-        const speraxApps = ['store', 'files', 'settings', 'pumpai', 'pumpbot', 
+    pumpOnlyMode() {
+        const pumpApps = ['store', 'files', 'settings', 'pumpai', 'pumpbot', 
                            'pumpdefi', 'pumpdocs', 'pumpchat', 'portfolio'];
         
         for (const [key, _] of Object.entries(this.defaults)) {
             if (key.startsWith('app.')) {
                 const appName = key.replace('app.', '');
-                this.set(key, speraxApps.includes(appName));
+                this.set(key, pumpApps.includes(appName));
             }
         }
     },

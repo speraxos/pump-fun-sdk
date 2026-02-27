@@ -142,7 +142,7 @@ async function getMenuItems(target) {
 		
 		// Desktop background context menu
 		return [
-			{ icon: 'refresh', label: 'Refresh', action: () => speraxrefresh() },
+			{ icon: 'refresh', label: 'Refresh', action: () => pumprefresh() },
 			{ icon: 'sort', label: 'Arrange by Name', action: () => window.arrangeDesktopIcons && window.arrangeDesktopIcons('name') },
 			{ icon: 'folder', label: 'Arrange by Type', action: () => window.arrangeDesktopIcons && window.arrangeDesktopIcons('type') },
 			{ icon: 'grid_view', label: 'Auto Arrange', action: () => window.arrangeDesktopIcons && window.arrangeDesktopIcons('auto') },

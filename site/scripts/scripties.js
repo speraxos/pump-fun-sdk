@@ -7,7 +7,7 @@ fetch('assets/transparentlogo.svg')
 	})
 	.catch(() => {
 		// Fallback to inline SVG if transparentlogo.svg fails to load
-		gid("mm").innerHTML = `<svg class="mmic" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.93098" height="43.31773" viewBox="0,0,22.93098,43.31773"><g transform="translate(-228.53451,-158.34114)"><g data-paper-data="{&quot;isPaintingLayer&quot;:true}" id='speraxic' fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="0" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal"><path d="M228.68924,195.01197l-0.15473,-36.67083l19.03116,29.04225l0.00895,-17.05191l3.55036,-5.02752l0.3405,36.35491c0,0 -18.13437,-29.80707 -18.13437,-29.23736c0,5.15736 -0.30946,16.4013 -0.30946,16.4013z"/></g></g></svg>`;
+		gid("mm").innerHTML = `<svg class="mmic" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.93098" height="43.31773" viewBox="0,0,22.93098,43.31773"><g transform="translate(-228.53451,-158.34114)"><g data-paper-data="{&quot;isPaintingLayer&quot;:true}" id='pumpic' fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="0" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal"><path d="M228.68924,195.01197l-0.15473,-36.67083l19.03116,29.04225l0.00895,-17.05191l3.55036,-5.02752l0.3405,36.35491c0,0 -18.13437,-29.80707 -18.13437,-29.23736c0,5.15736 -0.30946,16.4013 -0.30946,16.4013z"/></g></g></svg>`;
 	});
 
 var defaultAppIcon = `<?xml version="1.0" encoding="UTF-8"?> <svg version="1.1" viewBox="0 0 76.805 112.36" xmlns="http://www.w3.org/2000/svg"> <g transform="translate(-201.6 -123.82)"> <g stroke-dasharray="" stroke-miterlimit="10" style="mix-blend-mode:normal" data-paper-data='{"isPaintingLayer":true}'> <path d="m201.6 236.18v-111.56h49.097l27.707 31.512v80.051z" fill="#3f7ef6" stroke-width="NaN"/> <path d="m250.82 155.02 0.12178-31.202 27.301 31.982z" fill="#054fff" stroke-width="0"/> <path d="m216.73 180.4h46.531" fill="none" stroke="#9dbaff" stroke-linecap="round" stroke-width="7.5"/> <path d="m216.73 194.37h36.44" fill="none" stroke="#9dbaff" stroke-linecap="round" stroke-width="7.5"/> <path d="m216.73 207.78h42.046" fill="none" stroke="#9dbaff" stroke-linecap="round" stroke-width="7.5"/> </g> </g> </svg>`;
@@ -15,7 +15,7 @@ var defaultAppIcon = `<?xml version="1.0" encoding="UTF-8"?> <svg version="1.1" 
 var globalmimeDb = null;
 
 function updateNavSize() {
-	navheight = parseFloat(getComputedStyle(gid("speraxnav")).height);
+	navheight = parseFloat(getComputedStyle(gid("pumpnav")).height);
 	navheight = navheight + (0.3 * remToPx);
 }
 
@@ -166,9 +166,9 @@ async function qsetsRefresh() {
 
 // themes
 async function checkdmode() {
-	if (!speraxdotcsscache) {
+	if (!pumpdotcsscache) {
 		const response = await fetch('pump.css');
-		speraxdotcsscache = await response.text();
+		pumpdotcsscache = await response.text();
 	}
 
 	if (CurrentUsername) {
@@ -193,19 +193,19 @@ let themeStyleTag = null;
 function applyTheme(colors, doc) {
 	if (!themeStyleTag) {
 		themeStyleTag = document.createElement('style');
-		themeStyleTag.id = "speraxcsstag";
+		themeStyleTag.id = "pumpcsstag";
 	}
 
-	if (!document.getElementById("speraxcsstag")) {
+	if (!document.getElementById("pumpcsstag")) {
 		document.head.appendChild(themeStyleTag);
 	}
 
-	if (doc && doc !== document && !doc.getElementById("speraxcsstag")) {
+	if (doc && doc !== document && !doc.getElementById("pumpcsstag")) {
 		doc.head.appendChild(themeStyleTag.cloneNode(true));
 	}
 
 	const cssVars = Object.fromEntries(
-		[...speraxdotcsscache.matchAll(/(--[\w-]+):\s*([^;]+)/g)]
+		[...pumpdotcsscache.matchAll(/(--[\w-]+):\s*([^;]+)/g)]
 			.map(([_, key, value]) => [key, value.trim()])
 	);
 
@@ -235,7 +235,7 @@ function applyTheme(colors, doc) {
 	themeStyleTag.textContent = `:root { ${cssText} }`;
 
 	if (doc && doc !== document) {
-		const docStyle = doc.getElementById("speraxcsstag");
+		const docStyle = doc.getElementById("pumpcsstag");
 		if (docStyle) docStyle.textContent = themeStyleTag.textContent;
 	}
 
@@ -245,7 +245,7 @@ function applyTheme(colors, doc) {
 const broadcastStyleToIframes = (css) => {
 	document.querySelectorAll('iframe').forEach((iframe) => {
 		if (iframe.contentWindow) {
-			iframe.contentWindow.postMessage({ type: 'sperax-style', css }, '*');
+			iframe.contentWindow.postMessage({ type: 'pump-style', css }, '*');
 		}
 	});
 };

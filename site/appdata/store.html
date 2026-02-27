@@ -1322,7 +1322,7 @@
 			const parser = new DOMParser();
 			const doc = parser.parseFromString(htmlContent, 'text/html');
 			
-			// Look for existing sperax-icon meta tag
+			// Look for existing pump-icon meta tag
 			let iconMeta = doc.querySelector('meta[name="pump-icon"]');
 			
 			if (iconMeta) {
@@ -1331,7 +1331,7 @@
 			} else {
 				// Create new meta tag in head
 				iconMeta = doc.createElement('meta');
-				iconMeta.setAttribute('name', 'sperax-icon');
+				iconMeta.setAttribute('name', 'pump-icon');
 				iconMeta.setAttribute('content', iconSVG);
 				
 				const head = doc.querySelector('head');

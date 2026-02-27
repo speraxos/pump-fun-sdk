@@ -179,13 +179,13 @@ function clearNotificationHistory() {
 
 function saveNotificationHistory() {
     try {
-        localStorage.setItem('sperax-notification-history', JSON.stringify(notificationHistory));
+        localStorage.setItem('pump-notification-history', JSON.stringify(notificationHistory));
     } catch (e) {}
 }
 
 function loadNotificationHistory() {
     try {
-        const saved = localStorage.getItem('sperax-notification-history');
+        const saved = localStorage.getItem('pump-notification-history');
         if (saved) {
             notificationHistory = JSON.parse(saved).map(n => ({
                 ...n,
@@ -297,23 +297,23 @@ function playSynthSound(def) {
 function setSoundEnabled(enabled) {
     soundsEnabled = enabled;
     try {
-        localStorage.setItem('sperax-sounds-enabled', JSON.stringify(enabled));
+        localStorage.setItem('pump-sounds-enabled', JSON.stringify(enabled));
     } catch (e) {}
 }
 
 function setSoundVolume(volume) {
     soundVolume = Math.max(0, Math.min(1, volume));
     try {
-        localStorage.setItem('sperax-sound-volume', JSON.stringify(soundVolume));
+        localStorage.setItem('pump-sound-volume', JSON.stringify(soundVolume));
     } catch (e) {}
 }
 
 function loadSoundSettings() {
     try {
-        const enabled = localStorage.getItem('sperax-sounds-enabled');
+        const enabled = localStorage.getItem('pump-sounds-enabled');
         if (enabled !== null) soundsEnabled = JSON.parse(enabled);
         
-        const volume = localStorage.getItem('sperax-sound-volume');
+        const volume = localStorage.getItem('pump-sound-volume');
         if (volume !== null) soundVolume = JSON.parse(volume);
     } catch (e) {}
 }
@@ -406,7 +406,7 @@ function updateLockScreenClock() {
 function setLockTimeout(minutes) {
     lockTimeoutDuration = minutes * 60 * 1000;
     try {
-        localStorage.setItem('sperax-lock-timeout', JSON.stringify(minutes));
+        localStorage.setItem('pump-lock-timeout', JSON.stringify(minutes));
     } catch (e) {}
     resetLockTimeout();
 }
@@ -424,7 +424,7 @@ function resetLockTimeout() {
 
 function loadLockSettings() {
     try {
-        const timeout = localStorage.getItem('sperax-lock-timeout');
+        const timeout = localStorage.getItem('pump-lock-timeout');
         if (timeout !== null) {
             lockTimeoutDuration = JSON.parse(timeout) * 60 * 1000;
         }
@@ -675,7 +675,7 @@ function showScreenshotPreview(canvas) {
     // Download button
     preview.querySelector('#screenshot-download-btn').onclick = () => {
         const link = document.createElement('a');
-        link.download = `sperax-screenshot-${Date.now()}.png`;
+        link.download = `pump-screenshot-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
         showNotification('Screenshot', 'Screenshot saved', 'success');
@@ -792,13 +792,13 @@ function addToClipboardHistory(content, type = 'text') {
 
 function saveClipboardHistory() {
     try {
-        localStorage.setItem('sperax-clipboard-history', JSON.stringify(clipboardHistory));
+        localStorage.setItem('pump-clipboard-history', JSON.stringify(clipboardHistory));
     } catch (e) {}
 }
 
 function loadClipboardHistory() {
     try {
-        const saved = localStorage.getItem('sperax-clipboard-history');
+        const saved = localStorage.getItem('pump-clipboard-history');
         if (saved) {
             clipboardHistory = JSON.parse(saved).map(item => ({
                 ...item,

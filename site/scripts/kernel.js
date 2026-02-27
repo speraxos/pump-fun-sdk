@@ -1,6 +1,6 @@
 var dragging = false, remToPx = parseFloat(getComputedStyle(document.documentElement).fontSize), navheight;
 
-var speraxdotcsscache, transactionLib = [], notificationContext = {};
+var pumpdotcsscache, transactionLib = [], notificationContext = {};
 
 async function openlaunchprotocol(appid, data, id, winuid) {
     sysLog("OLP", `Opening "${data}" in "${appid}" for ${winuid || id || 'operation'}`);
@@ -279,17 +279,17 @@ async function prepareIframeContent(cont, appid, winuid) {
 
     let styleBlock = '';
     if (getMetaTagContent(contentString, 'pump-include')?.includes('pump.css')) {
-        let updatedCss = speraxdotcsscache || '';
-        const speraxCssTag = document.getElementById('speraxcsstag');
-        if (speraxCssTag) {
-            const customCss = speraxCssTag.textContent;
+        let updatedCss = pumpdotcsscache || '';
+        const pumpCssTag = document.getElementById('pumpcsstag');
+        if (pumpCssTag) {
+            const customCss = pumpCssTag.textContent;
             const variableRegex = /--([\w-]+)\s*:\s*([^;]+);/g;
             let customVariables = {};
             let match;
             while ((match = variableRegex.exec(customCss)) !== null) {
                 customVariables[`--${match[1]}`] = match[2].trim();
             }
-            updatedCss = speraxdotcsscache.replace(/:root\s*{([^}]*)}/, (match, declarations) => {
+            updatedCss = pumpdotcsscache.replace(/:root\s*{([^}]*)}/, (match, declarations) => {
                 let updated = declarations.trim();
                 for (const [key, val] of Object.entries(customVariables)) {
                     const regex = new RegExp(`(${key}\\s*:\\s*).*?;`, 'g');
@@ -344,11 +344,11 @@ window.addEventListener("message", async e => {
             await greenflag();
         } catch (t) {}
         window.parent.postMessage({ data: "gfdone", iframeId: myWindow.windowID }, "*");
-    } else if (e.data?.type === "sperax-style" && typeof e.data.css === "string") {
-        let styleTag = document.getElementById("speraxcsstag");
+    } else if (e.data?.type === "pump-style" && typeof e.data.css === "string") {
+        let styleTag = document.getElementById("pumpcsstag");
         if (!styleTag) {
             styleTag = document.createElement("style");
-            styleTag.id = "speraxcsstag";
+            styleTag.id = "pumpcsstag";
             document.head.appendChild(styleTag);
         }
         styleTag.textContent = e.data.css;

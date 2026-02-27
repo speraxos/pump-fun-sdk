@@ -1740,17 +1740,17 @@
 			<script>
 				function loadSoundSettingsUI() {
 					// Load sound enabled state
-					const soundEnabled = localStorage.getItem('sperax-sounds-enabled');
+					const soundEnabled = localStorage.getItem('pump-sounds-enabled');
 					document.getElementById('soundEnabledToggle').checked = soundEnabled === null ? true : JSON.parse(soundEnabled);
 					
 					// Load volume
-					const volume = localStorage.getItem('sperax-sound-volume');
+					const volume = localStorage.getItem('pump-sound-volume');
 					const volumeVal = volume === null ? 50 : JSON.parse(volume) * 100;
 					document.getElementById('soundVolumeSlider').value = volumeVal;
 					document.getElementById('volumeDisplay').textContent = Math.round(volumeVal) + '%';
 					
 					// Load lock timeout
-					const timeout = localStorage.getItem('sperax-lock-timeout');
+					const timeout = localStorage.getItem('pump-lock-timeout');
 					if (timeout !== null) {
 						document.getElementById('lockTimeoutSelect').value = JSON.parse(timeout);
 					}
@@ -2078,7 +2078,7 @@
 							const percent = (typeCounts[type] / total) * 100;
 							if (percent >= 1) {
 								if (!colors[type]) {
-									colors[type] = window.parent.stringToDarkPastelColor(type + "speraxOs");
+									colors[type] = window.parent.stringToDarkPastelColor(type + "PumpOS");
 								}
 								const div = document.createElement('div');
 								div.style.width = percent + '%';
@@ -2291,11 +2291,11 @@
 							} else {
 								ntxSession.send("specific.removeSWs",)
 							}
-							ntxSession.send("settings.set", "speraxOffline", newValue2)
+							ntxSession.send("settings.set", "pumpOffline", newValue2)
 						});
 
 						try {
-							if (await ntxSession.send("settings.get", "speraxOffline")) {
+							if (await ntxSession.send("settings.get", "pumpOffline")) {
 								document.getElementById("cbx-70").checked = true;
 							}
 						} catch (error) {
@@ -2554,7 +2554,7 @@
 					</div>
 					<div class="divider"></div>
 					<div class="btngrpelem">
-						<button onclick="window.parent.logoutofsperax()">
+						<button onclick="window.parent.logoutofpump()">
 
 							<span class="material-symbols-rounded">
 								logout
@@ -2602,14 +2602,14 @@
 			</segr>
 			<script>
 				document.getElementById("userstatsi").innerHTML = window.parent.CurrentUsername;
-				if (window.parent.password == 'sperax') {
+				if (window.parent.password == 'pump') {
 					document.getElementById("passstat").innerHTML = "Set a password for your device:";
 				} else {
 					document.getElementById("passstat").innerHTML = "Change your password";
 				}
 				async function chstpass() {
 					var setpass = '';
-					if (window.parent.password == 'sperax') {
+					if (window.parent.password == 'pump') {
 						setpass = await ntxSession.send("sysUI.ask", "Set a password: ", "")
 					} else {
 						setpass = await ntxSession.send("sysUI.ask", "Choose an another password: ", window.parent.password);
@@ -2620,7 +2620,7 @@
 					}
 					if (await ntxSession.send("sysUI.confirm", "Are you sure?", "All your data will be lost if you forget this password. Re-encrypt all your files with this one?")) {
 						await window.parent.changePassword(window.parent.password, setpass);
-						await ntxSession.send("sysUI.say", "Click OK when you are ready to restart your speraxOS.")
+						await ntxSession.send("sysUI.say", "Click OK when you are ready to restart your Pump Fun SDK.")
 						window.parent.location.reload()
 					} else {
 						return;
@@ -3564,7 +3564,7 @@
 				}
 
 				function getCSSVariableValue(varName) {
-					const styleTag = window.parent.document.getElementById('speraxcsstag');
+					const styleTag = window.parent.document.getElementById('pumpcsstag');
 					if (!styleTag) return null;
 
 					const cssText = styleTag.textContent;

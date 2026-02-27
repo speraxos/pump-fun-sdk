@@ -457,7 +457,7 @@
 
         // Load alerts from localStorage
         function loadAlerts() {
-            const saved = localStorage.getItem('sperax_price_alerts');
+            const saved = localStorage.getItem('pump_price_alerts');
             if (saved) {
                 alerts = JSON.parse(saved);
             }
@@ -466,7 +466,7 @@
 
         // Save alerts to localStorage
         function saveAlerts() {
-            localStorage.setItem('sperax_price_alerts', JSON.stringify(alerts));
+            localStorage.setItem('pump_price_alerts', JSON.stringify(alerts));
         }
 
         // Fetch current prices

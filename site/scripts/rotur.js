@@ -1674,7 +1674,7 @@ async function attemptConnection() {
   } else if (!roturExtension) {
     roturExtension = new RoturExtension();
   }
-  roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "speraxOS", VERSION: "2" });
+  roturExtension.connectToServer({ DESIGNATION: "nva", SYSTEM: "PumpOS", VERSION: "2" });
 }
 
 async function logoutofrtr() {

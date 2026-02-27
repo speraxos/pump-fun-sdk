@@ -633,7 +633,7 @@
 
         // Check for saved connection
         function init() {
-            const saved = localStorage.getItem('sperax_wallet');
+            const saved = localStorage.getItem('pump_wallet');
             if (saved) {
                 const data = JSON.parse(saved);
                 connectedWallet = data.wallet;
@@ -652,7 +652,7 @@
                 connectedWallet = type;
                 
                 // Save connection
-                localStorage.setItem('sperax_wallet', JSON.stringify({
+                localStorage.setItem('pump_wallet', JSON.stringify({
                     wallet: type,
                     network: currentNetwork
                 }));
@@ -680,7 +680,7 @@
 
         function disconnectWallet() {
             connectedWallet = null;
-            localStorage.removeItem('sperax_wallet');
+            localStorage.removeItem('pump_wallet');
             document.getElementById('disconnectedView').classList.remove('hidden');
             document.getElementById('connectedView').classList.remove('active');
         }
@@ -706,7 +706,7 @@
             document.getElementById('networkMenu').classList.remove('open');
             
             // Save
-            localStorage.setItem('sperax_wallet', JSON.stringify({
+            localStorage.setItem('pump_wallet', JSON.stringify({
                 wallet: connectedWallet,
                 network: currentNetwork
             }));

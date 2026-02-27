@@ -74,7 +74,7 @@
         window.addEventListener('message', (e) => {
             if (e.origin !== 'https://sperax.surf') return;
             
-            if (e.data?.source === 'sperax') {
+            if (e.data?.source === 'pump') {
                 console.log('[Chat] Message from chat:', e.data);
                 
                 if (e.data.event === 'ready') {
