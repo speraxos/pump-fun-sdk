@@ -308,7 +308,7 @@ export class PumpFunMonitor {
             }
         }
 
-        // Also check for keyword hints
+        // Also check for keyword hints (be specific — avoid 'Transfer' which matches every tx)
         const hasKeywordMatch =
             logsJoined.includes('Withdraw') ||
             logsJoined.includes('ClaimFees') ||
@@ -318,7 +318,6 @@ export class PumpFunMonitor {
             logsJoined.includes('distribute_creator_fees') ||
             logsJoined.includes('collect_coin_creator_fee') ||
             logsJoined.includes('transfer_creator_fees') ||
-            logsJoined.includes('Transfer') ||
             logsJoined.includes('set_creator') ||
             logsJoined.includes('admin_set_creator') ||
             logsJoined.includes('set_coin_creator') ||
