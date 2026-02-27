@@ -10,7 +10,7 @@
 </pre>
 
 <p>
-  <img src=".github/pump.svg" alt="Pump SDK — Official Community PumpFun SDK" width="720">
+  <img src=".github/banner.svg" alt="Pump SDK — Official Community PumpFun SDK" width="720">
 </p>
 
 <h3>The official community TypeScript SDK for the <a href="https://pump.fun">Pump</a> protocol on Solana</h3>
@@ -31,8 +31,7 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
   <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-mainnet-00e87b?style=flat-square&labelColor=ffffff&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMyAxNUw2IDEyTDE3IDEyTDE0IDE1WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=&logoColor=00e87b" alt="Solana"></a>&nbsp;
   <a href="src/"><img src="https://img.shields.io/badge/TypeScript-types_included-00e87b?style=flat-square&labelColor=ffffff&logo=typescript&logoColor=00e87b" alt="TypeScript"></a>&nbsp;
   <a href="mcp-server/"><img src="https://img.shields.io/badge/MCP_Server-included-00e87b?style=flat-square&labelColor=ffffff" alt="MCP Server"></a>&nbsp;
-  <a href="rust/"><img src="https://img.shields.io/badge/Rust-CLI-00e87b?style=flat-square&labelColor=ffffff&logo=rust&logoColor=00e87b" alt="Rust CLI"></a>&nbsp;
-  <a href="telegram-bot/"><img src="https://img.shields.io/badge/Telegram-Bot-00e87b?style=flat-square&labelColor=ffffff&logo=telegram&logoColor=00e87b" alt="Telegram Bot"></a>
+  <a href="rust/"><img src="https://img.shields.io/badge/Rust-CLI-00e87b?style=flat-square&labelColor=ffffff&logo=rust&logoColor=00e87b" alt="Rust CLI"></a>
 </p>
 
 <br>
@@ -48,9 +47,9 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
 ### ⚡ See it in action
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/pump.svg">
-  <source media="(prefers-color-scheme: light)" srcset=".github/pump.svg">
-  <img alt="Pump SDK — create tokens, buy on bonding curve, submit transactions" src=".github/pump.svg" width="720">
+  <source media="(prefers-color-scheme: dark)" srcset=".github/demo.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/demo.svg">
+  <img alt="Pump SDK — create tokens, buy on bonding curve, submit transactions" src=".github/demo.svg" width="720">
 </picture>
 
 </div>
@@ -67,7 +66,6 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
 - [Architecture](#-architecture) — Offline & online SDK layers
 - [Programs](#-programs) — On-chain program addresses
 - [MCP Server](#-mcp-server) — AI agent integration
-- [Telegram Bot](#-telegram-bot) — Fee claim notifications
 - [Documentation](#-documentation) — Full guides and references
 - [Contributing](#-contributing) — Help make Pump SDK better
 
@@ -146,8 +144,8 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Pools &nbsp;·&n
 
 **🤖 AI & Tooling**
 - MCP server for Claude, GPT, Cursor
-- Telegram bot for fee claim alerts
 - Rust CLI for vanity address generation
+- Comprehensive API reference
 
 </td>
 </tr>
@@ -274,7 +272,7 @@ flowchart LR
 ## 💻 Usage
 
 <div align="center">
-  <img src="docs/assets/pump.svg" alt="Buy and sell transaction flow" width="720">
+  <img src="docs/assets/buy-sell-flow.svg" alt="Buy and sell transaction flow" width="720">
 </div>
 
 ### Create a Token
@@ -450,7 +448,7 @@ const instructions = await sdk.claimTokenIncentivesBothPrograms(
 ## 🏗️ Architecture
 
 <div align="center">
-  <img src="docs/assets/pump.svg" alt="Bonding curve price mechanics" width="720">
+  <img src="docs/assets/bonding-curve.svg" alt="Bonding curve price mechanics" width="720">
 </div>
 
 The SDK is split into two layers:
@@ -515,21 +513,7 @@ See [mcp-server/README.md](mcp-server/README.md) for setup instructions.
 
 ---
 
-## � Telegram Bot
-
-The included [Telegram bot](telegram-bot/) monitors PumpFun on Solana and sends real-time notifications when creator fees or cashback rewards are claimed.
-
-```bash
-cd telegram-bot && npm install && npm run build
-```
-
-**Features:** Watch wallets · Creator fee alerts · Cashback alerts · SOL amounts · Solscan & pump.fun links · Group chat support
-
-**Deploy:** Docker, Railway, or any Node.js host. See [telegram-bot/README.md](telegram-bot/README.md) for setup.
-
----
-
-## �📖 Documentation
+## 📖 Documentation
 
 | Guide | Description |
 |-------|-------------|
@@ -546,17 +530,6 @@ cd telegram-bot && npm install && npm run build
 | [Security](docs/security.md) | Security model, key handling, and best practices |
 | [Testing](docs/testing.md) | Test suites, commands, and CI pipelines |
 | [CLI Guide](docs/cli-guide.md) | Vanity address generation with Solana CLI |
-| [Migration Guide](docs/MIGRATION.md) | Upgrading between SDK versions |
-| [Troubleshooting](docs/TROUBLESHOOTING.md) | Common issues and solutions |
-| [**Tutorials** (19)](tutorials/README.md) | Hands-on guides: tokens, fees, bots, vanity addresses, x402, and more |
-
-### Additional Components
-
-| Component | Description |
-|-----------|-------------|
-| [Telegram Bot](telegram-bot/README.md) | PumpFun fee claim monitoring with Telegram notifications |
-| [x402 Payment Protocol](x402/README.md) | HTTP 402 micropayments with Solana USDC |
-| [MCP Server](mcp-server/README.md) | Model Context Protocol server for AI agent integration |
 
 ---
 
@@ -567,4 +540,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ---
 
 [MIT](LICENSE)
-
