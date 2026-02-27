@@ -5,6 +5,18 @@
   "description": "Pump SDK MCP Server — Solana token launchpad with bonding curves, vanity addresses, key management, and transaction building",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./register": {
+      "import": "./dist/register.js",
+      "require": "./dist/register.js",
+      "types": "./dist/register.d.ts"
+    }
+  },
   "bin": {
     "pump-fun-sdk-mcp": "dist/index.js",
     "pump-fun-sdk-mcp-http": "dist/http-server.js"

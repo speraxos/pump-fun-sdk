@@ -20,6 +20,8 @@ import { PUMP_SDK, OnlinePumpSdk,
 getBuyTokenAmountFromSolAmount, getBuySolAmountFromTokenAmount, getSellSolAmountFromTokenAmount, bondingCurveMarketCap, 
 // PDA derivation
 bondingCurvePda, creatorVaultPda, ammCreatorVaultPda, canonicalPumpPoolPda, feeSharingConfigPda, userVolumeAccumulatorPda, GLOBAL_PDA, AMM_GLOBAL_PDA, 
+// Analytics
+calculateBuyPriceImpact, calculateSellPriceImpact, 
 // Constants
 PUMP_PROGRAM_ID, PUMP_AMM_PROGRAM_ID, PUMP_FEE_PROGRAM_ID, MAYHEM_PROGRAM_ID, } from "@pump-fun/pump-sdk";
 // ---------------------------------------------------------------------------
@@ -202,6 +204,55 @@ export async function handlePumpToolCall(name, args, state) {
             // ── Program Info ────────────────────────────────────────────────
             case "get_program_ids":
                 return handleGetProgramIds();
+            // ── Analytics & Convenience ─────────────────────────────────────
+            case "get_price_impact":
+                return await handleGetPriceImpact(args);
+            case "get_graduation_progress":
+                return await handleGetGraduationProgress(args);
+            case "get_token_price":
+                return await handleGetTokenPrice(args);
+            case "get_token_summary":
+                return await handleGetTokenSummary(args);
+            case "build_sell_all":
+                return await handleBuildSellAll(args);
+            case "is_graduated":
+                return await handleIsGraduated(args);
+            case "get_token_balance":
+                return await handleGetTokenBalance(args);
+            // ── New: Exact SOL Buy ──────────────────────────────────────────
+            case "build_buy_exact_sol":
+                return await handleBuildBuyExactSol(args);
+            // ── New: AMM Trading ────────────────────────────────────────────
+            case "build_amm_buy":
+                return await handleBuildAmmBuy(args);
+            case "build_amm_sell":
+                return await handleBuildAmmSell(args);
+            case "build_amm_buy_exact_quote":
+                return await handleBuildAmmBuyExactQuote(args);
+            // ── New: AMM Liquidity ──────────────────────────────────────────
+            case "build_amm_deposit":
+                return await handleBuildAmmDeposit(args);
+            case "build_amm_withdraw":
+                return await handleBuildAmmWithdraw(args);
+            // ── New: Cashback ───────────────────────────────────────────────
+            case "build_claim_cashback":
+                return await handleBuildClaimCashback(args);
+            case "build_amm_claim_cashback":
+                return await handleBuildAmmClaimCashback(args);
+            // ── New: Fee Sharing ────────────────────────────────────────────
+            case "build_create_social_fee":
+                return await handleBuildCreateSocialFee(args);
+            case "build_claim_social_fee":
+                return await handleBuildClaimSocialFee(args);
+            case "build_reset_fee_sharing":
+                return await handleBuildResetFeeSharing(args);
+            case "build_transfer_fee_authority":
+                return await handleBuildTransferFeeAuthority(args);
+            case "build_revoke_fee_authority":
+                return await handleBuildRevokeFeeAuthority(args);
+            // ── New: Creator Management ─────────────────────────────────────
+            case "build_migrate_creator":
+                return await handleBuildMigrateCreator(args);
             default:
                 return err(`Unknown pump tool: ${name}`);
         }
@@ -399,7 +450,7 @@ async function handleBuildBuy(args) {
         global,
         bondingCurveAccountInfo,
         bondingCurve,
-        associatedUserAccountInfo,
+        associatedUserAccountInfo: associatedUserAccountInfo ?? null,
         mint,
         user,
         solAmount,
@@ -683,5 +734,300 @@ async function handleFetchFeeConfig(args) {
 // ============================================================================
 function handleGetProgramIds() {
     return ok(`🔗 Pump Protocol Program IDs\n\nPump: ${PUMP_PROGRAM_ID.toBase58()}\n  Token creation, bonding curve buy/sell\n\nPumpAMM: ${PUMP_AMM_PROGRAM_ID.toBase58()}\n  AMM pools for graduated tokens\n\nPumpFees: ${PUMP_FEE_PROGRAM_ID.toBase58()}\n  Fee sharing configuration & distribution\n\nMayhem: ${MAYHEM_PROGRAM_ID.toBase58()}\n  Alternate routing mode\n\nPump Token Mint: ${PUMP_TOKEN_MINT.toBase58()}\n  $PUMP incentive token\n\nMax Shareholders: ${MAX_SHAREHOLDERS}`);
+}
+// ============================================================================
+// ANALYTICS & CONVENIENCE
+// ============================================================================
+async function handleGetPriceImpact(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const rpcUrl = args.rpcUrl;
+    const side = args.side || "buy";
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const [global, feeConfig, bondingCurve] = await Promise.all([
+        sdk.fetchGlobal(),
+        sdk.fetchFeeConfig(),
+        sdk.fetchBondingCurve(mint),
+    ]);
+    if (side === "sell") {
+        const tokenAmount = requireBN(args.tokenAmount, "tokenAmount");
+        const result = calculateSellPriceImpact({
+            global,
+            feeConfig,
+            mintSupply: bondingCurve.tokenTotalSupply,
+            bondingCurve,
+            tokenAmount,
+        });
+        return ok(`📉 Sell Price Impact\n\nMint: ${mint.toBase58()}\nToken Amount: ${bnToString(tokenAmount)}\nSOL Received: ${formatLamports(result.outputAmount)}\nPrice Before: ${bnToString(result.priceBefore)} (scaled)\nPrice After: ${bnToString(result.priceAfter)} (scaled)\nPrice Impact: ${(result.impactBps / 100).toFixed(2)}% (${result.impactBps} bps)`);
+    }
+    else {
+        const solAmount = requireBN(args.solAmount, "solAmount");
+        const result = calculateBuyPriceImpact({
+            global,
+            feeConfig,
+            mintSupply: bondingCurve.tokenTotalSupply,
+            bondingCurve,
+            solAmount,
+        });
+        return ok(`📈 Buy Price Impact\n\nMint: ${mint.toBase58()}\nSOL Input: ${formatLamports(solAmount)}\nTokens Received: ${bnToString(result.outputAmount)}\nPrice Before: ${bnToString(result.priceBefore)} (scaled)\nPrice After: ${bnToString(result.priceAfter)} (scaled)\nPrice Impact: ${(result.impactBps / 100).toFixed(2)}% (${result.impactBps} bps)`);
+    }
+}
+async function handleGetGraduationProgress(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const progress = await sdk.fetchGraduationProgress(mint);
+    const progressPct = (progress.progressBps / 100).toFixed(2);
+    return ok(`🎓 Graduation Progress\n\nMint: ${mint.toBase58()}\nProgress: ${progressPct}% (${progress.progressBps} / 10000 bps)\nGraduated: ${progress.isGraduated ? "Yes ✅" : "No"}\nTokens Remaining: ${bnToString(progress.tokensRemaining)}\nTokens Total: ${bnToString(progress.tokensTotal)}\nSOL Accumulated: ${formatLamports(progress.solAccumulated)}`);
+}
+async function handleGetTokenPrice(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const price = await sdk.fetchTokenPrice(mint);
+    return ok(`💲 Token Price\n\nMint: ${mint.toBase58()}\nBuy Price (1 token): ${formatLamports(price.buyPricePerToken)}\nSell Price (1 token): ${formatLamports(price.sellPricePerToken)}\nSpread: ${formatLamports(price.buyPricePerToken.sub(price.sellPricePerToken))}\nMarket Cap: ${formatLamports(price.marketCap)}\nGraduated: ${price.isGraduated ? "Yes ✅" : "No"}`);
+}
+async function handleGetTokenSummary(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const summary = await sdk.fetchBondingCurveSummary(mint);
+    const progressPct = (summary.progressBps / 100).toFixed(2);
+    return ok(`📊 Token Summary\n\nMint: ${mint.toBase58()}\n\n── Price ──\nBuy Price (1 token): ${formatLamports(summary.buyPricePerToken)}\nSell Price (1 token): ${formatLamports(summary.sellPricePerToken)}\nMarket Cap: ${formatLamports(summary.marketCap)}\n\n── Progress ──\nGraduated: ${summary.isGraduated ? "Yes ✅" : "No"}\nGraduation Progress: ${progressPct}%\n\n── Reserves ──\nVirtual SOL: ${formatLamports(summary.virtualSolReserves)}\nVirtual Tokens: ${bnToString(summary.virtualTokenReserves)}\nReal SOL: ${formatLamports(summary.realSolReserves)}\nReal Tokens: ${bnToString(summary.realTokenReserves)}`);
+}
+async function handleBuildSellAll(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const slippage = args.slippage ?? 1;
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const instructions = await sdk.sellAllInstructions({
+        mint,
+        user,
+        slippage,
+    });
+    if (instructions.length === 0) {
+        return ok("ℹ️ No token balance found — nothing to sell.");
+    }
+    return ok(`🏷️ Sell All Instructions Built\n\nMint: ${mint.toBase58()}\nUser: ${user.toBase58()}\nSlippage: ${slippage}%\nInstructions: ${instructions.length}\n\n${serializeInstructions(instructions)}`);
+}
+async function handleIsGraduated(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const graduated = await sdk.isGraduated(mint);
+    return ok(`🎓 Graduation Status\n\nMint: ${mint.toBase58()}\nGraduated: ${graduated ? "Yes ✅ — Token has moved to AMM pool" : "No — Still on bonding curve"}`);
+}
+async function handleGetTokenBalance(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const balance = await sdk.getTokenBalance(mint, user);
+    const wholeTokens = balance.div(new BN(1_000_000));
+    const remainder = balance.mod(new BN(1_000_000));
+    return ok(`💰 Token Balance\n\nMint: ${mint.toBase58()}\nUser: ${user.toBase58()}\nBalance: ${bnToString(balance)} raw units\nBalance: ${bnToString(wholeTokens)}.${remainder.toString(10).padStart(6, "0")} tokens`);
+}
+// ============================================================================
+// BUY EXACT SOL
+// ============================================================================
+async function handleBuildBuyExactSol(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const solAmount = requireBN(args.solAmount, "solAmount");
+    const minTokenAmount = requireBN(args.minTokenAmount, "minTokenAmount");
+    const rpcUrl = args.rpcUrl;
+    const connection = getConnection(rpcUrl);
+    const sdk = new OnlinePumpSdk(connection);
+    const global = await sdk.fetchGlobal();
+    const feeRecipient = global.feeRecipients[0] ?? global.feeRecipient;
+    const bondingCurve = await sdk.fetchBondingCurve(mint);
+    if (!bondingCurve)
+        return err("Bonding curve not found");
+    const ix = await PUMP_SDK.buyExactSolInInstruction({
+        user,
+        mint,
+        creator: bondingCurve.creator,
+        feeRecipient,
+        solAmount,
+        minTokenAmount,
+    });
+    return ok(`🛒 Buy Exact SOL Instruction Built\n\nMint: ${mint.toBase58()}\nUser: ${user.toBase58()}\nSOL Amount: ${formatLamports(solAmount)}\nMin Tokens: ${bnToString(minTokenAmount)}\n\n${serializeInstructions([ix])}`);
+}
+// ============================================================================
+// AMM TRADING
+// ============================================================================
+async function handleBuildAmmBuy(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const pool = requirePubkey(args.pool, "pool");
+    const baseAmountOut = requireBN(args.baseAmountOut, "baseAmountOut");
+    const maxQuoteAmountIn = requireBN(args.maxQuoteAmountIn, "maxQuoteAmountIn");
+    const ix = await PUMP_SDK.ammBuyInstruction({
+        user,
+        pool,
+        mint,
+        baseAmountOut,
+        maxQuoteAmountIn,
+    });
+    return ok(`🛒 AMM Buy Instruction Built\n\nMint: ${mint.toBase58()}\nPool: ${pool.toBase58()}\nTokens Out: ${bnToString(baseAmountOut)}\nMax SOL In: ${formatLamports(maxQuoteAmountIn)}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildAmmSell(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const pool = requirePubkey(args.pool, "pool");
+    const baseAmountIn = requireBN(args.baseAmountIn, "baseAmountIn");
+    const minQuoteAmountOut = requireBN(args.minQuoteAmountOut, "minQuoteAmountOut");
+    const ix = await PUMP_SDK.ammSellInstruction({
+        user,
+        pool,
+        mint,
+        baseAmountIn,
+        minQuoteAmountOut,
+    });
+    return ok(`💰 AMM Sell Instruction Built\n\nMint: ${mint.toBase58()}\nPool: ${pool.toBase58()}\nTokens In: ${bnToString(baseAmountIn)}\nMin SOL Out: ${formatLamports(minQuoteAmountOut)}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildAmmBuyExactQuote(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const pool = requirePubkey(args.pool, "pool");
+    const quoteAmountIn = requireBN(args.quoteAmountIn, "quoteAmountIn");
+    const minBaseAmountOut = requireBN(args.minBaseAmountOut, "minBaseAmountOut");
+    const ix = await PUMP_SDK.ammBuyExactQuoteInInstruction({
+        user,
+        pool,
+        mint,
+        quoteAmountIn,
+        minBaseAmountOut,
+    });
+    return ok(`🛒 AMM Buy (Exact SOL) Instruction Built\n\nMint: ${mint.toBase58()}\nPool: ${pool.toBase58()}\nSOL In: ${formatLamports(quoteAmountIn)}\nMin Tokens Out: ${bnToString(minBaseAmountOut)}\n\n${serializeInstructions([ix])}`);
+}
+// ============================================================================
+// AMM LIQUIDITY
+// ============================================================================
+async function handleBuildAmmDeposit(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const pool = requirePubkey(args.pool, "pool");
+    const maxBaseAmountIn = requireBN(args.maxBaseAmountIn, "maxBaseAmountIn");
+    const maxQuoteAmountIn = requireBN(args.maxQuoteAmountIn, "maxQuoteAmountIn");
+    const minLpTokenAmountOut = requireBN(args.minLpTokenAmountOut, "minLpTokenAmountOut");
+    const ix = await PUMP_SDK.ammDepositInstruction({
+        user,
+        pool,
+        mint,
+        maxBaseAmountIn,
+        maxQuoteAmountIn,
+        minLpTokenAmountOut,
+    });
+    return ok(`🏦 AMM Deposit Instruction Built\n\nMint: ${mint.toBase58()}\nPool: ${pool.toBase58()}\nMax Tokens In: ${bnToString(maxBaseAmountIn)}\nMax SOL In: ${formatLamports(maxQuoteAmountIn)}\nMin LP Out: ${bnToString(minLpTokenAmountOut)}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildAmmWithdraw(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const user = requirePubkey(args.user, "user");
+    const pool = requirePubkey(args.pool, "pool");
+    const lpTokenAmountIn = requireBN(args.lpTokenAmountIn, "lpTokenAmountIn");
+    const minBaseAmountOut = requireBN(args.minBaseAmountOut, "minBaseAmountOut");
+    const minQuoteAmountOut = requireBN(args.minQuoteAmountOut, "minQuoteAmountOut");
+    const ix = await PUMP_SDK.ammWithdrawInstruction({
+        user,
+        pool,
+        mint,
+        lpTokenAmountIn,
+        minBaseAmountOut,
+        minQuoteAmountOut,
+    });
+    return ok(`🏧 AMM Withdraw Instruction Built\n\nMint: ${mint.toBase58()}\nPool: ${pool.toBase58()}\nLP Tokens In: ${bnToString(lpTokenAmountIn)}\nMin Tokens Out: ${bnToString(minBaseAmountOut)}\nMin SOL Out: ${formatLamports(minQuoteAmountOut)}\n\n${serializeInstructions([ix])}`);
+}
+// ============================================================================
+// CASHBACK
+// ============================================================================
+async function handleBuildClaimCashback(args) {
+    const user = requirePubkey(args.user, "user");
+    const ix = await PUMP_SDK.claimCashbackInstruction({ user });
+    return ok(`🎁 Claim Cashback Instruction Built\n\nUser: ${user.toBase58()}\nProgram: Pump (bonding curve)\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildAmmClaimCashback(args) {
+    const user = requirePubkey(args.user, "user");
+    const ix = await PUMP_SDK.ammClaimCashbackInstruction({ user });
+    return ok(`🎁 Claim AMM Cashback Instruction Built\n\nUser: ${user.toBase58()}\nProgram: PumpAMM\n\n${serializeInstructions([ix])}`);
+}
+// ============================================================================
+// FEE SHARING (Social Fees, Authority Management)
+// ============================================================================
+async function handleBuildCreateSocialFee(args) {
+    const payer = requirePubkey(args.payer, "payer");
+    const userId = args.userId;
+    if (!userId)
+        return err("Missing required argument: userId");
+    const platform = Number(args.platform ?? 0);
+    const ix = await PUMP_SDK.createSocialFeePdaInstruction({
+        payer,
+        userId,
+        platform,
+    });
+    return ok(`🔗 Create Social Fee PDA Instruction Built\n\nPayer: ${payer.toBase58()}\nUser ID: ${userId}\nPlatform: ${platform}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildClaimSocialFee(args) {
+    const recipient = requirePubkey(args.recipient, "recipient");
+    const socialClaimAuthority = requirePubkey(args.socialClaimAuthority, "socialClaimAuthority");
+    const userId = args.userId;
+    if (!userId)
+        return err("Missing required argument: userId");
+    const platform = Number(args.platform ?? 0);
+    const ix = await PUMP_SDK.claimSocialFeePdaInstruction({
+        recipient,
+        socialClaimAuthority,
+        userId,
+        platform,
+    });
+    return ok(`💰 Claim Social Fee Instruction Built\n\nRecipient: ${recipient.toBase58()}\nAuthority: ${socialClaimAuthority.toBase58()}\nUser ID: ${userId}\nPlatform: ${platform}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildResetFeeSharing(args) {
+    const authority = requirePubkey(args.authority, "authority");
+    const mint = requirePubkey(args.mint, "mint");
+    const newAdmin = requirePubkey(args.newAdmin, "newAdmin");
+    const ix = await PUMP_SDK.resetFeeSharingConfigInstruction({
+        authority,
+        mint,
+        newAdmin,
+    });
+    return ok(`🔄 Reset Fee Sharing Config Instruction Built\n\nAuthority: ${authority.toBase58()}\nMint: ${mint.toBase58()}\nNew Admin: ${newAdmin.toBase58()}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildTransferFeeAuthority(args) {
+    const authority = requirePubkey(args.authority, "authority");
+    const mint = requirePubkey(args.mint, "mint");
+    const newAdmin = requirePubkey(args.newAdmin, "newAdmin");
+    const ix = await PUMP_SDK.transferFeeSharingAuthorityInstruction({
+        authority,
+        mint,
+        newAdmin,
+    });
+    return ok(`🔑 Transfer Fee Sharing Authority Instruction Built\n\nMint: ${mint.toBase58()}\nCurrent Authority: ${authority.toBase58()}\nNew Admin: ${newAdmin.toBase58()}\n\n${serializeInstructions([ix])}`);
+}
+async function handleBuildRevokeFeeAuthority(args) {
+    const authority = requirePubkey(args.authority, "authority");
+    const mint = requirePubkey(args.mint, "mint");
+    const ix = await PUMP_SDK.revokeFeeSharingAuthorityInstruction({
+        authority,
+        mint,
+    });
+    return ok(`🔒 Revoke Fee Sharing Authority Instruction Built\n\nMint: ${mint.toBase58()}\nAuthority: ${authority.toBase58()}\n\n⚠️ This is PERMANENT. No one will be able to modify this fee sharing config after this.\n\n${serializeInstructions([ix])}`);
+}
+// ============================================================================
+// CREATOR MANAGEMENT
+// ============================================================================
+async function handleBuildMigrateCreator(args) {
+    const mint = requirePubkey(args.mint, "mint");
+    const ix = await PUMP_SDK.migrateBondingCurveCreatorInstruction({
+        mint,
+    });
+    return ok(`👤 Migrate Bonding Curve Creator Instruction Built\n\nMint: ${mint.toBase58()}\n\nThis migrates the bonding curve creator to match the fee sharing config.\n\n${serializeInstructions([ix])}`);
 }
 //# sourceMappingURL=pump.js.map

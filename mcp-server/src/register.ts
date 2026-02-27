@@ -1,0 +1,83 @@
+/**
+ * registerPump — Bridge for McpServer (high-level API)
+ *
+ * Allows any project using @modelcontextprotocol/sdk McpServer to register
+ * all Pump SDK tools with a single call:
+ *
+ *   import { registerPump } from "@nirholas/pump-fun-sdk"
+ *   registerPump(server)
+ *
+ * This adapts the low-level TOOLS[] + handleToolCall() to the high-level
+ * server.tool(name, description, schema, handler) pattern used by McpServer.
+ */
+
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { TOOLS } from "./handlers/tools.js";
+import { handleToolCall } from "./tools/index.js";
+import type { ServerState } from "./types/index.js";
+
+/**
+ * Register all Pump SDK MCP tools with a McpServer instance.
+ *
+ * Creates an isolated ServerState so generated keypairs are scoped to
+ * the Pump tool set.  If you need to share state (e.g. keypairs) across
+ * multiple tool sets, pass your own `state` object.
+ */
+export function registerPump(
+  server: McpServer,
+  sharedState?: ServerState,
+): void {
+  const state: ServerState = sharedState ?? {
+    initialized: true,
+    clientCapabilities: {},
+    generatedKeypairs: new Map(),
+  };
+
+  for (const tool of TOOLS) {
+    server.tool(
+      tool.name,
+      tool.description,
+      // McpServer.tool() accepts raw JSON Schema objects as the schema arg
+      tool.inputSchema as Record<string, unknown>,
+      async (params: Record<string, unknown>) => {
+        try {
+          // Pre-process shareholders JSON string for fee sharing
+          if (
+            tool.name === "build_update_fee_shares" &&
+            typeof params.shareholders === "string"
+          ) {
+            try {
+              params.shareholders = JSON.parse(params.shareholders as string);
+            } catch {
+              return {
+                content: [
+                  {
+                    type: "text" as const,
+                    text: 'Invalid shareholders JSON. Expected: [{"address": "pubkey", "shareBps": 5000}, ...]',
+                  },
+                ],
+                isError: true,
+              };
+            }
+          }
+
+          const result = await handleToolCall(tool.name, params, state);
+          return result as {
+            content: Array<{ type: "text"; text: string }>;
+            isError?: boolean;
+          };
+        } catch (error) {
+          const msg =
+            error instanceof Error ? error.message : "Unknown error";
+          return {
+            content: [{ type: "text" as const, text: `Error: ${msg}` }],
+            isError: true,
+          };
+        }
+      },
+    );
+  }
+}
+
+/** Re-export TOOLS array for introspection */
+export { TOOLS } from "./handlers/tools.js";

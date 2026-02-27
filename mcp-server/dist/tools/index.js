@@ -19,6 +19,21 @@ const PUMP_TOOLS = new Set([
     'build_distribute_fees', 'get_creator_vault_balance', 'build_collect_creator_fees',
     'build_init_volume_tracker', 'build_claim_incentives', 'get_unclaimed_rewards', 'get_volume_stats',
     'derive_pda', 'fetch_global_state', 'fetch_fee_config', 'get_program_ids',
+    // Analytics & Convenience
+    'get_price_impact', 'get_graduation_progress', 'get_token_price', 'get_token_summary',
+    'build_sell_all', 'is_graduated', 'get_token_balance',
+    // Buy Exact SOL
+    'build_buy_exact_sol',
+    // AMM Trading & Liquidity
+    'build_amm_buy', 'build_amm_sell', 'build_amm_buy_exact_quote',
+    'build_amm_deposit', 'build_amm_withdraw',
+    // Cashback
+    'build_claim_cashback', 'build_amm_claim_cashback',
+    // Fee Sharing (Social Fees, Authority)
+    'build_create_social_fee', 'build_claim_social_fee',
+    'build_reset_fee_sharing', 'build_transfer_fee_authority', 'build_revoke_fee_authority',
+    // Creator Management
+    'build_migrate_creator',
 ]);
 /**
  * Handle a tool call request

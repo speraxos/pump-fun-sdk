@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-export {};
+export { registerPump, TOOLS } from './register.js';
 //# sourceMappingURL=index.d.ts.map
