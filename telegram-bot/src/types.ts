@@ -36,6 +36,16 @@ export const PUMPFUN_MIGRATION_AUTHORITY = '39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVo
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 
 // ============================================================================
+// Token Creation Instruction Discriminators
+// ============================================================================
+
+/** Anchor discriminator for createV2 instruction (first 8 bytes of sha256("global:create_v2")) */
+export const CREATE_V2_DISCRIMINATOR = 'd6904cec5f8b31b4';
+
+/** Anchor discriminator for create instruction (first 8 bytes of sha256("global:create")) */
+export const CREATE_DISCRIMINATOR = '181ec828051c0777';
+
+// ============================================================================
 // Instruction Discriminators (from official IDL, first 8 bytes as hex)
 // ============================================================================
 
@@ -294,6 +304,12 @@ export interface BotConfig {
     allowedUserIds: number[];
     /** Log level */
     logLevel: 'debug' | 'info' | 'warn' | 'error';
+    /** Whether to enable the token launch monitor */
+    enableLaunchMonitor: boolean;
+    /** Only notify for tokens with GitHub links (default: false = notify all) */
+    githubOnlyFilter: boolean;
+    /** IPFS gateway base URL for metadata fetching */
+    ipfsGateway: string;
 }
 
 // ============================================================================
@@ -319,4 +335,57 @@ export interface MonitorState {
     startedAt: number;
     /** Programs being monitored */
     monitoredPrograms: string[];
+}
+
+// ============================================================================
+// Token Launch Event
+// ============================================================================
+
+/** Represents a detected PumpFun new token creation event */
+export interface TokenLaunchEvent {
+    /** Transaction signature */
+    txSignature: string;
+    /** Solana slot */
+    slot: number;
+    /** Block timestamp (unix seconds) */
+    timestamp: number;
+    /** The new token's mint address */
+    mintAddress: string;
+    /** Token creator wallet */
+    creatorWallet: string;
+    /** Token name (from tx data or metadata) */
+    name: string;
+    /** Token symbol/ticker */
+    symbol: string;
+    /** Metadata URI */
+    metadataUri: string;
+    /** Whether this token has a GitHub link */
+    hasGithub: boolean;
+    /** Extracted GitHub URL(s) */
+    githubUrls: string[];
+    /** Whether mayhem mode is enabled */
+    mayhemMode: boolean;
+    /** Full metadata JSON (if fetched successfully) */
+    metadata?: Record<string, unknown>;
+}
+
+// ============================================================================
+// Token Launch Monitor State
+// ============================================================================
+
+export interface TokenLaunchMonitorState {
+    /** Whether the monitor is currently running */
+    isRunning: boolean;
+    /** Connection mode */
+    mode: 'websocket' | 'polling';
+    /** Total tokens detected since start */
+    tokensDetected: number;
+    /** Tokens with GitHub links detected */
+    tokensWithGithub: number;
+    /** Last processed slot */
+    lastSlot: number;
+    /** Uptime start (unix ms) */
+    startedAt: number;
+    /** Whether to only notify for GitHub-linked tokens */
+    githubOnly: boolean;
 }

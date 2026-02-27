@@ -554,6 +554,117 @@ export class PumpFunMonitor {
         };
     }
 
+    // ──────────────────────────────────────────────────────────────────────
+    // CTO (Creator Takeover) Detection
+    // ──────────────────────────────────────────────────────────────────────
+
+    /**
+     * Extract creator change (CTO) events from a parsed transaction.
+     *
+     * Detects set_creator, admin_set_creator (Pump) and
+     * set_coin_creator, admin_set_coin_creator, migrate_pool_coin_creator (PumpSwap AMM).
+     *
+     * For instructions with a creator arg (admin_set_creator, admin_set_coin_creator),
+     * the new creator pubkey is extracted from instruction data (bytes 8..40).
+     * For others (set_creator, set_coin_creator), it's derived from metadata on-chain.
+     */
+    private extractCreatorChangeEvents(
+        signature: string,
+        tx: import('@solana/web3.js').ParsedTransactionWithMeta,
+    ): CreatorChangeEvent[] {
+        const { meta, transaction, slot, blockTime } = tx;
+        if (!meta) return [];
+
+        const accountKeys = transaction.message.accountKeys.map((k) =>
+            typeof k === 'string' ? k : k.pubkey.toBase58(),
+        );
+
+        const events: CreatorChangeEvent[] = [];
+
+        for (const ix of transaction.message.instructions) {
+            if ('data' in ix && 'programId' in ix) {
+                const programId =
+                    typeof ix.programId === 'string'
+                        ? ix.programId
+                        : ix.programId.toBase58();
+
+                if (
+                    programId !== PUMP_PROGRAM_ID &&
+                    programId !== PUMP_AMM_PROGRAM_ID
+                ) {
+                    continue;
+                }
+
+                const matchedDef = this.matchCtoDiscriminator(
+                    (ix as { data: string }).data,
+                    programId,
+                );
+
+                if (!matchedDef) continue;
+
+                // Extract new creator from instruction data if present
+                let newCreatorWallet = '';
+                if (matchedDef.hasCreatorArg) {
+                    try {
+                        const bytes = bs58.decode((ix as { data: string }).data);
+                        // Anchor: 8-byte discriminator + 32-byte pubkey
+                        if (bytes.length >= 40) {
+                            const creatorBytes = bytes.slice(8, 40);
+                            newCreatorWallet = bs58.encode(creatorBytes);
+                        }
+                    } catch {
+                        // Could not decode creator arg
+                    }
+                }
+
+                // The signer is the first account key (fee payer / authority)
+                const signerWallet = accountKeys[0] || '';
+
+                // Find token mint from account keys
+                const tokenMint = this.findTokenMint(accountKeys) || '';
+
+                events.push({
+                    changeLabel: matchedDef.label,
+                    changeType: matchedDef.changeType,
+                    newCreatorWallet,
+                    programId,
+                    signerWallet,
+                    slot,
+                    timestamp: blockTime || Math.floor(Date.now() / 1000),
+                    tokenMint,
+                    txSignature: signature,
+                });
+            }
+        }
+
+        return events;
+    }
+
+    /**
+     * Match base58-encoded instruction data against known CTO discriminators.
+     */
+    private matchCtoDiscriminator(
+        dataBase58: string,
+        programId: string,
+    ): CreatorChangeInstructionDef | null {
+        try {
+            const bytes = bs58.decode(dataBase58);
+            if (bytes.length < 8) return null;
+
+            const hexPrefix = Buffer.from(bytes.slice(0, 8)).toString('hex');
+
+            for (const def of CTO_INSTRUCTIONS) {
+                if (def.programId === programId && def.discriminator === hexPrefix) {
+                    return def;
+                }
+            }
+
+            return null;
+        } catch {
+            return null;
+        }
+    }
+
     /**
      * Match base58-encoded instruction data against known claim discriminators.
      *

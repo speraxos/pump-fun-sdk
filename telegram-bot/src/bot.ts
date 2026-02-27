@@ -10,6 +10,7 @@ import type { Context } from 'grammy';
 
 import {
     formatClaimNotification,
+    formatCreatorChangeNotification,
     formatHelp,
     formatStatus,
     formatWatchList,
@@ -24,7 +25,7 @@ import {
     removeWatch,
     removeWatchByWallet,
 } from './store.js';
-import type { BotConfig, FeeClaimEvent } from './types.js';
+import type { BotConfig, CreatorChangeEvent, FeeClaimEvent } from './types.js';
 
 // ============================================================================
 // Bot Factory
@@ -251,6 +252,59 @@ export function createClaimHandler(bot: Bot) {
             } catch (err) {
                 log.error(
                     'Failed to send notification to chat %d:',
+                    watch.chatId,
+                    err,
+                );
+            }
+        }
+    };
+}
+
+/**
+ * Called by the monitor when a creator change (CTO) is detected.
+ * Finds matching watches (by signer or new creator wallet) and
+ * sends notifications to the appropriate chats.
+ */
+export function createCreatorChangeHandler(bot: Bot) {
+    return async (event: CreatorChangeEvent): Promise<void> => {
+        // Match watches against the signer, the new creator, or both
+        const signerWatches = findMatchingWatches(event.signerWallet);
+        const newCreatorWatches = event.newCreatorWallet
+            ? findMatchingWatches(event.newCreatorWallet)
+            : [];
+
+        // Deduplicate by watch ID (in case same wallet is both signer and new creator)
+        const seen = new Set<string>();
+        const allWatches = [...signerWatches, ...newCreatorWatches].filter((w) => {
+            if (seen.has(w.id)) return false;
+            seen.add(w.id);
+            return true;
+        });
+
+        if (allWatches.length === 0) {
+            log.debug(
+                'Creator change by %s — no matching watches',
+                event.signerWallet.slice(0, 8),
+            );
+            return;
+        }
+
+        log.info(
+            'Sending %d CTO notifications for tx %s',
+            allWatches.length,
+            event.txSignature.slice(0, 12),
+        );
+
+        for (const watch of allWatches) {
+            try {
+                const text = formatCreatorChangeNotification(event, watch);
+                await bot.api.sendMessage(watch.chatId, text, {
+                    parse_mode: 'HTML',
+                    link_preview_options: { is_disabled: true },
+                });
+            } catch (err) {
+                log.error(
+                    'Failed to send CTO notification to chat %d:',
                     watch.chatId,
                     err,
                 );

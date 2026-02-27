@@ -9,7 +9,7 @@
  */
 
 import { loadConfig } from './config.js';
-import { createBot, createClaimHandler } from './bot.js';
+import { createBot, createClaimHandler, createCreatorChangeHandler } from './bot.js';
 import { log, setLogLevel } from './logger.js';
 import { PumpFunMonitor } from './monitor.js';
 import { loadWatches } from './store.js';
@@ -28,9 +28,14 @@ async function main(): Promise<void> {
     loadWatches();
 
     // ── Create Solana monitor (not started yet) ──────────────────────────
-    // We pass a placeholder callback; it gets replaced after bot creation
+    // We pass placeholder callbacks; they get replaced after bot creation
     let claimHandler = (_event: import('./types.js').FeeClaimEvent) => { };
-    const monitor = new PumpFunMonitor(config, (event) => claimHandler(event));
+    let ctoHandler = (_event: import('./types.js').CreatorChangeEvent) => { };
+    const monitor = new PumpFunMonitor(
+        config,
+        (event) => claimHandler(event),
+        (event) => ctoHandler(event),
+    );
 
     // ── Create Telegram bot ──────────────────────────────────────────────
     const bot = createBot(config, monitor);
@@ -39,6 +44,12 @@ async function main(): Promise<void> {
     const handler = createClaimHandler(bot);
     claimHandler = (event) => {
         handler(event).catch((err) => log.error('Claim handler error:', err));
+    };
+
+    // Wire up the CTO handler
+    const ctoHandlerFn = createCreatorChangeHandler(bot);
+    ctoHandler = (event) => {
+        ctoHandlerFn(event).catch((err) => log.error('CTO handler error:', err));
     };
 
     // ── Start monitor ────────────────────────────────────────────────────
@@ -54,6 +65,8 @@ async function main(): Promise<void> {
         { command: 'unwatch', description: 'Stop watching a wallet' },
         { command: 'list', description: 'List active watches' },
         { command: 'status', description: 'Monitor status & stats' },
+        { command: 'monitor', description: 'Start real-time token launch feed' },
+        { command: 'stopmonitor', description: 'Stop the token launch feed' },
     ]);
 
     bot.start({

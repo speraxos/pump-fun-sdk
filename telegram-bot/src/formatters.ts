@@ -4,7 +4,7 @@
  * Rich HTML message formatting for Telegram notifications.
  */
 
-import type { FeeClaimEvent, MonitorState, WatchEntry } from './types.js';
+import type { CreatorChangeEvent, FeeClaimEvent, MonitorState, WatchEntry } from './types.js';
 
 // ============================================================================
 // Fee Claim Notification
@@ -49,6 +49,68 @@ export function formatClaimNotification(
         `${tokenLine}\n` +
         `⚙️ <b>Program:</b> ${programLabel}\n` +
         `🕐 <b>Time:</b> ${formatTime(event.timestamp)}\n\n` +
+        `${links}`
+    );
+}
+
+// ============================================================================
+// Creator Change (CTO) Notification
+// ============================================================================
+
+export function formatCreatorChangeNotification(
+    event: CreatorChangeEvent,
+    watch: WatchEntry,
+): string {
+    const shortSigner = shortAddr(event.signerWallet);
+    const shortNewCreator = event.newCreatorWallet
+        ? shortAddr(event.newCreatorWallet)
+        : '<i>from metadata</i>';
+
+    const labelLine = watch.label ? `\n📛 <b>Label:</b> ${escapeHtml(watch.label)}` : '';
+
+    const programLabel = event.programId?.includes('pAMM') ? 'PumpSwap AMM' : 'Pump';
+
+    const tokenLine = event.tokenMint
+        ? `<b>Token Mint:</b> <code>${event.tokenMint.slice(0, 12)}...${event.tokenMint.slice(-6)}</code>`
+        : '<b>Token:</b> <i>unknown</i>';
+
+    const solscanTx = `https://solscan.io/tx/${event.txSignature}`;
+    const solscanSigner = `https://solscan.io/account/${event.signerWallet}`;
+    const solscanNew = event.newCreatorWallet
+        ? `https://solscan.io/account/${event.newCreatorWallet}`
+        : '';
+    const pumpfunToken = event.tokenMint
+        ? `https://pump.fun/coin/${event.tokenMint}`
+        : '';
+
+    let links = `🔗 <a href="${solscanTx}">View TX</a> · <a href="${solscanSigner}">Signer</a>`;
+    if (solscanNew) {
+        links += ` · <a href="${solscanNew}">New Creator</a>`;
+    }
+    if (pumpfunToken) {
+        links += ` · <a href="${pumpfunToken}">pump.fun</a>`;
+    }
+
+    // Determine relationship to watched wallet
+    const watchedAddr = watch.recipientWallet.toLowerCase();
+    let relationship = '';
+    if (event.newCreatorWallet && event.newCreatorWallet.toLowerCase() === watchedAddr) {
+        relationship = '\n✅ <b>Your watched wallet is the NEW fee recipient</b>';
+    } else if (event.signerWallet.toLowerCase() === watchedAddr) {
+        relationship = '\n⚠️ <b>Your watched wallet initiated this change</b>';
+    } else {
+        relationship = '\n🔄 <b>Fees for this token are being redirected</b>';
+    }
+
+    return (
+        `🔀 <b>Creator Change (CTO) Detected!</b>\n\n` +
+        `📝 <b>Type:</b> ${event.changeLabel}\n` +
+        `👤 <b>Signer:</b> <code>${shortSigner}</code>${labelLine}\n` +
+        `🆕 <b>New Creator:</b> <code>${shortNewCreator}</code>\n` +
+        `${tokenLine}\n` +
+        `⚙️ <b>Program:</b> ${programLabel}\n` +
+        `🕐 <b>Time:</b> ${formatTime(event.timestamp)}\n` +
+        `${relationship}\n\n` +
         `${links}`
     );
 }
@@ -101,6 +163,7 @@ export function formatStatus(state: MonitorState, watchCount: number): string {
         `🔔 <b>Claims Detected:</b> ${state.claimsDetected}\n` +
         `  🏦 Creator Fees: ${state.creatorFeeClaims || 0}\n` +
         `  💸 Cashback: ${state.cashbackClaims || 0}\n` +
+        `  🔀 Creator Changes (CTO): ${state.creatorChanges || 0}\n` +
         `📦 <b>Last Slot:</b> ${state.lastSlot || 'N/A'}\n` +
         `⏱️ <b>Uptime:</b> ${uptime}`
     );
@@ -122,10 +185,11 @@ export function formatHelp(): string {
         `/help — Show this help\n\n` +
         `<b>How it works:</b>\n` +
         `1. Add a fee-recipient wallet address with /watch\n` +
-        `2. The bot monitors PumpFun on-chain for fee claims\n` +
-        `3. When that wallet claims creator fees or cashback, you get notified instantly\n\n` +
+        `2. The bot monitors PumpFun on-chain for fee claims and creator changes\n` +
+        `3. When that wallet claims creator fees or cashback, you get notified instantly\n` +
+        `4. When creator fees are redirected (CTO) involving a watched wallet, you get alerted\n\n` +
         `<b>Works in:</b> DMs and group chats\n` +
-        `<b>Supports:</b> Creator Fees + Cashback Coins (Pump + PumpSwap AMM)`
+        `<b>Supports:</b> Creator Fees + Cashback Coins + CTO Alerts (Pump + PumpSwap AMM)`
     );
 }
 
@@ -137,7 +201,7 @@ export function formatWelcome(name: string): string {
     return (
         `👋 <b>Welcome, ${escapeHtml(name)}!</b>\n\n` +
         `I monitor PumpFun on Solana and notify you when creator fees ` +
-        `or cashback rewards are claimed.\n\n` +
+        `or cashback rewards are claimed, and when creator fees are redirected (CTO).\n\n` +
         `Get started:\n` +
         `<code>/watch &lt;wallet_address&gt; [label]</code>\n\n` +
         `Type /help for all commands.`
