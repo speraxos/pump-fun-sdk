@@ -958,10 +958,11 @@ function updateTopTokens() {
   document.getElementById('top-tokens').innerHTML = sorted.length === 0
     ? '<div style="color:#444; font-size:11px;">Waiting for trades...</div>'
     : sorted.map(t => {
-        const shortMint = t.mint.slice(0, 6) + '...' + t.mint.slice(-4);
+        const shortMint = t.mint.slice(0, 4) + '…' + t.mint.slice(-4);
+        const display = t.name && !t.name.endsWith('...') ? t.name + (t.symbol ? ' $' + t.symbol : '') : shortMint;
         const vol = (t.volume / 1e9).toFixed(2);
         return `<div class="top-token">
-          <span class="name" title="${t.mint}">${t.name || shortMint}</span>
+          <a class="name" href="https://pump.fun/coin/${t.mint}" target="_blank" title="${t.mint}" style="color:#ffcc00;text-decoration:none;">${display}</a>
           <span class="trades">${t.total} trades · ${vol} SOL</span>
         </div>`;
       }).join('');
