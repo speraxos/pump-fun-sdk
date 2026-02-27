@@ -28,7 +28,7 @@ The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol on
 
 ## Skills
 
-See `.github/skills/` for 15 detailed skill documents.
+See `.github/skills/` for 28 detailed skill documents.
 
 ### Terminal Management
 
