@@ -143,3 +143,28 @@ export const ammCreatorVaultPda = (creator: PublicKey): PublicKey => {
   )[0];
 };
 
+export const feeProgramGlobalPda = (): PublicKey => {
+  return pumpFeePda([Buffer.from("fee-program-global")]);
+};
+
+export const socialFeePda = (userId: string, platform: number): PublicKey => {
+  return pumpFeePda([
+    Buffer.from("social-fee-pda"),
+    Buffer.from(userId),
+    Buffer.from([platform]),
+  ]);
+};
+
+export const ammUserVolumeAccumulatorPda = (user: PublicKey): PublicKey => {
+  return pumpAmmPda([Buffer.from("user_volume_accumulator"), user.toBuffer()]);
+};
+
+export const AMM_FEE_CONFIG_PDA = pumpFeePda([
+  Buffer.from("fee_config"),
+  PUMP_AMM_PROGRAM_ID.toBuffer(),
+]);
+
+export const AMM_GLOBAL_CONFIG_PDA = pumpAmmPda([
+  Buffer.from("global_config"),
+]);
+

@@ -57,6 +57,12 @@ Key methods:
 - `totalUnclaimedTokens`, `currentDayTokens` — Pure math
 - Day-indexed volume tracking with pro-rata distribution
 
+**Analytics (`analytics.ts`):**
+- `calculateBuyPriceImpact` / `calculateSellPriceImpact` — Price impact in BPS
+- `getGraduationProgress` — How close a token is to graduating
+- `getTokenPrice` — Per-token SOL cost on the curve
+- `getBondingCurveSummary` — Combined overview of price, progress, market cap
+
 ## Solana Address Format
 
 - Algorithm: Ed25519
@@ -108,9 +114,13 @@ PumpFun fee claim monitoring bot with Telegram notifications:
 - grammY framework with @solana/web3.js for Solana RPC/WebSocket
 - Real-time on-chain monitoring of fee claim transactions across Pump, PumpAMM, and PumpFees programs
 - 3 detection strategies: discriminator matching, inner instruction SOL transfers, balance-change heuristic
-- Commands: /start, /status, /claims, /stats, /settings, /help
+- 4th strategy: event log parsing for claim discriminators
+- Commands: /start, /help, /watch, /unwatch, /list, /status, /monitor, /stopmonitor
+- REST API: auth, rate limiting, SSE streaming, HMAC-signed webhooks, OpenAPI spec
+- Token launch monitor: real-time detection of new PumpFun token mints
+- CTO (creator takeover) alerts: detect creator fee redirection events
 - Persistent state with JSON file storage
-- Docker deployment with multi-stage build
+- Docker deployment with multi-stage build and HEALTHCHECK
 
 ### Shell Scripts (scripts/)
 

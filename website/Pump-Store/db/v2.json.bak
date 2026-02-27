@@ -212,34 +212,6 @@
       "ldesc": "Search transactions, addresses, and blocks across multiple EVM chains. Inspect on-chain activity with a clean, intuitive interface."
     },
     {
-      "id": "bonding-curve-calc",
-      "name": "Bonding Curve Calculator",
-      "src": "/Pump-Store/apps/bonding-curve-calc.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "tools",
-      "ver": "1.0",
-      "symbol": "show_chart",
-      "capabilities": [
-        "bonding_curve_calculator"
-      ],
-      "size": "23KB"
-    },
-    {
-      "id": "bonding-curve",
-      "name": "Bonding Curve",
-      "src": "/Pump-Store/apps/bonding-curve.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "defi",
-      "ver": "1.0",
-      "symbol": "show_chart",
-      "capabilities": [
-        "bonding_curve_viewer"
-      ],
-      "size": "18KB"
-    },
-    {
       "id": "bridgeflows",
       "name": "Bridge Flows",
       "src": "/Pump-Store/apps/bridgeflows.html",
@@ -317,7 +289,7 @@
       "ver": "1",
       "symbol": "terminal",
       "th": "#5FFCA6",
-      "size": "25KB",
+      "size": "24KB",
       "qt": "Explore more inside",
       "ldesc": "Access Pump System directly with Pump CLI, read and write files, execute functions and return data."
     },
@@ -354,20 +326,6 @@
       "size": "18KB",
       "qt": "Derivatives market radar",
       "ldesc": "Unified derivatives dashboard with liquidation heat, open interest context, and sentiment indicators for fast market reads."
-    },
-    {
-      "id": "copy-trading",
-      "name": "Copy Trading",
-      "src": "/Pump-Store/apps/copy-trading.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "trading",
-      "ver": "1.0",
-      "symbol": "content_copy",
-      "capabilities": [
-        "copy_trading"
-      ],
-      "size": "18KB"
     },
     {
       "id": "correlation-matrix",
@@ -407,6 +365,46 @@
       "ldesc": "A mesmerizing galaxy visualization of the entire crypto market. 300 tokens rendered as stars — size is market cap, brightness is volume, color is 24h change. Pan, zoom, search, cluster by category, and sonify the market with generative audio. Shooting stars flash for whale moves."
     },
     {
+      "id": "pulse",
+      "name": "Pump Pulse",
+      "src": "/Pump-Store/apps/pulse.html",
+      "by": "nich",
+      "desc": "Crypto vital signs monitor — ICU-style market health dashboard",
+      "cat": "analytics",
+      "ver": "1",
+      "symbol": "monitor_heart",
+      "th": "#00e87b",
+      "permissions": [
+        "network"
+      ],
+      "capabilities": [
+        "crypto_vital_signs_monitor"
+      ],
+      "size": "22KB",
+      "qt": "Check the market's pulse",
+      "ldesc": "A hospital ICU-style vital signs monitor for the crypto market. Six real-time EKG traces track BTC, ETH, total market cap, 24h volume, BTC dominance, and Fear & Greed — each scrolling with authentic heartbeat waveforms. Threshold alarms flash when vitals go critical. An overall Market Health Score synthesizes all signals into a single 0-100 reading. Dark green CRT aesthetic with glowing traces, pulsing dots, and scanline effects."
+    },
+    {
+      "id": "sonar",
+      "name": "Pump Sonar",
+      "src": "/Pump-Store/apps/sonar.html",
+      "by": "nich",
+      "desc": "Rotating radar that scans for crypto market anomalies",
+      "cat": "analytics",
+      "ver": "1",
+      "symbol": "radar",
+      "th": "#34d4f1",
+      "permissions": [
+        "network"
+      ],
+      "capabilities": [
+        "crypto_anomaly_radar_scanner"
+      ],
+      "size": "26KB",
+      "qt": "Detect market anomalies",
+      "ldesc": "A military-grade radar display that continuously scans 250 crypto tokens for anomalies. Tokens appear as blips positioned by sector and market cap. The rotating sweep highlights volume spikes, price breakouts, crashes, and stealth whale accumulation. Signal log panel tracks all detected anomalies with type classification. Sonar audio pings, sweep controls, and signal filtering. Nine sector zones: L1/L2, DeFi, Stablecoins, Meme, AI, Gaming, Exchange, Infrastructure, Privacy."
+    },
+    {
       "id": "cryptocalc",
       "name": "Crypto Calculator",
       "src": "/Pump-Store/apps/cryptocalc.html",
@@ -436,7 +434,7 @@
       "capabilities": [
         "crypto_charts"
       ],
-      "size": "45KB",
+      "size": "43KB",
       "qt": "Professional charts",
       "ldesc": "Professional-grade candlestick and line charts powered by TradingView. Analyze price action with multiple timeframes and technical indicators."
     },
@@ -469,7 +467,7 @@
       "th": "#00d4aa",
       "widget": true,
       "widgetSize": "320x400",
-      "size": "15KB",
+      "size": "14KB",
       "qt": "News at a glance",
       "ldesc": "A compact, always-on crypto news widget perfect for your desktop or as an embedded iframe. Live trending topics, breaking news, and quick category switching."
     },
@@ -500,20 +498,6 @@
       "size": "42KB",
       "qt": "Stay informed",
       "ldesc": "Aggregated cryptocurrency news from leading outlets. Stay on top of market-moving events, protocol updates, and regulatory changes."
-    },
-    {
-      "id": "dashboard",
-      "name": "Pump Dashboard",
-      "src": "/appdata/dashboard.html",
-      "by": "nich",
-      "desc": "Portfolio, news, gas, and market data in one place",
-      "cat": "defi",
-      "ver": "1.0",
-      "symbol": "dashboard",
-      "th": "#6366f1",
-      "size": "42KB",
-      "qt": "Your DeFi command center",
-      "ldesc": "A comprehensive DeFi dashboard featuring portfolio tracking, live crypto news, Fear & Greed index, ETH gas prices, trending coins, and quick access to the full Pump Terminal. Connect your wallet to see real portfolio data."
     },
     {
       "id": "datamgr",
@@ -683,34 +667,6 @@
       "ldesc": "Track the Crypto Fear & Greed Index in real time with historical charts. Understand market sentiment before making your next move."
     },
     {
-      "id": "fee-manager",
-      "name": "Fee Manager",
-      "src": "/Pump-Store/apps/fee-manager.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "general",
-      "ver": "1.0",
-      "symbol": "payments",
-      "capabilities": [
-        "fee_manager"
-      ],
-      "size": "14KB"
-    },
-    {
-      "id": "fee-tier-explorer",
-      "name": "Fee Tier Explorer",
-      "src": "/Pump-Store/apps/fee-tier-explorer.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "analytics",
-      "ver": "1.0",
-      "symbol": "payments",
-      "capabilities": [
-        "fee_explorer"
-      ],
-      "size": "14KB"
-    },
-    {
       "id": "flux",
       "name": "Pump Flux",
       "src": "/Pump-Store/apps/flux.html",
@@ -791,7 +747,7 @@
       "capabilities": [
         "gas_tracker"
       ],
-      "size": "21KB",
+      "size": "19KB",
       "qt": "Never overpay for gas",
       "ldesc": "Monitor gas prices across Ethereum, Polygon, Arbitrum, and more. Get real-time low/standard/fast estimates so you never overpay for a transaction."
     },
@@ -832,9 +788,28 @@
       "capabilities": [
         "watchlist"
       ],
-      "size": "23KB",
+      "size": "22KB",
       "qt": "Your coins, your way",
       "ldesc": "Build and manage your personal crypto watchlist. Track prices in real-time, set target alerts, add notes, and organize by custom tags. Data persisted locally across sessions."
+    },
+    {
+      "id": "group-notes",
+      "name": "Group Notes",
+      "src": "/Pump-Store/apps/group-notes.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "tools",
+      "ver": "1.0",
+      "permissions": [
+        "fileGet",
+        "fileSet",
+        "appStorage"
+      ],
+      "capabilities": [
+        "notes"
+      ],
+      "size": "56KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#F59E0B'/><text x='116' y='140' text-anchor='middle' fill='white' font-size='100' font-weight='bold'>📝</text></svg>"
     },
     {
       "id": "groupchat",
@@ -948,6 +923,89 @@
       "qt": "Dive deeper in data"
     },
     {
+      "id": "pumpai",
+      "name": "Pump AI",
+      "src": "/appdata/pumpai.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "tools",
+      "ver": "1.0",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "22KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#a855f7'/><circle cx='116' cy='100' r='50' fill='white' opacity='0.9'/><path d='M90 90c0-14 12-26 26-26s26 12 26 26' stroke='#a855f7' stroke-width='8' stroke-linecap='round' fill='none'/><circle cx='116' cy='116' r='6' fill='#a855f7'/><path d='M116 122v14' stroke='#a855f7' stroke-width='6' stroke-linecap='round'/><rect x='60' y='160' width='112' height='40' rx='20' fill='white' opacity='0.9'/><circle cx='88' cy='180' r='6' fill='#a855f7'/><circle cx='116' cy='180' r='6' fill='#a855f7'/><circle cx='144' cy='180' r='6' fill='#a855f7'/><circle cx='76' cy='70' r='12' fill='white' opacity='0.5'/><circle cx='156' cy='70' r='12' fill='white' opacity='0.5'/><path d='M68 60l-10-16M164 60l10-16' stroke='white' stroke-width='4' stroke-linecap='round' opacity='0.6'/></svg>"
+    },
+    {
+      "id": "pumpbot",
+      "name": "Pump Bot",
+      "src": "/appdata/pumpbot.html",
+      "by": "nich",
+      "desc": "Pump automation bot",
+      "cat": "tools",
+      "ver": "1",
+      "symbol": "smart_toy",
+      "th": "#00ccff",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "14KB",
+      "qt": "Automated assistant",
+      "ldesc": "Automate tasks and workflows in PumpOS with the Pump Bot."
+    },
+    {
+      "id": "pumpdefi",
+      "name": "Pump DeFi",
+      "src": "/appdata/pumpdefi.html",
+      "by": "nich",
+      "desc": "Access Pump DeFi platform with wallet support",
+      "cat": "defi",
+      "ver": "1",
+      "symbol": "account_balance",
+      "th": "#0066ff",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "65KB",
+      "qt": "DeFi made simple",
+      "ldesc": "Full-featured Pump DeFi platform embedded in PumpOS. Stake, swap, and manage your crypto assets with MetaMask and WalletConnect support.",
+      "img": "/assets/pump.png"
+    },
+    {
+      "id": "pumpdocs",
+      "name": "Pump Docs",
+      "src": "/appdata/pumpdocs.html",
+      "by": "nich",
+      "desc": "PumpOS documentation viewer",
+      "cat": "tools",
+      "ver": "1",
+      "symbol": "menu_book",
+      "th": "#ff6600",
+      "permissions": [
+        "appStorage"
+      ],
+      "size": "27KB",
+      "qt": "Documentation and guides",
+      "ldesc": "Browse PumpOS documentation, guides, and API references."
+    },
+    {
+      "id": "pumpheatmap",
+      "name": "Pump Market Heatmap",
+      "src": "/Pump-Store/apps/pumpheatmap.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "analytics",
+      "ver": "1.0",
+      "symbol": "grid_view",
+      "capabilities": [
+        "market_heatmap"
+      ],
+      "size": "12KB"
+    },
+    {
       "id": "layout-presets",
       "name": "Layout Presets",
       "src": "/Pump-Store/apps/layout-presets.html",
@@ -980,7 +1038,7 @@
       "capabilities": [
         "liquidation_heatmap"
       ],
-      "size": "26KB",
+      "size": "25KB",
       "qt": "Liquidation pressure map",
       "ldesc": "Real-time liquidation heatmap powered by Binance futures liquidation feed. Select timeframe (1h/4h/24h/7d), filter symbols, compare long vs short pressure, and inspect recent events with intensity buckets."
     },
@@ -997,7 +1055,7 @@
       "capabilities": [
         "liquidation_heatmap"
       ],
-      "size": "19KB",
+      "size": "18KB",
       "qt": "Watch liquidations live",
       "ldesc": "Track large long and short liquidations in realtime to gauge volatility and potential momentum shifts."
     },
@@ -1143,7 +1201,7 @@
       "capabilities": [
         "notifications"
       ],
-      "size": "50KB",
+      "size": "49KB",
       "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#EF4444'/><text x='116' y='140' text-anchor='middle' fill='white' font-size='100' font-weight='bold'>🔔</text></svg>"
     },
     {
@@ -1191,7 +1249,7 @@
         "appStorage",
         "network"
       ],
-      "size": "25KB",
+      "size": "23KB",
       "qt": "Data from the chain",
       "ldesc": "On-chain analytics for Bitcoin and Ethereum. Bitcoin tab: hash rate, difficulty, mempool, block stats, supply, mining pool distribution. Ethereum tab: price, gas prices, market data. Network tab: global crypto market cap, DeFi TVL, dominance breakdown."
     },
@@ -1276,7 +1334,7 @@
       "capabilities": [
         "orderbook_heatmap"
       ],
-      "size": "7KB"
+      "size": "6KB"
     },
     {
       "id": "orderbook",
@@ -1376,7 +1434,7 @@
       "cat": "trading",
       "ver": "1.0",
       "size": "2KB",
-      "icon": "../../../assets/pump.svg"
+      "icon": "../../assets/pump.svg"
     },
     {
       "id": "portfolio-aggregator",
@@ -1394,7 +1452,7 @@
       "capabilities": [
         "portfolio"
       ],
-      "size": "81KB",
+      "size": "80KB",
       "qt": "Unified portfolio view",
       "ldesc": "Aggregate positions across multiple wallets into a single dashboard to monitor allocation, performance, and concentration."
     },
@@ -1499,26 +1557,6 @@
       "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 -960 960 960\" width=\"24\" height=\"24\" fill=\"white\"><path d=\"M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-120q-100 0-170-70t-70-170q0-100 70-170t170-70q100 0 170 70t70 170q0 100-70 170t-170 70Zm0-80q66 0 113-47t47-113q0-66-47-113t-113-47q-66 0-113 47t-47 113q0 66 47 113t113 47Zm0-160Z\"/></svg>"
     },
     {
-      "id": "pulse",
-      "name": "Pump Pulse",
-      "src": "/Pump-Store/apps/pulse.html",
-      "by": "nich",
-      "desc": "Crypto vital signs monitor — ICU-style market health dashboard",
-      "cat": "analytics",
-      "ver": "1",
-      "symbol": "monitor_heart",
-      "th": "#00e87b",
-      "permissions": [
-        "network"
-      ],
-      "capabilities": [
-        "crypto_vital_signs_monitor"
-      ],
-      "size": "34KB",
-      "qt": "Check the market's pulse",
-      "ldesc": "A hospital ICU-style vital signs monitor for the crypto market. Six real-time EKG traces track BTC, ETH, total market cap, 24h volume, BTC dominance, and Fear & Greed — each scrolling with authentic heartbeat waveforms. Threshold alarms flash when vitals go critical. An overall Market Health Score synthesizes all signals into a single 0-100 reading. Dark green CRT aesthetic with glowing traces, pulsing dots, and scanline effects."
-    },
-    {
       "id": "research-board",
       "name": "Textame - The text editor",
       "src": "/Pump-Store/apps/research-board.html",
@@ -1604,14 +1642,10 @@
       "ver": "1",
       "symbol": "psychology",
       "th": "#22c55e",
-      "permissions": [
-        "appStorage",
-        "network"
-      ],
       "capabilities": [
         "smart_money"
       ],
-      "size": "30KB",
+      "size": "18KB",
       "qt": "Legacy wallet flow view",
       "ldesc": "Legacy smart-money interface retained for users who rely on the original layout and watchlist setup."
     },
@@ -1628,40 +1662,6 @@
       "size": "42KB",
       "qt": "Stay informed",
       "ldesc": "Aggregated cryptocurrency news from leading outlets. Stay on top of market-moving events, protocol updates, and regulatory changes."
-    },
-    {
-      "id": "solana-wallet",
-      "name": "Solana Wallet",
-      "src": "/Pump-Store/apps/solana-wallet.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "defi",
-      "ver": "1.0",
-      "capabilities": [
-        "solana_wallet"
-      ],
-      "size": "19KB",
-      "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\"><defs><linearGradient id=\"sg\" x1=\"0\" y1=\"0\" x2=\"24\" y2=\"24\"><stop offset=\"0%\" stop-color=\"#00FFA3\"/><stop offset=\"100%\" stop-color=\"#DC1FFF\"/></linearGradient></defs><path d=\"M4 17.5h13.5l2.5-2.5H6.5L4 17.5zm0-5.5h13.5l2.5-2.5H6.5L4 12zm16-3H6.5L4 6.5h13.5L20 9z\" fill=\"url(#sg)\"/></svg>"
-    },
-    {
-      "id": "sonar",
-      "name": "Pump Sonar",
-      "src": "/Pump-Store/apps/sonar.html",
-      "by": "nich",
-      "desc": "Rotating radar that scans for crypto market anomalies",
-      "cat": "analytics",
-      "ver": "1",
-      "symbol": "radar",
-      "th": "#34d4f1",
-      "permissions": [
-        "network"
-      ],
-      "capabilities": [
-        "crypto_anomaly_radar_scanner"
-      ],
-      "size": "37KB",
-      "qt": "Detect market anomalies",
-      "ldesc": "A military-grade radar display that continuously scans 250 crypto tokens for anomalies. Tokens appear as blips positioned by sector and market cap. The rotating sweep highlights volume spikes, price breakouts, crashes, and stealth whale accumulation. Signal log panel tracks all detected anomalies with type classification. Sonar audio pings, sweep controls, and signal filtering. Nine sector zones: L1/L2, DeFi, Stablecoins, Meme, AI, Gaming, Exchange, Infrastructure, Privacy."
     },
     {
       "id": "stablecoin-intel",
@@ -1740,62 +1740,6 @@
       "ldesc": "Create formatted HTML files without code. Text editor for rich text editing in PumpOS."
     },
     {
-      "id": "token-incentives",
-      "name": "Token Incentives Tracker",
-      "src": "/Pump-Store/apps/token-incentives.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "general",
-      "ver": "1.0",
-      "symbol": "stars",
-      "capabilities": [
-        "token_incentives"
-      ],
-      "size": "16KB"
-    },
-    {
-      "id": "token-launch-sim",
-      "name": "Token Launch Simulator",
-      "src": "/Pump-Store/apps/token-launch-sim.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "defi",
-      "ver": "1.0",
-      "symbol": "rocket_launch",
-      "capabilities": [
-        "token_launch_sim"
-      ],
-      "size": "16KB"
-    },
-    {
-      "id": "token-launcher",
-      "name": "Token Launcher",
-      "src": "/Pump-Store/apps/token-launcher.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "defi",
-      "ver": "1.0",
-      "symbol": "rocket_launch",
-      "capabilities": [
-        "pump_token_launcher"
-      ],
-      "size": "17KB"
-    },
-    {
-      "id": "token-sniper",
-      "name": "Token Sniper",
-      "src": "/Pump-Store/apps/token-sniper.html",
-      "by": "PumpOS",
-      "desc": "",
-      "cat": "general",
-      "ver": "1.0",
-      "symbol": "bolt",
-      "capabilities": [
-        "token_sniper"
-      ],
-      "size": "12KB"
-    },
-    {
       "id": "token-unlocks",
       "name": "Token Unlocks (Legacy)",
       "src": "/Pump-Store/apps/token-unlocks.html",
@@ -1826,7 +1770,7 @@
       "capabilities": [
         "token_scanner"
       ],
-      "size": "33KB",
+      "size": "31KB",
       "qt": "Is it safe?",
       "ldesc": "Scan any token contract for security risks before you buy. Powered by GoPlus, it checks for honeypots, hidden mints, and suspicious permissions."
     },
@@ -1880,7 +1824,7 @@
       "capabilities": [
         "trending_tokens"
       ],
-      "size": "34KB",
+      "size": "31KB",
       "qt": "What's hot right now",
       "ldesc": "See what's trending in crypto right now. Top gainers, losers, and most-searched tokens updated in real time."
     },
@@ -1983,7 +1927,7 @@
       "capabilities": [
         "watchlist"
       ],
-      "size": "25KB",
+      "size": "22KB",
       "qt": "Your coins, your way",
       "ldesc": "Build and manage your personal crypto watchlist. Track prices in real-time, set target alerts, add notes, and organize by custom tags. Data persisted locally across sessions."
     },
@@ -2015,7 +1959,7 @@
       "capabilities": [
         "whale_alerts"
       ],
-      "size": "33KB",
+      "size": "31KB",
       "qt": "Track the big fish",
       "ldesc": "Live feed of large whale transactions across major blockchains. Spot big moves in real time and follow the smart money."
     },
@@ -2029,13 +1973,13 @@
       "ver": "1.0",
       "symbol": "notifications_active",
       "th": "#ef4444",
+      "widget": true,
+      "widgetSize": "320x160",
       "capabilities": [
         "widget",
         "price_alerts"
       ],
-      "widget": true,
-      "widgetSize": "320x160",
-      "size": "9KB",
+      "size": "10KB",
       "qt": "Desktop price alerts",
       "ldesc": "Set price targets for any coin and get visual alerts when thresholds are hit. Configurable coin, direction, and target price."
     },
@@ -2065,13 +2009,13 @@
       "ver": "1.0",
       "symbol": "donut_large",
       "th": "#f7931a",
+      "widget": true,
+      "widgetSize": "320x240",
       "capabilities": [
         "widget",
         "market_dominance"
       ],
-      "widget": true,
-      "widgetSize": "320x240",
-      "size": "7KB",
+      "size": "12KB",
       "qt": "Dominance at a glance",
       "ldesc": "Live market dominance breakdown showing BTC, ETH, stablecoins, and altcoin share with a stacked bar visualization."
     },
@@ -2111,7 +2055,7 @@
       ],
       "widget": true,
       "widgetSize": "2x1",
-      "size": "32KB",
+      "size": "31KB",
       "qt": "Never overpay for gas",
       "ldesc": "Monitor gas prices across Ethereum, Polygon, Arbitrum, and more. Get real-time low/standard/fast estimates so you never overpay for a transaction."
     },
@@ -2131,7 +2075,7 @@
       ],
       "widget": true,
       "widgetSize": "320x160",
-      "size": "32KB",
+      "size": "31KB",
       "qt": "Live gas widget",
       "ldesc": "Desktop gas monitor widget for quick low/standard/fast checks."
     },
@@ -2167,7 +2111,7 @@
       "th": "#00d4aa",
       "widget": true,
       "widgetSize": "320x400",
-      "size": "15KB",
+      "size": "14KB",
       "qt": "News at a glance",
       "ldesc": "A compact, always-on crypto news widget perfect for your desktop or as an embedded iframe. Live trending topics, breaking news, and quick category switching."
     },
@@ -2325,7 +2269,7 @@
       "capabilities": [
         "whale_alerts"
       ],
-      "size": "28KB",
+      "size": "27KB",
       "qt": "Track the big fish",
       "ldesc": "Live feed of large whale transactions across major blockchains. Spot big moves in real time and follow the smart money."
     },
@@ -2390,9 +2334,6 @@
       "ver": "1.0",
       "symbol": "notifications_active",
       "th": "#fbbf24",
-      "permissions": [
-        "network"
-      ],
       "size": "21KB",
       "qt": "Never miss a move",
       "ldesc": "Create custom price alerts for Bitcoin, Ethereum, and Solana. Get notified when prices cross your targets. Powered by CoinGecko API with 60-second refresh intervals."
@@ -2468,6 +2409,20 @@
       "icon": "../assets/pump.svg"
     },
     {
+      "id": "dashboard",
+      "name": "Pump Dashboard",
+      "src": "/appdata/dashboard.html",
+      "by": "nich",
+      "desc": "Portfolio, news, gas, and market data in one place",
+      "cat": "defi",
+      "ver": "1.0",
+      "symbol": "dashboard",
+      "th": "#6366f1",
+      "size": "47KB",
+      "qt": "Your DeFi command center",
+      "ldesc": "A comprehensive DeFi dashboard featuring portfolio tracking, live crypto news, Fear & Greed index, ETH gas prices, trending coins, and quick access to the full Pump Terminal. Connect your wallet to see real portfolio data."
+    },
+    {
       "id": "files",
       "name": "Files app",
       "src": "/appdata/files.html",
@@ -2529,6 +2484,184 @@
       "ldesc": "Real-time Ethereum gas prices with cost estimates for common operations like ETH transfers, token swaps, NFT mints, and staking. Shows costs in ETH and USD."
     },
     {
+      "id": "pumpchat",
+      "name": "Pump Chat",
+      "src": "/appdata/pumpchat.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "social",
+      "ver": "1.0",
+      "permissions": [
+        "unsandboxed"
+      ],
+      "size": "3KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#6366f1'/><path d='M60 80h112a16 16 0 0116 16v48a16 16 0 01-16 16h-60l-32 24v-24H60a16 16 0 01-16-16V96a16 16 0 0116-16z' stroke='#fff' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/><circle cx='92' cy='120' r='8' fill='#fff'/><circle cx='116' cy='120' r='8' fill='#fff'/><circle cx='140' cy='120' r='8' fill='#fff'/></svg>"
+    },
+    {
+      "id": "pumpcoin",
+      "name": "Coin Detail",
+      "src": "/appdata/pumpcoin.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "defi",
+      "ver": "1.0",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "15KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#f59e0b'/><circle cx='116' cy='116' r='70' fill='white' opacity='0.9'/><circle cx='116' cy='116' r='55' fill='#f59e0b'/><text x='116' y='132' text-anchor='middle' font-size='60' font-weight='bold' fill='white' font-family='sans-serif'>$</text><circle cx='60' cy='60' r='20' fill='white' opacity='0.3'/><circle cx='172' cy='172' r='16' fill='white' opacity='0.3'/></svg>"
+    },
+    {
+      "id": "pumpdexscreener",
+      "name": "DEX Screener",
+      "src": "/appdata/pumpdexscreener.html",
+      "by": "nich",
+      "desc": "Native DEX pair screener with real-time data",
+      "cat": "trading",
+      "ver": "2.0",
+      "symbol": "swap_horiz",
+      "th": "#0ea5e9",
+      "size": "591B",
+      "qt": "Track pairs in real time",
+      "ldesc": "Professional DEX pair screener using real DexScreener API. Search pairs, filter by chain (ETH, SOL, Base, BSC, ARB, MATIC, AVAX, SUI, TON), sort by volume/liquidity/change/age/transactions. Detailed pair panel with buy/sell ratios, FDV, and direct links. Auto-refreshes every 30s."
+    },
+    {
+      "id": "pumpfeargreed",
+      "name": "Fear & Greed Index",
+      "src": "/appdata/pumpfeargreed.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "analytics",
+      "ver": "1.0",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "15KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#059669'/><path d='M36 146a80 80 0 01160 0' stroke='white' stroke-width='14' stroke-linecap='round' fill='none'/><path d='M56 146a60 60 0 01120 0' stroke='#00d4aa' stroke-width='10' stroke-linecap='round' fill='none' opacity='0.5'/><line x1='116' y1='146' x2='146' y2='90' stroke='white' stroke-width='8' stroke-linecap='round'/><circle cx='116' cy='146' r='10' fill='white'/><text x='48' y='180' font-size='20' fill='white' opacity='0.7' font-family='sans-serif'>Fear</text><text x='148' y='180' font-size='20' fill='white' opacity='0.7' font-family='sans-serif'>Greed</text></svg>"
+    },
+    {
+      "id": "pumplaunch",
+      "name": "Pump Launch",
+      "src": "/appdata/pumplaunch.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "defi",
+      "ver": "1.0",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "23KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#2563eb'/><path d='M116 30c-20 0-36 60-36 100s16 50 36 50 36-10 36-50S136 30 116 30z' fill='white' opacity='0.9'/><path d='M80 130l-24 40c-4 6 0 14 8 14h20' fill='white' opacity='0.6'/><path d='M152 130l24 40c4 6 0 14-8 14h-20' fill='white' opacity='0.6'/><ellipse cx='116' cy='180' rx='20' ry='10' fill='#ff6b6b'/><ellipse cx='116' cy='190' rx='14' ry='20' fill='#fbbf24' opacity='0.8'/><ellipse cx='116' cy='198' rx='8' ry='14' fill='#ff6b6b' opacity='0.6'/><circle cx='116' cy='90' r='12' fill='#2563eb'/></svg>"
+    },
+    {
+      "id": "pumpliquidations",
+      "name": "Liquidation Tracker",
+      "src": "/appdata/pumpliquidations.html",
+      "by": "nich",
+      "desc": "Real-time futures liquidation feed",
+      "cat": "defi",
+      "ver": "1.0",
+      "symbol": "whatshot",
+      "th": "#ef4444",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "18KB",
+      "qt": "Watch the rekt",
+      "ldesc": "Live liquidation tracker powered by Binance Futures WebSocket. See long and short liquidations in real time, top liquidated coins, long/short ratio, and largest single liquidation. Filter by longs or shorts."
+    },
+    {
+      "id": "pumponchain",
+      "name": "On-Chain Analytics",
+      "src": "/appdata/pumponchain.html",
+      "by": "nich",
+      "desc": "Bitcoin & Ethereum on-chain metrics",
+      "cat": "analytics",
+      "ver": "1.0",
+      "symbol": "link",
+      "th": "#f7931a",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "23KB",
+      "qt": "Data from the chain",
+      "ldesc": "On-chain analytics for Bitcoin and Ethereum. Bitcoin tab: hash rate, difficulty, mempool, block stats, supply, mining pool distribution. Ethereum tab: price, gas prices, market data. Network tab: global crypto market cap, DeFi TVL, dominance breakdown."
+    },
+    {
+      "id": "pumpportfolio",
+      "name": "Portfolio",
+      "src": "/appdata/pumpportfolio.html",
+      "by": "nich",
+      "desc": "Manual portfolio tracker with allocation chart",
+      "cat": "defi",
+      "ver": "1",
+      "symbol": "pie_chart",
+      "th": "#0ea5e9",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "20KB",
+      "qt": "Track your bags",
+      "ldesc": "Track your crypto portfolio with a visual allocation chart. Add holdings manually, see live valuations, and monitor your overall performance."
+    },
+    {
+      "id": "pumpterminal",
+      "name": "Trade Terminal",
+      "src": "/appdata/pumpterminal.html",
+      "by": "nich",
+      "desc": "Candlestick charts, order book, and live trades",
+      "cat": "tools",
+      "ver": "1.0",
+      "symbol": "candlestick_chart",
+      "th": "#2962ff",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "26KB",
+      "qt": "Professional trading view",
+      "ldesc": "Full-featured trade terminal with real-time candlestick charts via Binance WebSocket, live order book depth, recent trades feed, 20 trading pairs, 7 timeframes, and technical indicators (SMA, EMA, Bollinger Bands)."
+    },
+    {
+      "id": "pumptrending",
+      "name": "Trending Tokens",
+      "src": "/appdata/pumptrending.html",
+      "by": "PumpOS",
+      "desc": "",
+      "cat": "analytics",
+      "ver": "1.0",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "12KB",
+      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='%23ec4899'/><path d='M40 170l40-30 40 10 40-60 40-30 30-20' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/><path d='M190 40l20 0 0 20' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/><circle cx='40' cy='170' r='8' fill='white'/><circle cx='80' cy='140' r='8' fill='white'/><circle cx='120' cy='150' r='8' fill='white'/><circle cx='160' cy='90' r='8' fill='white'/><circle cx='200' cy='60' r='8' fill='white'/><path d='M40 170l40-30 40 10 40-60 40-30 40-20' stroke='white' stroke-width='4' stroke-linecap='round' opacity='0.3' stroke-dasharray='8 4'/></svg>"
+    },
+    {
+      "id": "pumpwatchlist",
+      "name": "Watchlist",
+      "src": "/appdata/pumpwatchlist.html",
+      "by": "nich",
+      "desc": "Personal crypto watchlist with alerts and notes",
+      "cat": "analytics",
+      "ver": "1",
+      "symbol": "bookmark_star",
+      "th": "#f59e0b",
+      "permissions": [
+        "appStorage",
+        "network"
+      ],
+      "size": "21KB",
+      "qt": "Your coins, your way",
+      "ldesc": "Build and manage your personal crypto watchlist. Track prices in real-time, set target alerts, add notes, and organize by custom tags. Data persisted locally across sessions."
+    },
+    {
       "id": "liza",
       "name": "Lizabot 3",
       "src": "/appdata/liza.html",
@@ -2576,7 +2709,7 @@
       "th": "#00d4aa",
       "widget": true,
       "widgetSize": "320x400",
-      "size": "15KB",
+      "size": "14KB",
       "qt": "News at a glance",
       "ldesc": "A compact, always-on crypto news widget perfect for your desktop or as an embedded iframe. Live trending topics, breaking news, and quick category switching."
     },
@@ -2711,7 +2844,7 @@
         "appStorage",
         "network"
       ],
-      "size": "34KB",
+      "size": "33KB",
       "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='%231da1f2'/><path d='M40 170l30-40 30 20 30-60 30 30 30-50' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/><path d='M150 50c10-8 22-12 34-10-4 10-12 18-22 22 8-1 16-3 22-7-5 8-12 15-20 20v4c0 50-38 108-108 108-20 0-36-4-36-4s20-4 36-16c-14 0-26-10-28-24 4 1 10 0 10 0' stroke='white' stroke-width='4' fill='white' opacity='0.3'/></svg>"
     },
     {
@@ -2752,7 +2885,7 @@
       "ver": "1.0",
       "symbol": "account_balance_wallet",
       "th": "#6366f1",
-      "size": "38KB",
+      "size": "37KB",
       "qt": "Connect your wallet",
       "ldesc": "Connect your crypto wallet to PumpOS. Supports MetaMask, WalletConnect, and Coinbase Wallet. View balances across Ethereum, Arbitrum, Base, and Polygon networks.",
       "disabled": true
@@ -2771,8 +2904,8 @@
       "capabilities": [
         "PumpOSWelcomer"
       ],
-      "size": "7KB",
-      "icon": "<svg width='232' height='232' viewBox='0 0 232 232' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='232' height='232' rx='40' fill='#00e87b'/><path d='M116 50l50 86.6H66L116 50z' fill='#fff' opacity='0.9'/><circle cx='116' cy='152' r='30' fill='#fff' opacity='0.7'/></svg>"
+      "size": "3KB",
+      "icon": "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='80.84275' height='95.06598' viewBox='0,0,80.84275,95.06598'><g transform='translate(-208.89489,-150.90157)'><g stroke-miterlimit='10'><path d='M226.07017,165.1827c0,-7.1969 5.83424,-13.03113 13.03113,-13.03113c7.1969,0 13.03113,5.83424 13.03113,13.03113c0,7.1969 -5.83424,13.03113 -13.03113,13.03113c-7.1969,0 -13.03113,-5.83424 -13.03113,-13.03113z' fill='none' stroke='#ffffff' stroke-width='2.5' stroke-linecap='butt'/><path d='M235.43912,178.6632l-2.6961,28.75836' fill='none' stroke='#ffffff' stroke-width='2.5' stroke-linecap='round'/><path d='M222.85733,244.71755c0,0 8.57823,-11.66807 10.05054,-17.70364c1.62535,-6.66291 -1.79274,-19.88957 0.18661,-18.78082c3.04362,1.7049 5.68203,8.13434 7.9652,15.29219c2.28318,7.15786 2.91707,19.84423 2.91707,19.84423' fill='none' stroke='#ffffff' stroke-width='2.5' stroke-linecap='round'/><path d='M223.53136,209.27611c0,0 -0.52426,-12.68632 3.89493,-16.65054c5.19808,-4.66293 7.4239,-8.79364 8.13962,-8.60021c1.31531,0.35549 17.0685,23.16395 22.96009,18.62758' fill='none' stroke='#ffffff' stroke-width='2.5' stroke-linecap='round'/><path d='M228.46557,234.35451l-19.57067,-29.07643l7.45549,-5.01812l19.57067,29.07643z' fill='#96ea6e' stroke='#a6ff91' stroke-width='0' stroke-linecap='butt'/><path d='M289.73764,191.86031l-57.69093,40.4528l-5.0725,-7.41861l57.69093,-40.4528z' fill='#96ea6e' stroke='#a6ff91' stroke-width='0' stroke-linecap='butt'/></g></g></svg>"
     }
   ],
   "categories": [
@@ -2780,7 +2913,6 @@
     "defi",
     "fun",
     "games",
-    "general",
     "launcher",
     "rotur",
     "social",
@@ -2789,6 +2921,6 @@
     "trading",
     "widgets"
   ],
-  "generated": "2026-02-27T02:54:44.368Z",
-  "totalApps": 162
+  "generated": "2026-02-24T11:26:48.461Z",
+  "totalApps": 169
 }

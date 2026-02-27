@@ -84,11 +84,11 @@ Difficulty estimates:
 
 ## Project Structure
 
-- src/ - Core SDK (instruction builders, bonding curve math, fees, PDAs, state)
+- src/ - Core SDK (instruction builders, bonding curve math, analytics, fees, PDAs, state)
 - rust/ - High-performance Rust vanity address generator (solana-sdk + rayon)
 - typescript/ - TypeScript vanity address generator (@solana/web3.js)
 - mcp-server/ - Model Context Protocol server for AI agents
-- telegram-bot/ - PumpFun fee claim monitoring with Telegram notifications
+- telegram-bot/ - PumpFun fee claim monitor (Telegram bot + REST API)
 - x402/ - x402 payment protocol (HTTP 402 USDC micropayments)
 - tutorials/ - 19 hands-on tutorial guides
 - scripts/ - Shell scripts wrapping solana-keygen
@@ -104,12 +104,14 @@ Difficulty estimates:
 - src/sdk.ts - PumpSdk class (offline instruction builders)
 - src/onlineSdk.ts - OnlinePumpSdk class (RPC fetchers)
 - src/bondingCurve.ts - AMM pricing math
+- src/analytics.ts - Price impact, graduation progress, token price, bonding curve summary
 - src/fees.ts - Tiered fee calculations
 - src/tokenIncentives.ts - Volume-based reward math
 - src/pda.ts - Program Derived Addresses
 - src/state.ts - On-chain state interfaces
 - rust/src/generator.rs - Rust vanity generation engine
 - typescript/src/lib/generator.ts - TS vanity generation engine
+- telegram-bot/src/api/server.ts - REST API with auth, rate limiting, SSE, webhooks
 
 ## Security Features
 

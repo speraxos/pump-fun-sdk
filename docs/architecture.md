@@ -12,7 +12,7 @@ Beyond the core SDK (`src/`), the repository includes several companion componen
 | `rust/` | High-performance Rust vanity address generator (rayon + solana-sdk) |
 | `typescript/` | TypeScript vanity address generator (@solana/web3.js) |
 | `mcp-server/` | Model Context Protocol server for AI agent integration |
-| `telegram-bot/` | PumpFun fee claim monitoring with Telegram notifications |
+| `telegram-bot/` | PumpFun fee claim monitor — Telegram bot + REST API |
 | `x402/` | x402 payment protocol — HTTP 402 micropayments with Solana USDC |
 | `tutorials/` | 19 hands-on tutorial guides |
 | `scripts/` | Production Bash scripts wrapping solana-keygen |
@@ -28,6 +28,7 @@ src/
 ├── sdk.ts                # PumpSdk (offline instruction builder)
 ├── onlineSdk.ts          # OnlinePumpSdk (fetcher + builder with Connection)
 ├── bondingCurve.ts       # Pure math for price quoting
+├── analytics.ts          # Price impact, graduation progress, token price, bonding curve summary
 ├── fees.ts               # Fee tier calculation logic
 ├── errors.ts             # Custom error classes
 ├── pda.ts                # PDA derivation helpers

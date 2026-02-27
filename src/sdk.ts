@@ -45,6 +45,11 @@ import {
   pumpPoolAuthorityPda,
   feeSharingConfigPda,
   userVolumeAccumulatorPda,
+  feeProgramGlobalPda,
+  socialFeePda as socialFeePdaHelper,
+  AMM_GLOBAL_CONFIG_PDA,
+  AMM_FEE_CONFIG_PDA,
+  PUMP_AMM_EVENT_AUTHORITY_PDA,
 } from "./pda";
 import {
   BondingCurve,
@@ -1023,6 +1028,684 @@ export class PumpSdk {
       .claimCashback()
       .accountsPartial({
         user,
+      })
+      .instruction();
+  }
+
+  // ─── Buy Exact SOL In ───────────────────────────────────────────────
+
+  /**
+   * Buy tokens by specifying the exact SOL amount to spend.
+   * More intuitive for users who think in SOL terms.
+   *
+   * @param params.user - The buyer's public key
+   * @param params.mint - The token mint address
+   * @param params.creator - The token creator
+   * @param params.feeRecipient - Fee recipient address
+   * @param params.solAmount - Exact SOL amount to spend (lamports)
+   * @param params.minTokenAmount - Minimum tokens to receive (slippage protection)
+   * @param params.tokenProgram - Token program (TOKEN_PROGRAM_ID or TOKEN_2022_PROGRAM_ID)
+   */
+  async buyExactSolInInstruction({
+    user,
+    mint,
+    creator,
+    feeRecipient,
+    solAmount,
+    minTokenAmount,
+    tokenProgram = TOKEN_PROGRAM_ID,
+  }: {
+    user: PublicKey;
+    mint: PublicKey;
+    creator: PublicKey;
+    feeRecipient: PublicKey;
+    solAmount: BN;
+    minTokenAmount: BN;
+    tokenProgram?: PublicKey;
+  }): Promise<TransactionInstruction> {
+    const associatedUser = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      tokenProgram,
+    );
+    return await this.offlinePumpProgram.methods
+      .buyExactSolIn(solAmount, minTokenAmount)
+      .accountsPartial({
+        feeRecipient,
+        mint,
+        associatedUser,
+        user,
+        creatorVault: creatorVaultPda(creator),
+        tokenProgram,
+      })
+      .instruction();
+  }
+
+  // ─── Mayhem Mode ────────────────────────────────────────────────────
+
+  /**
+   * Set virtual parameters for mayhem mode on a bonding curve.
+   */
+  async setMayhemVirtualParamsInstruction({
+    authority,
+    mint,
+    virtualSolReserves,
+    virtualTokenReserves,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+    virtualSolReserves: BN;
+    virtualTokenReserves: BN;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .setMayhemVirtualParams(virtualSolReserves, virtualTokenReserves)
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Toggle mayhem mode on/off for the protocol.
+   */
+  async toggleMayhemModeInstruction({
+    authority,
+    enabled,
+  }: {
+    authority: PublicKey;
+    enabled: boolean;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .toggleMayhemMode(enabled)
+      .accountsPartial({
+        authority,
+      })
+      .instruction();
+  }
+
+  /**
+   * Toggle cashback feature on/off.
+   */
+  async toggleCashbackEnabledInstruction({
+    authority,
+    enabled,
+  }: {
+    authority: PublicKey;
+    enabled: boolean;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .toggleCashbackEnabled(enabled)
+      .accountsPartial({
+        authority,
+      })
+      .instruction();
+  }
+
+  /**
+   * Toggle the create_v2 instruction on/off.
+   */
+  async toggleCreateV2Instruction({
+    authority,
+    enabled,
+  }: {
+    authority: PublicKey;
+    enabled: boolean;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .toggleCreateV2(enabled)
+      .accountsPartial({
+        authority,
+      })
+      .instruction();
+  }
+
+  // ─── Creator Management ─────────────────────────────────────────────
+
+  /**
+   * Migrate bonding curve creator to a new address.
+   */
+  async migrateBondingCurveCreatorInstruction({
+    authority,
+    mint,
+    newCreator,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+    newCreator: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .migrateBondingCurveCreator(newCreator)
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Set the Metaplex creator metadata for a token.
+   */
+  async setMetaplexCreatorInstruction({
+    authority,
+    mint,
+    creator,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+    creator: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .setMetaplexCreator(creator)
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Set reserved fee recipients for the protocol.
+   */
+  async setReservedFeeRecipientsInstruction({
+    authority,
+    recipients,
+  }: {
+    authority: PublicKey;
+    recipients: PublicKey[];
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .setReservedFeeRecipients(recipients)
+      .accountsPartial({
+        authority,
+      })
+      .instruction();
+  }
+
+  /**
+   * Update the global authority address.
+   */
+  async updateGlobalAuthorityInstruction({
+    authority,
+    newAuthority,
+  }: {
+    authority: PublicKey;
+    newAuthority: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpProgram.methods
+      .updateGlobalAuthority(newAuthority)
+      .accountsPartial({
+        authority,
+      })
+      .instruction();
+  }
+
+  // ─── PumpAMM Instructions ──────────────────────────────────────────
+
+  /**
+   * Buy tokens on a graduated AMM pool.
+   */
+  async ammBuyInstruction({
+    user,
+    pool,
+    mint,
+    baseAmountOut,
+    maxQuoteAmountIn,
+  }: {
+    user: PublicKey;
+    pool: PublicKey;
+    mint: PublicKey;
+    baseAmountOut: BN;
+    maxQuoteAmountIn: BN;
+  }): Promise<TransactionInstruction> {
+    const userBaseAta = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const userQuoteAta = getAssociatedTokenAddressSync(
+      NATIVE_MINT,
+      user,
+      true,
+      TOKEN_PROGRAM_ID,
+    );
+    return await this.offlinePumpAmmProgram.methods
+      .buy(baseAmountOut, maxQuoteAmountIn)
+      .accountsPartial({
+        user,
+        pool,
+        userBaseAccount: userBaseAta,
+        userQuoteAccount: userQuoteAta,
+      })
+      .instruction();
+  }
+
+  /**
+   * Buy tokens on AMM by specifying exact SOL (quote) input.
+   */
+  async ammBuyExactQuoteInInstruction({
+    user,
+    pool,
+    mint,
+    quoteAmountIn,
+    minBaseAmountOut,
+  }: {
+    user: PublicKey;
+    pool: PublicKey;
+    mint: PublicKey;
+    quoteAmountIn: BN;
+    minBaseAmountOut: BN;
+  }): Promise<TransactionInstruction> {
+    const userBaseAta = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const userQuoteAta = getAssociatedTokenAddressSync(
+      NATIVE_MINT,
+      user,
+      true,
+      TOKEN_PROGRAM_ID,
+    );
+    return await this.offlinePumpAmmProgram.methods
+      .buyExactQuoteIn(quoteAmountIn, minBaseAmountOut)
+      .accountsPartial({
+        user,
+        pool,
+        userBaseAccount: userBaseAta,
+        userQuoteAccount: userQuoteAta,
+      })
+      .instruction();
+  }
+
+  /**
+   * Sell tokens on a graduated AMM pool.
+   */
+  async ammSellInstruction({
+    user,
+    pool,
+    mint,
+    baseAmountIn,
+    minQuoteAmountOut,
+  }: {
+    user: PublicKey;
+    pool: PublicKey;
+    mint: PublicKey;
+    baseAmountIn: BN;
+    minQuoteAmountOut: BN;
+  }): Promise<TransactionInstruction> {
+    const userBaseAta = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const userQuoteAta = getAssociatedTokenAddressSync(
+      NATIVE_MINT,
+      user,
+      true,
+      TOKEN_PROGRAM_ID,
+    );
+    return await this.offlinePumpAmmProgram.methods
+      .sell(baseAmountIn, minQuoteAmountOut)
+      .accountsPartial({
+        user,
+        pool,
+        userBaseAccount: userBaseAta,
+        userQuoteAccount: userQuoteAta,
+      })
+      .instruction();
+  }
+
+  /**
+   * Deposit liquidity into an AMM pool (LP provision).
+   */
+  async ammDepositInstruction({
+    user,
+    pool,
+    mint,
+    maxBaseAmountIn,
+    maxQuoteAmountIn,
+    minLpTokenAmountOut,
+  }: {
+    user: PublicKey;
+    pool: PublicKey;
+    mint: PublicKey;
+    maxBaseAmountIn: BN;
+    maxQuoteAmountIn: BN;
+    minLpTokenAmountOut: BN;
+  }): Promise<TransactionInstruction> {
+    const userBaseAta = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const userQuoteAta = getAssociatedTokenAddressSync(
+      NATIVE_MINT,
+      user,
+      true,
+      TOKEN_PROGRAM_ID,
+    );
+    return await this.offlinePumpAmmProgram.methods
+      .deposit(maxBaseAmountIn, maxQuoteAmountIn, minLpTokenAmountOut)
+      .accountsPartial({
+        user,
+        pool,
+        userBaseAccount: userBaseAta,
+        userQuoteAccount: userQuoteAta,
+      })
+      .instruction();
+  }
+
+  /**
+   * Withdraw liquidity from an AMM pool.
+   */
+  async ammWithdrawInstruction({
+    user,
+    pool,
+    mint,
+    lpTokenAmountIn,
+    minBaseAmountOut,
+    minQuoteAmountOut,
+  }: {
+    user: PublicKey;
+    pool: PublicKey;
+    mint: PublicKey;
+    lpTokenAmountIn: BN;
+    minBaseAmountOut: BN;
+    minQuoteAmountOut: BN;
+  }): Promise<TransactionInstruction> {
+    const userBaseAta = getAssociatedTokenAddressSync(
+      mint,
+      user,
+      true,
+      TOKEN_2022_PROGRAM_ID,
+    );
+    const userQuoteAta = getAssociatedTokenAddressSync(
+      NATIVE_MINT,
+      user,
+      true,
+      TOKEN_PROGRAM_ID,
+    );
+    return await this.offlinePumpAmmProgram.methods
+      .withdraw(lpTokenAmountIn, minBaseAmountOut, minQuoteAmountOut)
+      .accountsPartial({
+        user,
+        pool,
+        userBaseAccount: userBaseAta,
+        userQuoteAccount: userQuoteAta,
+      })
+      .instruction();
+  }
+
+  /**
+   * Migrate AMM pool coin creator to a new address.
+   */
+  async ammMigratePoolCoinCreatorInstruction({
+    authority,
+    pool,
+    newCreator,
+  }: {
+    authority: PublicKey;
+    pool: PublicKey;
+    newCreator: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .migratePoolCoinCreator(newCreator)
+      .accountsPartial({
+        authority,
+        pool,
+      })
+      .instruction();
+  }
+
+  /**
+   * Transfer creator fees from AMM pool to the Pump program.
+   */
+  async ammTransferCreatorFeesToPumpInstruction({
+    pool,
+    mint,
+  }: {
+    pool: PublicKey;
+    mint: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .transferCreatorFeesToPump()
+      .accountsPartial({
+        pool,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Collect creator fees from an AMM pool.
+   */
+  async ammCollectCoinCreatorFeeInstruction({
+    creator,
+    pool,
+  }: {
+    creator: PublicKey;
+    pool: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .collectCoinCreatorFee()
+      .accountsPartial({
+        coinCreator: creator,
+        pool,
+      })
+      .instruction();
+  }
+
+  /**
+   * Set the coin creator for an AMM pool.
+   */
+  async ammSetCoinCreatorInstruction({
+    authority,
+    pool,
+    coinCreator,
+  }: {
+    authority: PublicKey;
+    pool: PublicKey;
+    coinCreator: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .setCoinCreator(coinCreator)
+      .accountsPartial({
+        authority,
+        pool,
+      })
+      .instruction();
+  }
+
+  /**
+   * Claim cashback from AMM trading.
+   */
+  async ammClaimCashbackInstruction({
+    user,
+  }: {
+    user: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .claimCashback()
+      .accountsPartial({
+        user,
+      })
+      .instruction();
+  }
+
+  /**
+   * Sync user volume accumulator on the AMM program.
+   */
+  async ammSyncUserVolumeAccumulatorInstruction(
+    user: PublicKey,
+  ): Promise<TransactionInstruction> {
+    return await this.offlinePumpAmmProgram.methods
+      .syncUserVolumeAccumulator()
+      .accountsPartial({ user })
+      .instruction();
+  }
+
+  // ─── PumpFees Instructions ─────────────────────────────────────────
+
+  /**
+   * Create a social fee PDA for referral/social fee sharing.
+   */
+  async createSocialFeePdaInstruction({
+    payer,
+    authority,
+    user,
+  }: {
+    payer: PublicKey;
+    authority: PublicKey;
+    user: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .createSocialFeePda()
+      .accountsPartial({
+        payer,
+        authority,
+        user,
+      })
+      .instruction();
+  }
+
+  /**
+   * Claim accumulated social/referral fees.
+   */
+  async claimSocialFeePdaInstruction({
+    authority,
+    user,
+  }: {
+    authority: PublicKey;
+    user: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .claimSocialFeePda()
+      .accountsPartial({
+        authority,
+        user,
+      })
+      .instruction();
+  }
+
+  /**
+   * Reset a fee sharing configuration.
+   */
+  async resetFeeSharingConfigInstruction({
+    authority,
+    mint,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .resetFeeSharingConfig()
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Transfer fee sharing authority to a new address.
+   */
+  async transferFeeSharingAuthorityInstruction({
+    authority,
+    mint,
+    newAuthority,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+    newAuthority: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .transferFeeSharingAuthority(newAuthority)
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Permanently revoke fee sharing authority.
+   * After this, no one can modify the fee sharing configuration.
+   */
+  async revokeFeeSharingAuthorityInstruction({
+    authority,
+    mint,
+  }: {
+    authority: PublicKey;
+    mint: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .revokeFeeSharingAuthority()
+      .accountsPartial({
+        authority,
+        mint,
+      })
+      .instruction();
+  }
+
+  /**
+   * Set the claim rate limit for anti-abuse throttling.
+   */
+  async setClaimRateLimitInstruction({
+    admin,
+    claimRateLimit,
+  }: {
+    admin: PublicKey;
+    claimRateLimit: BN;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .setClaimRateLimit(claimRateLimit)
+      .accountsPartial({
+        admin,
+      })
+      .instruction();
+  }
+
+  /**
+   * Set the social claim authority.
+   */
+  async setSocialClaimAuthorityInstruction({
+    admin,
+    socialClaimAuthority,
+  }: {
+    admin: PublicKey;
+    socialClaimAuthority: PublicKey;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .setSocialClaimAuthority(socialClaimAuthority)
+      .accountsPartial({
+        admin,
+      })
+      .instruction();
+  }
+
+  /**
+   * Upsert (create or update) fee tiers for the protocol.
+   */
+  async upsertFeeTiersInstruction({
+    admin,
+    feeTiers,
+  }: {
+    admin: PublicKey;
+    feeTiers: Array<{
+      marketCapLamportsThreshold: BN;
+      fees: { lpFeeBps: BN; protocolFeeBps: BN; creatorFeeBps: BN };
+    }>;
+  }): Promise<TransactionInstruction> {
+    return await this.offlinePumpFeeProgram.methods
+      .upsertFeeTiers(feeTiers)
+      .accountsPartial({
+        admin,
       })
       .instruction();
   }
