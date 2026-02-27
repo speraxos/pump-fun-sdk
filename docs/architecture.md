@@ -28,7 +28,7 @@ Beyond the core SDK (`src/`), the repository includes several companion componen
 | `lair-tg/` | Lair — unified Telegram bot platform for DeFi intelligence |
 | `.well-known/` | AI plugin manifest, agent config, skills registry, security.txt |
 | `packages/` | Companion packages (DeFi agents, plugin delivery) |
-| `packages/defi-agents/` | 58 production-ready AI agent definitions for DeFi workflows |
+| `packages/defi-agents/` | 43 production-ready AI agent definitions for DeFi workflows |
 | `packages/plugin.delivery/` | AI plugin index for SperaxOS function-call plugins |
 
 ## Core SDK Module Map
@@ -240,7 +240,7 @@ Also maintains a Solana RPC WebSocket subscription as a supplementary data sourc
 
 ### DeFi Agent Definitions
 
-The `packages/defi-agents/` directory contains 58 production-ready agent definitions in a universal JSON format. Each agent specifies capabilities, personality, knowledge domains, and task patterns. The format works with any AI platform — Claude, GPT, LLaMA, or local models.
+The `packages/defi-agents/` directory contains 43 production-ready agent definitions in a universal JSON format. Each agent specifies capabilities, personality, knowledge domains, and task patterns. The format works with any AI platform — Claude, GPT, LLaMA, or local models.
 
 Key agent: `pump-fun-sdk-expert` — specialized for Pump SDK operations including token creation, bonding curve math, fee sharing, and analytics.
 

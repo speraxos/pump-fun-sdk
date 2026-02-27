@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **DeFi agents** (`packages/defi-agents/`) — 58 production-ready AI agent definitions with 18-language i18n support, covering trading, analytics, risk management, and portfolio strategies
+- **DeFi agents** (`packages/defi-agents/`) — 43 production-ready AI agent definitions with 18-language i18n support, covering trading, analytics, risk management, and portfolio strategies
 - **Plugin.delivery** (`packages/plugin.delivery/`) — AI Plugin Index for SperaxOS function-call plugins and tools
 - **19 tutorials** (`tutorials/`) — step-by-step guides from token creation to CoinGecko integration, covering the full SDK surface
 - **Social fee PDAs** — `createSocialFeePdaInstruction`, `claimSocialFeePdaInstruction`, `fetchSocialFeePda`, `decodeSocialFeePdaAccount` for platform-based fee collection (userId + platform identifiers)

@@ -10,7 +10,7 @@ The repository also includes:
 - **Rust vanity address generator** — multi-threaded, 100K+ keys/sec with rayon + solana-sdk
 - **TypeScript vanity generator** — educational reference implementation with @solana/web3.js
 - **MCP server** — Model Context Protocol server for AI agent integration (53 tools)
-- **Telegram bot** — PumpFun activity monitor with 9 commands (fee claims, CTO alerts, whale trades, graduation)
+- **Telegram bot** — PumpFun activity monitor with 10 commands (fee claims, CTO alerts, whale trades, graduation)
 - **WebSocket relay server** — Real-time token launch broadcasting to browser clients
 - **Live dashboards** — Standalone browser UIs for token launches and trade analytics
 - **x402 payment protocol** — HTTP 402 micropayments with Solana USDC

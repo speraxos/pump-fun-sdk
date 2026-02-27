@@ -207,33 +207,34 @@ The integration follows the OpenClaw/Claude format, making it plug-and-play for 
 ### Creating a Token
 
 ```typescript
-import { PumpSdk } from "@pump-fun/pump-sdk";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { OnlinePumpSdk, PUMP_SDK, getBuyTokenAmountFromSolAmount } from "@pump-fun/pump-sdk";
+import { Connection, Keypair } from "@solana/web3.js";
 import BN from "bn.js";
 
 const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
-const sdk = new PumpSdk(connection);
+const sdk = new OnlinePumpSdk(connection);
 
-const mint = PublicKey.unique();
+const mint = Keypair.generate();
 const creator = myWallet.publicKey;
 
-// Create the token
-const instruction = await sdk.createInstruction({
-  mint,
+// Create the token (offline — uses PUMP_SDK singleton)
+const instruction = await PUMP_SDK.createV2Instruction({
+  mint: mint.publicKey,
   name: "My AI Agent Token",
   symbol: "AGENT",
   uri: "https://arweave.net/metadata.json",
   creator,
   user: creator,
+  mayhemMode: false,
 });
 
 // Or create and immediately buy
 const global = await sdk.fetchGlobal();
 const solAmount = new BN(0.5 * 10 ** 9); // 0.5 SOL
 
-const instructions = await sdk.createAndBuyInstructions({
+const instructions = await PUMP_SDK.createV2AndBuyInstructions({
   global,
-  mint,
+  mint: mint.publicKey,
   name: "My AI Agent Token",
   symbol: "AGENT",
   uri: "https://arweave.net/metadata.json",
@@ -241,22 +242,28 @@ const instructions = await sdk.createAndBuyInstructions({
   user: creator,
   solAmount,
   amount: getBuyTokenAmountFromSolAmount(global, null, solAmount),
+  mayhemMode: false,
 });
 ```
 
 ### Buying on the Bonding Curve
 
 ```typescript
+import { PUMP_SDK, OnlinePumpSdk, getBuyTokenAmountFromSolAmount } from "@pump-fun/pump-sdk";
+import { PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
+
 const mint = new PublicKey("...");
 const user = myWallet.publicKey;
 
+const sdk = new OnlinePumpSdk(connection);
 const global = await sdk.fetchGlobal();
 const { bondingCurveAccountInfo, bondingCurve, associatedUserAccountInfo } =
   await sdk.fetchBuyState(mint, user);
 
 const solAmount = new BN(0.1 * 10 ** 9); // 0.1 SOL
 
-const instructions = await sdk.buyInstructions({
+const instructions = await PUMP_SDK.buyInstructions({
   global,
   bondingCurveAccountInfo,
   bondingCurve,
@@ -275,7 +282,7 @@ const instructions = await sdk.buyInstructions({
 const { bondingCurveAccountInfo, bondingCurve } = await sdk.fetchSellState(mint, user);
 const amount = new BN(15_828);
 
-const instructions = await sdk.sellInstructions({
+const instructions = await PUMP_SDK.sellInstructions({
   global,
   bondingCurveAccountInfo,
   bondingCurve,

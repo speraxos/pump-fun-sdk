@@ -212,6 +212,9 @@ async function main(): Promise<void> {
             { command: 'alerts', description: 'Configure alert types per chat' },
             { command: 'monitor', description: 'Start real-time token launch feed' },
             { command: 'stopmonitor', description: 'Stop the token launch feed' },
+            { command: 'price', description: 'Token price & bonding curve info' },
+            { command: 'fees', description: 'Show fee tiers for a token' },
+            { command: 'quote', description: 'Buy/sell quote estimate' },
         ]);
 
         bot.start({

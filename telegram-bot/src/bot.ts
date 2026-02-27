@@ -12,10 +12,13 @@ import type { Context } from 'grammy';
 import {
     formatClaimNotification,
     formatCreatorChangeNotification,
+    formatFeeTiers,
     formatHelp,
     formatMonitorActivated,
     formatMonitorDeactivated,
+    formatQuote,
     formatStatus,
+    formatTokenPrice,
     formatWatchList,
     formatWelcome,
     escapeHtml,
@@ -31,6 +34,14 @@ import {
 } from './launch-store.js';
 import { log } from './logger.js';
 import type { PumpFunMonitor } from './monitor.js';
+import {
+    fetchTokenInfo,
+    getBuyQuote,
+    getFeeTiersForToken,
+    getSellQuote,
+    parseSolToLamports,
+    parseTokenAmount,
+} from './pump-client.js';
 import {
     addWatch,
     findMatchingWatches,
@@ -94,6 +105,10 @@ export function createBot(
     bot.command('alerts', (ctx) => handleAlerts(ctx));
     bot.command('monitor', (ctx) => handleMonitor(ctx));
     bot.command('stopmonitor', (ctx) => handleStopMonitor(ctx));
+    bot.command('price', (ctx) => handlePrice(ctx));
+    bot.command('curve', (ctx) => handlePrice(ctx)); // alias for /price
+    bot.command('fees', (ctx) => handleFees(ctx));
+    bot.command('quote', (ctx) => handleQuote(ctx));
 
     // ── Fallback ─────────────────────────────────────────────────────────
     bot.on('message:text', async (ctx) => {
@@ -549,6 +564,188 @@ async function handleStopMonitor(ctx: Context): Promise<void> {
     deactivateMonitor(ctx.chat!.id);
     log.info('Monitor stopped by user for chat %d', ctx.chat!.id);
     await ctx.reply(formatMonitorDeactivated(), { parse_mode: 'HTML' });
+}
+
+// ============================================================================
+// /price <mint> (also /curve)
+// ============================================================================
+
+async function handlePrice(ctx: Context): Promise<void> {
+    const text = ctx.message?.text || '';
+    const parts = text.split(/\s+/).slice(1);
+
+    if (parts.length === 0) {
+        await ctx.reply(
+            '\ud83d\udcb0 <b>Token Price Lookup</b>\n\n' +
+            'Usage: <code>/price &lt;mint_address&gt;</code>\n\n' +
+            'Example:\n' +
+            '<code>/price HN7c...4xYz</code>\n\n' +
+            'Shows current price, market cap, bonding curve progress, and more.\n' +
+            '<code>/curve</code> is an alias for <code>/price</code>.',
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    const mint = parts[0];
+
+    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)) {
+        await ctx.reply(
+            '\u274c Invalid mint address. Must be a base58-encoded public key (32-44 characters).',
+        );
+        return;
+    }
+
+    await ctx.reply('\u23f3 Looking up token...', { parse_mode: 'HTML' });
+
+    const token = await fetchTokenInfo(mint);
+    if (!token) {
+        await ctx.reply(
+            `\u274c Token not found on PumpFun.\n\n` +
+            `The mint address <code>${mint.slice(0, 6)}...${mint.slice(-4)}</code> ` +
+            `was not found. Make sure it\'s a PumpFun token mint address.`,
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    await ctx.reply(formatTokenPrice(token), {
+        parse_mode: 'HTML',
+        link_preview_options: { is_disabled: true },
+    });
+}
+
+// ============================================================================
+// /fees <mint>
+// ============================================================================
+
+async function handleFees(ctx: Context): Promise<void> {
+    const text = ctx.message?.text || '';
+    const parts = text.split(/\s+/).slice(1);
+
+    if (parts.length === 0) {
+        await ctx.reply(
+            '\ud83d\udcb8 <b>Fee Tier Lookup</b>\n\n' +
+            'Usage: <code>/fees &lt;mint_address&gt;</code>\n\n' +
+            'Shows PumpFun fee tiers and which tier applies to the token based on its market cap.',
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    const mint = parts[0];
+
+    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)) {
+        await ctx.reply(
+            '\u274c Invalid mint address. Must be a base58-encoded public key (32-44 characters).',
+        );
+        return;
+    }
+
+    const token = await fetchTokenInfo(mint);
+    if (!token) {
+        await ctx.reply(
+            `\u274c Token not found on PumpFun.\n\n` +
+            `The mint address <code>${mint.slice(0, 6)}...${mint.slice(-4)}</code> was not found.`,
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    const tiers = getFeeTiersForToken(token);
+    await ctx.reply(formatFeeTiers(token, tiers), {
+        parse_mode: 'HTML',
+        link_preview_options: { is_disabled: true },
+    });
+}
+
+// ============================================================================
+// /quote <buy|sell> <mint> <amount>
+// ============================================================================
+
+async function handleQuote(ctx: Context): Promise<void> {
+    const text = ctx.message?.text || '';
+    const parts = text.split(/\s+/).slice(1);
+
+    if (parts.length < 3) {
+        await ctx.reply(
+            '\ud83d\udcca <b>Buy/Sell Quote</b>\n\n' +
+            'Usage:\n' +
+            '<code>/quote buy &lt;mint&gt; &lt;sol_amount&gt;</code>\n' +
+            '<code>/quote sell &lt;mint&gt; &lt;token_amount&gt;</code>\n\n' +
+            'Examples:\n' +
+            '<code>/quote buy HN7c...4xYz 1.5</code> — Buy with 1.5 SOL\n' +
+            '<code>/quote sell HN7c...4xYz 1000</code> — Sell 1000 tokens\n' +
+            '<code>/quote sell HN7c...4xYz 1.5M</code> — Sell 1.5 million tokens\n\n' +
+            '<i>Amounts: SOL for buys, tokens for sells. Supports K/M suffixes.</i>',
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    const side = parts[0].toLowerCase();
+    const mint = parts[1];
+    const amountStr = parts[2];
+
+    if (side !== 'buy' && side !== 'sell') {
+        await ctx.reply(
+            '\u274c First argument must be <code>buy</code> or <code>sell</code>.\n\n' +
+            'Usage: <code>/quote buy|sell &lt;mint&gt; &lt;amount&gt;</code>',
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)) {
+        await ctx.reply(
+            '\u274c Invalid mint address. Must be a base58-encoded public key (32-44 characters).',
+        );
+        return;
+    }
+
+    const token = await fetchTokenInfo(mint);
+    if (!token) {
+        await ctx.reply(
+            `\u274c Token not found on PumpFun.\n\n` +
+            `Mint <code>${mint.slice(0, 6)}...${mint.slice(-4)}</code> was not found.`,
+            { parse_mode: 'HTML' },
+        );
+        return;
+    }
+
+    if (token.complete) {
+        await ctx.reply(
+            `\u26a0\ufe0f <b>${escapeHtml(token.symbol)}</b> has graduated to AMM.\n\n` +
+            `Bonding curve quotes are not available for graduated tokens.\n` +
+            `Trade on <a href="https://pump.fun/coin/${token.mint}">pump.fun</a> or a DEX aggregator.`,
+            { parse_mode: 'HTML', link_preview_options: { is_disabled: true } },
+        );
+        return;
+    }
+
+    if (side === 'buy') {
+        const lamports = parseSolToLamports(amountStr);
+        if (lamports === null || lamports <= 0n) {
+            await ctx.reply('\u274c Invalid SOL amount. Example: <code>/quote buy &lt;mint&gt; 1.5</code>', { parse_mode: 'HTML' });
+            return;
+        }
+        const quote = getBuyQuote(token, lamports);
+        await ctx.reply(formatQuote(quote), {
+            parse_mode: 'HTML',
+            link_preview_options: { is_disabled: true },
+        });
+    } else {
+        const rawTokens = parseTokenAmount(amountStr);
+        if (rawTokens === null || rawTokens <= 0n) {
+            await ctx.reply('\u274c Invalid token amount. Example: <code>/quote sell &lt;mint&gt; 1000</code>', { parse_mode: 'HTML' });
+            return;
+        }
+        const quote = getSellQuote(token, rawTokens);
+        await ctx.reply(formatQuote(quote), {
+            parse_mode: 'HTML',
+            link_preview_options: { is_disabled: true },
+        });
+    }
 }
 
 // ============================================================================

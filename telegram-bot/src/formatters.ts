@@ -5,6 +5,8 @@
  */
 
 import type { CreatorChangeEvent, FeeClaimEvent, FeeDistributionEvent, GraduationEvent, MonitorState, PumpEventMonitorState, TokenLaunchEvent, TokenLaunchMonitorState, TradeAlertEvent, WatchEntry } from './types.js';
+import type { FeeTierInfo, PumpTokenInfo, QuoteResult } from './pump-client.js';
+import { formatSol, formatTokenAmount } from './pump-client.js';
 
 // ============================================================================
 // Fee Claim Notification
@@ -234,6 +236,17 @@ export function formatHelp(): string {
         `/stopmonitor — Stop the launch feed
 
 ` +
+        `💰 <b>Token Analytics:</b>
+` +
+        `/price <code>&lt;mint&gt;</code> — Token price, market cap & curve status
+` +
+        `/curve <code>&lt;mint&gt;</code> — Alias for /price
+` +
+        `/fees <code>&lt;mint&gt;</code> — Show fee tiers for a token
+` +
+        `/quote <code>buy|sell</code> <code>&lt;mint&gt;</code> <code>&lt;amount&gt;</code> — Buy/sell quote estimate
+
+` +
         `<b>How it works:</b>
 ` +
         `1. Add a fee-recipient wallet address with /watch
@@ -251,7 +264,7 @@ export function formatHelp(): string {
 ` +
         `<b>Works in:</b> DMs and group chats
 ` +
-        `<b>Supports:</b> Creator Fees + Cashback + CTO + Launches + Graduations + Whale Trades + Fee Distributions`
+        `<b>Supports:</b> Creator Fees + Cashback + CTO + Launches + Graduations + Whale Trades + Fee Distributions + Price/Quote Analytics`
     );
 }
 
@@ -500,6 +513,140 @@ export function formatEventMonitorStatus(state: PumpEventMonitorState): string {
         `🐋 <b>Whale Trades:</b> ${state.whaleTradesDetected}\n` +
         `💎 <b>Fee Distributions:</b> ${state.feeDistributionsDetected}\n` +
         `⏱️ <b>Uptime:</b> ${uptime}`
+    );
+}
+
+// ============================================================================
+// Token Price Display
+// ============================================================================
+
+/** Rich HTML display for token price & bonding curve info. */
+export function formatTokenPrice(token: PumpTokenInfo): string {
+    const name = escapeHtml(token.name);
+    const symbol = escapeHtml(token.symbol);
+    const mint = shortAddr(token.mint);
+    const creator = shortAddr(token.creator);
+
+    const solscanMint = `https://solscan.io/token/${token.mint}`;
+    const solscanCreator = `https://solscan.io/account/${token.creator}`;
+    const pumpfun = `https://pump.fun/coin/${token.mint}`;
+
+    // Progress bar (10 blocks)
+    const filled = Math.round(token.curveProgress / 10);
+    const progressBar = '\u2588'.repeat(filled) + '\u2591'.repeat(10 - filled);
+
+    const stageEmoji: Record<string, string> = {
+        new: '\ud83c\udf31',
+        growing: '\ud83d\udcc8',
+        graduating: '\ud83c\udf93',
+        graduated: '\u2b50',
+    };
+
+    const priceStr = token.priceSol > 0
+        ? `${token.priceSol.toFixed(token.priceSol < 0.0001 ? 10 : 6)} SOL`
+        : 'N/A';
+
+    const marketCapStr = token.usdMarketCap > 0
+        ? `$${token.usdMarketCap >= 1000 ? `${(token.usdMarketCap / 1000).toFixed(1)}K` : token.usdMarketCap.toFixed(0)}`
+        : `~${token.marketCapSol.toFixed(2)} SOL`;
+
+    let socialLinks = '';
+    if (token.twitter) socialLinks += ` · <a href="${token.twitter}">Twitter</a>`;
+    if (token.telegram) socialLinks += ` · <a href="${token.telegram}">Telegram</a>`;
+    if (token.website) socialLinks += ` · <a href="${token.website}">Website</a>`;
+
+    const graduatedLine = token.complete
+        ? `\n\u2705 <b>Graduated</b> — Trading on AMM${token.raydiumPool ? ` (<code>${shortAddr(token.raydiumPool)}</code>)` : ''}`
+        : '';
+
+    return (
+        `\ud83d\udcb0 <b>Token Price: ${name} (${symbol})</b>\n\n` +
+        `\ud83e\ude99 <b>Mint:</b> <a href="${solscanMint}"><code>${mint}</code></a>\n` +
+        `\ud83d\udc64 <b>Creator:</b> <a href="${solscanCreator}"><code>${creator}</code></a>\n` +
+        `${stageEmoji[token.stage] ?? ''} <b>Stage:</b> ${token.stage}\n\n` +
+        `\ud83d\udcb5 <b>Price:</b> ${priceStr}\n` +
+        `\ud83d\udcca <b>Market Cap:</b> ${marketCapStr}\n` +
+        `\ud83d\udcca <b>Graduation:</b> [${progressBar}] ${token.curveProgress.toFixed(1)}%\n` +
+        `\ud83d\udca7 <b>Virtual SOL:</b> ${formatSol(token.virtualSolReserves)} SOL\n` +
+        `\ud83e\ude99 <b>Virtual Tokens:</b> ${formatTokenAmount(token.virtualTokenReserves)}\n` +
+        graduatedLine +
+        `\n\n\ud83d\udd17 <a href="${solscanMint}">Solscan</a> · <a href="${pumpfun}">pump.fun</a>${socialLinks}`
+    );
+}
+
+// ============================================================================
+// Buy/Sell Quote Display
+// ============================================================================
+
+/** Rich HTML display for a buy or sell quote. */
+export function formatQuote(quote: QuoteResult): string {
+    const token = quote.token;
+    const symbol = escapeHtml(token.symbol);
+    const isBuy = quote.side === 'buy';
+    const emoji = isBuy ? '\ud83d\udfe2' : '\ud83d\udd34';
+    const action = isBuy ? 'BUY' : 'SELL';
+
+    const inputStr = isBuy
+        ? `${formatSol(quote.inputAmount)} SOL`
+        : `${formatTokenAmount(quote.inputAmount)} ${symbol}`;
+
+    const outputStr = isBuy
+        ? `${formatTokenAmount(quote.outputAmount)} ${symbol}`
+        : `${formatSol(quote.outputAmount)} SOL`;
+
+    const feeStr = `${formatSol(quote.estimatedFee)} SOL`;
+    const priceBefore = quote.priceBefore.toFixed(quote.priceBefore < 0.0001 ? 10 : 6);
+    const priceAfter = quote.priceAfter.toFixed(quote.priceAfter < 0.0001 ? 10 : 6);
+
+    const impactColor = Math.abs(quote.impactBps) > 500 ? '\u26a0\ufe0f' : '';
+    const impactStr = `${(quote.impactBps / 100).toFixed(2)}% ${impactColor}`;
+
+    const solscanMint = `https://solscan.io/token/${token.mint}`;
+    const pumpfun = `https://pump.fun/coin/${token.mint}`;
+
+    return (
+        `${emoji} <b>${action} Quote: ${symbol}</b>\n\n` +
+        `\ud83d\udce5 <b>You ${isBuy ? 'spend' : 'sell'}:</b> ${inputStr}\n` +
+        `\ud83d\udce4 <b>You ${isBuy ? 'receive' : 'get'}:</b> ${outputStr}\n` +
+        `\ud83d\udcb8 <b>Est. Fee:</b> ${feeStr} (2%)\n\n` +
+        `\ud83d\udcb5 <b>Price Before:</b> ${priceBefore} SOL/token\n` +
+        `\ud83d\udcb5 <b>Price After:</b> ${priceAfter} SOL/token\n` +
+        `\ud83d\udcca <b>Price Impact:</b> ${impactStr}\n\n` +
+        `\u26a0\ufe0f <i>Estimates only. Actual amounts depend on on-chain state at execution time.</i>\n\n` +
+        `\ud83d\udd17 <a href="${solscanMint}">Solscan</a> · <a href="${pumpfun}">pump.fun</a>`
+    );
+}
+
+// ============================================================================
+// Fee Tier Display
+// ============================================================================
+
+/** Rich HTML display of fee tiers for a specific token. */
+export function formatFeeTiers(
+    token: PumpTokenInfo,
+    tiers: Array<FeeTierInfo & { isCurrent: boolean }>,
+): string {
+    const symbol = escapeHtml(token.symbol);
+    const marketCapStr = token.usdMarketCap > 0
+        ? `$${token.usdMarketCap >= 1000 ? `${(token.usdMarketCap / 1000).toFixed(1)}K` : token.usdMarketCap.toFixed(0)}`
+        : `~${token.marketCapSol.toFixed(2)} SOL`;
+
+    const pumpfun = `https://pump.fun/coin/${token.mint}`;
+
+    const tierLines = tiers.map((t) => {
+        const pointer = t.isCurrent ? '\u25b6\ufe0f' : '  ';
+        const bold = t.isCurrent ? '<b>' : '';
+        const boldEnd = t.isCurrent ? '</b>' : '';
+        const thresholdStr = t.thresholdSol > 0 ? `\u2265${t.thresholdSol} SOL` : 'Base';
+        return `${pointer} ${bold}${t.name}${boldEnd} (${thresholdStr}) — Protocol: ${(t.protocolFeeBps / 100).toFixed(1)}% · Creator: ${(t.creatorFeeBps / 100).toFixed(1)}% · Total: ${(t.totalFeeBps / 100).toFixed(1)}%`;
+    }).join('\n');
+
+    return (
+        `\ud83d\udcb8 <b>Fee Tiers: ${symbol}</b>\n\n` +
+        `\ud83d\udcca <b>Current Market Cap:</b> ${marketCapStr}\n\n` +
+        `${tierLines}\n\n` +
+        `\u25b6\ufe0f = current tier for this token\n\n` +
+        `\ud83d\udd17 <a href="${pumpfun}">pump.fun</a>`
     );
 }
 

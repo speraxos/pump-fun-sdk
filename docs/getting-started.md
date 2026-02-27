@@ -163,7 +163,7 @@ console.log("Transaction:", signature);
 - [WebSocket Relay](../websocket-server/) — real-time token launch feed for browsers
 - [Live Dashboards](../live/) — browser-based token launch & trades monitoring
 - [x402 Payments](../x402/) — HTTP 402 micropayments with Solana USDC
-- [DeFi Agents](../packages/defi-agents/) — 58 AI agent definitions for DeFi workflows
+- [DeFi Agents](../packages/defi-agents/) — 43 AI agent definitions for DeFi workflows
 - [Lair-TG Platform](../lair-tg/) — unified Telegram bot for DeFi intelligence
 - [PumpOS Website](../website/) — web desktop with 169 apps
 

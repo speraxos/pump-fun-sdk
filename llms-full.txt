@@ -4,7 +4,7 @@ This file provides comprehensive context for AI assistants working with this cod
 
 ## Project Overview
 
-The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol — a Solana-based token launchpad with bonding curve pricing, automatic AMM migration, tiered fees, creator fee sharing, token incentives, and social fee integrations. Also includes vanity address generators (Rust + TypeScript), MCP server (53 tools), WebSocket relay, live dashboards, Telegram bot (9 commands), and production shell scripts. Uses ONLY official Solana Labs libraries for all cryptographic operations.
+The Pump SDK (`@pump-fun/pump-sdk`) is a TypeScript SDK for the Pump protocol — a Solana-based token launchpad with bonding curve pricing, automatic AMM migration, tiered fees, creator fee sharing, token incentives, and social fee integrations. Also includes vanity address generators (Rust + TypeScript), MCP server (53 tools), WebSocket relay, live dashboards, Telegram bot (10 commands), and production shell scripts. Uses ONLY official Solana Labs libraries for all cryptographic operations.
 
 ## Official Libraries Only
 
@@ -127,7 +127,7 @@ PumpFun activity monitoring bot with Telegram notifications:
 - Real-time on-chain monitoring of fee claim transactions across Pump, PumpAMM, and PumpFees programs
 - 3 detection strategies: discriminator matching, inner instruction SOL transfers, balance-change heuristic
 - 4th strategy: event log parsing for claim discriminators
-- 9 commands: /start, /help, /watch, /unwatch, /list, /status, /cto, /monitor, /stopmonitor
+- 10 commands: /start, /help, /watch, /unwatch, /list, /status, /cto, /alerts, /monitor, /stopmonitor
 - CTO (Creator Takeover) alerts: detect creator fee redirection events
 - Graduation alerts: bonding curve completion and AMM migration notifications
 - Whale trade alerts: configurable SOL threshold for large buy/sell detection
@@ -163,7 +163,7 @@ Unified Telegram bot platform for DeFi intelligence, wallet management, and toke
 
 ### DeFi Agents (packages/defi-agents/)
 
-58 production-ready AI agent definitions in universal JSON format. Each agent specifies capabilities, personality, knowledge domains, and task patterns. Works with any AI platform (Claude, GPT, LLaMA, local models). Includes agents-manifest.json registry. 18-language i18n support.
+43 production-ready AI agent definitions in universal JSON format. Each agent specifies capabilities, personality, knowledge domains, and task patterns. Works with any AI platform (Claude, GPT, LLaMA, local models). Includes agents-manifest.json registry. 18-language i18n support.
 
 ### Plugin.delivery (packages/plugin.delivery/)
 

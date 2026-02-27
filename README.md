@@ -76,8 +76,12 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Trading &nbsp;·
 - [Telegram Bot](#-telegram-bot--api) — Fee claim & CTO alerts
 - [PumpOS Web Desktop](#-pumpos-web-desktop) — 169 Pump-Store apps
 - [x402 Payments](#-x402-payment-protocol) — HTTP 402 micropayments
-- [DeFi Agents](#-defi-agents) — 58 production-ready AI agent definitions
+- [DeFi Agents](#-defi-agents) — 43 production-ready AI agent definitions
 - [Lair Platform](#-lair-telegram-platform) — Unified DeFi Telegram bot
+- [Plugin.delivery](#-plugindelivery) — 17 AI plugin APIs for SperaxOS
+- [Vanity Generators](#-vanity-address-generators) — Rust (100K+ keys/sec) + TypeScript
+- [Scripts & Makefile](#️-shell-scripts--makefile) — Production CLI tools
+- [Testing & CI/CD](#-testing--cicd) — 6 GitHub Actions workflows
 - [Tutorials](#-tutorials) — 19 hands-on guides
 - [Documentation](#-documentation) — Full guides and references
 - [Contributing](#-contributing) — Help make Pump SDK better
@@ -106,7 +110,7 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Trading &nbsp;·
 <tr><td><strong>MCP server</strong></td><td align="center">✅ 53 tools for AI agents</td><td align="center">❌</td><td align="center">❌</td></tr>
 <tr><td><strong>Real-time feed</strong></td><td align="center">✅ WebSocket relay</td><td align="center">❌ DIY</td><td align="center">❌</td></tr>
 <tr><td><strong>Telegram bot</strong></td><td align="center">✅ Claims + CTO + API</td><td align="center">❌</td><td align="center">❌</td></tr>
-<tr><td><strong>DeFi agents</strong></td><td align="center">✅ 58 agent definitions</td><td align="center">❌</td><td align="center">❌</td></tr>
+<tr><td><strong>DeFi agents</strong></td><td align="center">✅ 43 agent definitions</td><td align="center">❌</td><td align="center">❌</td></tr>
 <tr><td><strong>x402 payments</strong></td><td align="center">✅ HTTP 402 + USDC</td><td align="center">❌</td><td align="center">❌</td></tr>
 <tr><td><strong>Tutorials</strong></td><td align="center">✅ 19 guides</td><td align="center">❌</td><td align="center">❌</td></tr>
 <tr><td><strong>4 programs</strong></td><td align="center">✅ Pump + AMM + Fees + Mayhem</td><td align="center">⚠️ Manual</td><td align="center">❌ Not supported</td></tr>
@@ -761,7 +765,7 @@ The included [Telegram bot](telegram-bot/) monitors PumpFun activity on Solana w
 - **🐋 Whale trade alerts** — Configurable SOL threshold for large buy/sell notifications with progress bar
 - **💎 Fee distribution alerts** — Tracks creator fee distributions to shareholders with share breakdown
 
-**9 commands:**
+**10 commands:**
 
 | Command | Description |
 |---------|-------------|
@@ -772,6 +776,7 @@ The included [Telegram bot](telegram-bot/) monitors PumpFun activity on Solana w
 | `/list` | Show all watched wallets |
 | `/status` | Connection health and uptime |
 | `/cto [mint\|wallet]` | Query Creator Takeover events |
+| `/alerts [type] [on\|off]` | Toggle launch, graduation, whale, fee alerts |
 | `/monitor` | Start the event monitor |
 | `/stopmonitor` | Stop the event monitor |
 
@@ -798,22 +803,31 @@ The [website](website/) is a static HTML/CSS/JS web desktop (PumpOS) featuring:
 
 - **169 Pump-Store apps** — DeFi dashboards, trading tools, charts, wallets, Pump SDK tools, and more
 - **Live trades dashboard** — real-time token launches and trades via WebSocket relay
+- **PWA support** — service worker (`sw.js`), installable web manifest, offline capability
+- **Wallet connect** — in-browser Solana wallet management
+- **Smart money tracking** — on-chain whale and smart money analytics
+- **Command palette** — keyboard-driven navigation and search
+- **Plugin system** — extensible via `plugin-demo.html`
+- **BIOS boot screen** — animated startup sequence at `bios.html`
+- **Built-in API** — serverless endpoints for coins, market data, and portfolio
 - **Bonding curve calculator** — interactive constant-product AMM price simulation
 - **Fee tier explorer** — visualize market-cap-based tiered fee schedules
 - **Token launch simulator** — animated token lifecycle from creation to graduation
-- **Token incentives tracker** — PUMP token rewards, daily earnings, and claim status
-- **Creator fee sharing** — configure shareholders, BPS allocations, and distribution preview
-- **Migration tracker** — monitor token graduation progress and AMM pool migration
-- **SDK API reference** — interactive documentation for all 30+ SDK methods
-- **Solana wallet** — in-browser wallet management
+- **SDK API reference** — interactive documentation for all 42 SDK methods
 
 ```
 website/
 ├── index.html          # PumpOS desktop shell
 ├── live.html           # Live token launches + trades dashboard
+├── chart.html          # Chart application
+├── bios.html           # BIOS boot screen
+├── plugin-demo.html    # Plugin system demo
+├── sw.js               # Service worker (offline support)
 ├── Pump-Store/         # 169 installable apps
 │   ├── apps/           # Individual app HTML files
 │   └── db/v2.json      # App registry
+├── scripts/            # 27 JS modules (wallet, widgets, kernel, etc.)
+├── api/                # Serverless API endpoints
 └── assets/             # Images, icons, wallpapers
 ```
 
@@ -844,7 +858,7 @@ See [x402/README.md](x402/README.md) for setup and examples.
 
 ## 🤖 DeFi Agents
 
-The [`packages/defi-agents/`](packages/defi-agents/) directory ships **58 production-ready AI agent definitions** for DeFi, portfolio management, trading, and Web3 workflows.
+The [`packages/defi-agents/`](packages/defi-agents/) directory ships **43 production-ready AI agent definitions** for DeFi, portfolio management, trading, and Web3 workflows.
 
 - **Universal format** — works with any AI platform (Claude, GPT, LLaMA, local models)
 - **18-language i18n** — full locale translations
@@ -855,7 +869,7 @@ The [`packages/defi-agents/`](packages/defi-agents/) directory ships **58 produc
 ```bash
 # Browse agents
 cat packages/defi-agents/agents-manifest.json | jq '.totalAgents'
-# 58
+# 43
 ```
 
 ---
@@ -871,6 +885,99 @@ cat packages/defi-agents/agents-manifest.json | jq '.totalAgents'
 - **Alerts** — meme tracker, whale monitoring, price alerts
 
 See [lair-tg/README.md](lair-tg/README.md) for architecture and setup.
+
+---
+
+## 🔌 Plugin.delivery
+
+The [`packages/plugin.delivery/`](packages/plugin.delivery/) directory is an AI plugin index with a full SDK, gateway, and developer tools for building function-calling plugins.
+
+- **17 API plugins** — pump-fun-sdk, coingecko, dexscreener, defillama, beefy, lido, 1inch, thegraph, ens-lookup, gas-estimator, phishing-detector, sanctions-check, contract-scanner, audit-checker, grants-finder, address-labels, gateway
+- **Plugin SDK** — TypeScript SDK with React hooks (`usePluginSettings`, `usePluginState`, `useWatchPluginMessage`)
+- **OpenAPI compatible** — auto-generated client from OpenAPI specs
+- **Vercel edge deployment** — serverless API functions
+
+See [packages/plugin.delivery/README.md](packages/plugin.delivery/README.md) for details.
+
+---
+
+## 🔑 Vanity Address Generators
+
+Generate custom Solana addresses with a desired prefix or suffix — using the official `solana-sdk` (Rust) and `@solana/web3.js` (TypeScript).
+
+| Generator | Directory | Performance | Use Case |
+|-----------|-----------|-------------|----------|
+| **Rust** | [`rust/`](rust/) | 100K+ keys/sec (multi-threaded, Rayon) | Production, long prefixes |
+| **TypeScript** | [`typescript/`](typescript/) | ~1K keys/sec | Education, scripting, programmatic API |
+
+```bash
+# Rust generator
+cd rust && cargo build --release
+./target/release/pump-vanity --prefix pump --threads 8
+
+# TypeScript generator
+cd typescript && npm install && npm start -- --prefix pump
+```
+
+Both generators zeroize key material after use and write keypairs with `0600` permissions. See [rust/README.md](rust/README.md) and [typescript/README.md](typescript/README.md) for full documentation.
+
+---
+
+## 🛠️ Shell Scripts & Makefile
+
+Production shell scripts in [`scripts/`](scripts/) wrapping `solana-keygen`:
+
+| Script | Purpose |
+|--------|---------|
+| `generate-vanity.sh` | Single vanity address with optional GPG encryption |
+| `batch-generate.sh` | Parallel batch generation with resume support |
+| `verify-keypair.sh` | 7-point keypair integrity verification |
+| `test-rust.sh` | Run Rust generator test suite |
+| `publish-clawhub.sh` | Publish skills to ClawHub registry |
+| `utils.sh` | Shared utility functions |
+
+The [`Makefile`](Makefile) provides 20+ targets for the full workflow:
+
+```bash
+make generate PREFIX=pump          # Generate a vanity address
+make batch PREFIX=pump COUNT=10    # Batch generate
+make verify FILE=keypair.json      # Verify a keypair
+make test                          # Run all tests
+make help                          # Show all targets
+```
+
+---
+
+## 🧪 Testing & CI/CD
+
+**Test suites** in [`tests/`](tests/) covering unit, integration, stress, fuzz, and benchmark tests:
+
+```
+tests/
+├── benchmarks/     # Performance comparison and scaling tests
+├── cli/            # CLI generation and verification tests
+├── integration/    # Output compatibility, security properties, keypair validity
+├── stress/         # Rapid generation and long-running stability
+├── fuzz/           # Fuzz testing for edge cases
+└── fixtures/       # Shared test data
+```
+
+```bash
+npm test                           # Run SDK unit tests (Jest)
+make test                          # Run all test suites
+bash docs/run-all-tests.sh         # Run comprehensive cross-language tests
+```
+
+**CI/CD** via 6 GitHub Actions workflows:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | Push/PR | Build & lint on Node 18, 20, 22 |
+| `release.yml` | Tags | npm publish + Rust binary releases |
+| `security.yml` | Push/PR | npm audit, cargo audit, CodeQL, dependency review |
+| `docs.yml` | Push | Deploy documentation |
+| `stale.yml` | Cron (daily) | Auto-close stale issues |
+| `labels.yml` | Push | Sync issue labels |
 
 ---
 
@@ -922,6 +1029,8 @@ See [lair-tg/README.md](lair-tg/README.md) for architecture and setup.
 | [Security](docs/security.md) | Security model, key handling, and best practices |
 | [Testing](docs/testing.md) | Test suites, commands, and CI pipelines |
 | [CLI Guide](docs/cli-guide.md) | Vanity address generation with Solana CLI |
+| [SolanaAppKit](docs/solanaappkit.md) | SolanaAppKit integration guide |
+| [Solana Official LLMs](docs/solana-official-llms.txt.md) | Solana official LLMs context reference |
 | [Tutorials](tutorials/) | 19 hands-on guides covering every SDK feature |
 
 Also see: [FAQ](FAQ.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
@@ -942,7 +1051,7 @@ Also see: [FAQ](FAQ.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 | `x402/` | x402 payment protocol — HTTP 402 micropayments with Solana USDC |
 | `lair-tg/` | Lair — unified Telegram bot platform for DeFi intelligence |
 | `live/` | Standalone live token launch + trades pages |
-| `packages/defi-agents/` | 58 production-ready AI agent definitions for DeFi |
+| `packages/defi-agents/` | 43 production-ready AI agent definitions for DeFi |
 | `packages/plugin.delivery/` | AI plugin index for SperaxOS function-call plugins |
 | `tutorials/` | 19 hands-on tutorial guides |
 | `scripts/` | Production Bash scripts wrapping solana-keygen |
