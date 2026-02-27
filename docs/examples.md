@@ -311,6 +311,166 @@ if (bondingCurve.complete) {
 }
 ```
 
+## AMM Trading — Buy & Sell Graduated Tokens
+
+After a token graduates to the AMM, trade using pool-based instructions:
+
+```typescript
+import { PUMP_SDK, canonicalPumpPoolPda } from "@pump-fun/pump-sdk";
+import BN from "bn.js";
+
+const mint = new PublicKey("graduated-token-mint");
+const pool = canonicalPumpPoolPda(mint);
+
+// Buy tokens on AMM
+const buyIx = await PUMP_SDK.ammBuyInstruction({
+  user: wallet.publicKey,
+  pool,
+  mint,
+  baseAmountOut: new BN(1_000_000),   // tokens to receive
+  maxQuoteAmountIn: new BN(0.1 * 1e9), // max SOL to spend
+});
+
+// Sell tokens on AMM
+const sellIx = await PUMP_SDK.ammSellInstruction({
+  user: wallet.publicKey,
+  pool,
+  mint,
+  baseAmountIn: new BN(1_000_000),      // tokens to sell
+  minQuoteAmountOut: new BN(0.05 * 1e9), // min SOL to receive
+});
+
+// Buy by specifying exact SOL input
+const exactBuyIx = await PUMP_SDK.ammBuyExactQuoteInInstruction({
+  user: wallet.publicKey,
+  pool,
+  mint,
+  quoteAmountIn: new BN(0.1 * 1e9),    // exact SOL to spend
+  minBaseAmountOut: new BN(500_000),     // min tokens to receive
+});
+
+const tx = new Transaction().add(buyIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## AMM Liquidity — Deposit & Withdraw
+
+Provide or remove liquidity from an AMM pool:
+
+```typescript
+const pool = canonicalPumpPoolPda(mint);
+
+// Deposit liquidity
+const depositIx = await PUMP_SDK.ammDepositInstruction({
+  user: wallet.publicKey,
+  pool,
+  mint,
+  maxBaseAmountIn: new BN(10_000_000),   // max tokens to deposit
+  maxQuoteAmountIn: new BN(1 * 1e9),     // max SOL to deposit
+  minLpTokenAmountOut: new BN(1),         // min LP tokens to receive
+});
+
+// Withdraw liquidity
+const withdrawIx = await PUMP_SDK.ammWithdrawInstruction({
+  user: wallet.publicKey,
+  pool,
+  mint,
+  lpTokenAmountIn: new BN(100_000),       // LP tokens to burn
+  minBaseAmountOut: new BN(1),             // min tokens to receive
+  minQuoteAmountOut: new BN(1),            // min SOL to receive
+});
+
+const tx = new Transaction().add(depositIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Cashback — Claim Trading Rebates
+
+Claim cashback rewards from trading with cashback-enabled tokens:
+
+```typescript
+// Claim from Pump program
+const pumpCashbackIx = await PUMP_SDK.claimCashbackInstruction({
+  user: wallet.publicKey,
+});
+
+// Claim from AMM program
+const ammCashbackIx = await PUMP_SDK.ammClaimCashbackInstruction({
+  user: wallet.publicKey,
+});
+
+const tx = new Transaction().add(pumpCashbackIx, ammCashbackIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Social Fee PDAs
+
+Create and claim social fee PDAs for platform integrations:
+
+```typescript
+// Create a social fee PDA for a user on a platform
+const createIx = await PUMP_SDK.createSocialFeePdaInstruction({
+  payer: wallet.publicKey,
+  userId: "user123",
+  platform: 1, // platform identifier
+});
+
+// Claim accumulated social fees
+const claimIx = await PUMP_SDK.claimSocialFeePdaInstruction({
+  recipient: wallet.publicKey,
+  socialClaimAuthority: authorityKeypair.publicKey,
+  userId: "user123",
+  platform: 1,
+});
+
+const tx = new Transaction().add(createIx);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
+## Fee Sharing Authority Management
+
+Transfer, reset, or permanently revoke fee sharing authority:
+
+```typescript
+// Transfer authority to a new admin
+const transferIx = await PUMP_SDK.transferFeeSharingAuthorityInstruction({
+  authority: wallet.publicKey,
+  mint,
+  newAdmin: newAdminPublicKey,
+});
+
+// Reset fee sharing config with a new admin
+const resetIx = await PUMP_SDK.resetFeeSharingConfigInstruction({
+  authority: wallet.publicKey,
+  mint,
+  newAdmin: newAdminPublicKey,
+});
+
+// Permanently revoke authority (irreversible!)
+const revokeIx = await PUMP_SDK.revokeFeeSharingAuthorityInstruction({
+  authority: wallet.publicKey,
+  mint,
+});
+```
+
+## Buy with Exact SOL Input
+
+An alternative to `buyInstructions` that accepts exact SOL input:
+
+```typescript
+const ix = await PUMP_SDK.buyExactSolInInstruction({
+  user: wallet.publicKey,
+  mint,
+  creator: creatorPublicKey,
+  feeRecipient: feeRecipientPublicKey,
+  solAmount: new BN(0.1 * 1e9),       // exactly 0.1 SOL
+  minTokenAmount: new BN(500_000),      // slippage protection
+});
+
+const tx = new Transaction().add(ix);
+await sendAndConfirmTransaction(connection, tx, [wallet]);
+```
+
 ## Decode Account Data
 
 Use the offline SDK to decode raw account data:
