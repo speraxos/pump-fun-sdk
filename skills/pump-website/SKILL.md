@@ -1,94 +1,80 @@
 ---
 name: pump-website
-description: "Next.js 14 documentation website for the Pump SDK — interactive tool components for bonding curve visualization, fee calculation, vanity generation, keypair verification, client-side Solana cryptography, PWA support, and Vercel deployment."
+description: "PumpOS — static HTML/CSS/JS web desktop for the Pump SDK with 143 Pump-Store apps, live token dashboards, interactive DeFi tools, PWA support, and Vercel deployment."
 metadata:
   openclaw:
     homepage: https://github.com/nirholas/pump-fun-sdk
 ---
 
-# Next.js Website — Interactive Documentation & Tools
+# PumpOS Website — Static Web Desktop
 
-Next.js 14 App Router documentation website with interactive Solana tool components, client-side cryptography, and PWA support.
+PumpOS is a fully static HTML/CSS/JS web desktop environment — a browser-based OS simulation themed around Solana DeFi. No framework, no build step. Deployed on Vercel at `pumpos.app`.
 
-## Pages
+## Key Files
 
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page with hero, features, architecture diagram |
-| `/tools` | Interactive SDK tools (bonding curve, fees, vanity) |
-| `/docs` | Documentation browser |
-| `/api` | API reference |
-| `/offline` | PWA offline fallback |
+| File | Purpose |
+|------|---------|
+| `website/index.html` | Desktop shell — taskbar, windows, start menu, wallpaper |
+| `website/script.js` | App management, window lifecycle, taskbar, default apps |
+| `website/system32.js` | OS kernel — event bus, IPC routing, user system |
+| `website/pump.css` | Design system tokens — colors, spacing, radii, easing |
+| `website/style.css` | Full component styles — windows, taskbar, menus |
+| `website/sw.js` | Service worker — cache-first PWA |
+| `website/live.html` | Real-time token launch dashboard (WebSocket relay) |
+| `website/vercel.json` | Static deployment config with SPA rewrite |
 
-## Interactive Tool Components
+## Architecture
 
-| Component | Purpose |
-|-----------|---------|
-| `BondingCurveCalculator` | Visualize buy/sell quotes with live curve |
-| `FeeCalculator` | Calculate tiered fees by market cap |
-| `MarketCapCalculator` | Compute market cap from reserves |
-| `VanityGenerator` | Generate vanity addresses in-browser |
-| `KeypairVerifier` | Verify keypair integrity |
-| `AddressValidator` | Validate Solana addresses |
-| `SlippageCalculator` | Calculate max cost / min received |
-| `PDADeriver` | Derive PDAs for any program |
-| `Base58Encoder` | Encode/decode Base58 |
-| `TokenLifecycleVisualizer` | Interactive lifecycle state diagram |
+- Single HTML page (`index.html`) as the desktop shell
+- Apps loaded as HTML fragments in iframes
+- `system32.js` provides event bus + IPC between apps via `postMessage`
+- `script.js` manages window lifecycle, taskbar, and 30 built-in apps
+- 24 JS modules in `website/scripts/` (kernel, window manager, wallet-connect, etc.)
 
-## Client-Side Solana Cryptography
+## Pump-Store Apps (143)
 
-All crypto runs client-side using `@solana/web3.js`:
-
-```typescript
-'use client';
-import { Keypair } from '@solana/web3.js';
-
-export function VanityGenerator() {
-    const generate = () => {
-        const kp = Keypair.generate();
-        // ... match pattern
-    };
-}
-```
-
-## Webpack Fallbacks
-
-```javascript
-// next.config.js
-webpack: (config) => {
-    config.resolve.fallback = {
-        crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer/'),
-    };
-    return config;
-}
-```
+All in `website/Pump-Store/apps/` as individual `.html` files. Database at `Pump-Store/db/v2.json`. Categories:
+- **DeFi tools** — bonding curve calculator, DEX aggregator, fee manager, fee tier explorer
+- **Trading** — trading signals, token sniper, multichart, orderbook, watchlist
+- **Analytics** — on-chain analytics, whale flow, smart money, correlation matrix
+- **Monitoring** — liquidation heatmap, gas predictor, MEV detector, whale alerts
+- **Portfolio** — portfolio tracker, PnL leaderboard, position calculator
+- **SDK-specific** — pump-sdk-reference, token-launcher, token-launch-sim, creator-fee-sharing, migration-tracker
 
 ## Design System
 
-Solana-inspired color palette:
-- Primary: `#9945FF` (Solana purple)
-- Secondary: `#14F195` (Solana green)
-- Background: `#0E0E10` (dark)
-- Surface: `#1A1A2E`
+CSS custom properties in `pump.css`:
+- Primary accent: `#00e87b` (Pump green)
+- Background: `#0a0a0a` → `#111111` → `#1a1a1a` (dark theme)
+- Border radius: 3-tier system (`0.7em` / `0.35em` / `0.233em`)
+- Responsive breakpoint at 768px
+- Custom cubic-bezier easing curves
 
 ## PWA Support
 
-- Service worker for offline access
-- `offline.html` fallback page
-- App manifest for installability
+- Service worker with cache-first strategy
+- Web app manifest with standalone display mode
+- `web+pump://` protocol handler
+- Installable with proper icons (512×512)
+
+## Deployment
+
+- Vercel (static, no framework, no build command)
+- SPA routing: all non-asset paths rewrite to `/index.html`
+- `/libs/` and `/assets/` get immutable caching (1 year)
+- API proxy function at `api/proxy.js`
 
 ## Patterns to Follow
 
-- All interactive components use `'use client'` directive
-- Crypto operations never leave the browser
-- Use React state for all computed values
-- Lazy-load heavy components (crypto libraries)
+- No frameworks — vanilla HTML/CSS/JS only
+- Apps are self-contained HTML files loaded in iframes
+- Use `system32.js` event bus for inter-app communication
+- All crypto operations run client-side
+- Use CSS custom properties from `pump.css` for theming
 
 ## Common Pitfalls
 
-- Node.js crypto modules need browser polyfills via webpack fallbacks
-- `@solana/web3.js` is large — tree-shake or lazy-load
-- SSR will fail for crypto components — ensure client-only rendering
 - Service worker caching may serve stale content — version your cache
+- `system32.js` IPC requires apps to listen for `postMessage` events
+- Pump-Store app HTML must be self-contained (no external dependencies beyond libs/)
+- The `script.js` default app list controls first-launch pins — update it when adding built-in apps

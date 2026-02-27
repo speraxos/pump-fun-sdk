@@ -103,6 +103,9 @@ Difficulty estimates:
 - tests/ - Cross-language test suites
 - docs/ - API reference, architecture, guides
 - website/ - PumpOS web desktop with 169 Pump-Store apps
+- packages/ - Companion packages (DeFi agents, plugin delivery)
+- packages/defi-agents/ - 58 production-ready AI agent definitions
+- packages/plugin.delivery/ - AI plugin index for SperaxOS
 - security/ - Security audits and checklists
 - skills/ - Agent skill documents
 - prompts/ - Agent prompt templates

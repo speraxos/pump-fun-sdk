@@ -14,9 +14,10 @@ The repository also includes:
 - **WebSocket relay server** — Real-time token launch broadcasting to browser clients
 - **Live dashboards** — Standalone browser UIs for token launches and trade analytics
 - **x402 payment protocol** — HTTP 402 micropayments with Solana USDC
+- **Lair-TG** — unified Telegram bot platform for DeFi intelligence
 - **Shell scripts** — production Bash wrappers for solana-keygen
 - **Tutorials** — 19 hands-on guides covering the full SDK
-- **Documentation site** — PumpOS web desktop with 169 Pump-Store apps
+- **Documentation site** — PumpOS web desktop with 143 Pump-Store apps
 
 ## Architecture
 
@@ -30,6 +31,7 @@ The repository also includes:
 | WebSocket relay | `websocket-server/` | TypeScript |
 | Live dashboards | `live/` | HTML/JS |
 | x402 payment protocol | `x402/` | TypeScript |
+| Lair-TG | `lair-tg/` | TypeScript |
 | Website (PumpOS) | `website/` | HTML/CSS/JS |
 | Tutorials | `tutorials/` | Markdown |
 | Shell scripts | `scripts/` | Bash |

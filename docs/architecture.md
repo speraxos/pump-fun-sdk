@@ -16,7 +16,7 @@ Beyond the core SDK (`src/`), the repository includes several companion componen
 | `websocket-server/` | WebSocket relay — PumpFun API to browser clients |
 | `x402/` | x402 payment protocol — HTTP 402 micropayments with Solana USDC |
 | `live/` | Standalone live dashboards — token launches + trades analytics |
-| `website/` | PumpOS web desktop with 169 Pump-Store apps |
+| `website/` | PumpOS web desktop with 143 Pump-Store apps |
 | `tutorials/` | 19 hands-on tutorial guides |
 | `scripts/` | Production Bash scripts wrapping solana-keygen |
 | `tests/` | Cross-language test suites |
@@ -30,8 +30,6 @@ Beyond the core SDK (`src/`), the repository includes several companion componen
 | `packages/` | Companion packages (DeFi agents, plugin delivery) |
 | `packages/defi-agents/` | 58 production-ready AI agent definitions for DeFi workflows |
 | `packages/plugin.delivery/` | AI plugin index for SperaxOS function-call plugins |
-| `lair-tg/` | Lair — unified Telegram bot platform for DeFi intelligence |
-| `tools/` | Verification and audit utilities |
 
 ## Core SDK Module Map
 
@@ -78,7 +76,6 @@ The SDK interacts with four on-chain programs:
 | **PumpAMM** | `pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA` | AMM pool trading, liquidity, graduated token fees |
 | **PumpFees** | `pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ` | Fee sharing, social fees, authority management |
 | **Mayhem** | `MAyhSmzXzV1pTf7LsNkrNwkWKTo4ougAJ1PPg47MD4e` | Alternate routing and fee recipients |
-| **Mayhem** | `MAyhSmzXzV1pTf7LsNkrNwkWKTo4ougAJ1PPg47MD4e` | Alternate routing mode |
 
 ### Token Lifecycle
 
@@ -271,5 +268,5 @@ Aggregates data from 15+ DeFi sources (CoinGecko, DexScreener, GeckoTerminal, Bi
 3. **Deterministic PDAs** — All account addresses are derivable from mint and user public keys.
 4. **Backward compatibility** — V1 methods (`createInstruction`, `createAndBuyInstructions`) are kept but deprecated in favor of V2.
 5. **Type safety** — Full TypeScript types for all on-chain account structures via Anchor IDL types.
-6. **Comprehensive coverage** — 42 instruction builders spanning 4 programs, with 53 matching MCP tools for AI agent integration.
+6. **Comprehensive coverage** — 42 instruction builders spanning 4 programs, with 47 matching MCP tools for AI agent integration.
 

@@ -151,7 +151,7 @@ Unified Telegram bot platform for DeFi intelligence, wallet management, and toke
 ### PumpOS Website (website/)
 
 Static HTML/CSS/JS web desktop (PumpOS) with:
-- 169 Pump-Store apps: DeFi dashboards, trading tools, charts, wallet management, Pump SDK tools
+- 143 Pump-Store apps: DeFi dashboards, trading tools, charts, wallet management, Pump SDK tools
 - Live trades dashboard: real-time token launches and trades via WebSocket relay
 - Bonding curve calculator, fee tier explorer, token launch simulator
 - Token incentives tracker, creator fee sharing configurator, SDK API reference

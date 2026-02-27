@@ -164,21 +164,63 @@ console.log("Uncollected fees:", balance.toString(), "lamports");
 
 ## Social Fee PDAs
 
-For platform-based fee routing (e.g., tipping by username rather than wallet address), the SDK supports social fee PDAs. These are documented in the [Architecture Guide](architecture.md#social-fee-pdas).
+For platform-based fee routing (e.g., tipping by username rather than wallet address), the SDK supports social fee PDAs.
 
 ```typescript
 // Create a social fee PDA for a platform user
 const ix = await PUMP_SDK.createSocialFeePdaInstruction({
   payer: wallet.publicKey,
-  userId: "@username",
-  platform: "twitter",
+  userId: "user123",
+  platform: 1,   // platform identifier
 });
 
 // Claim fees routed to a social fee PDA
 const ix2 = await PUMP_SDK.claimSocialFeePdaInstruction({
-  claimer: wallet.publicKey,
-  userId: "@username",
-  platform: "twitter",
+  recipient: wallet.publicKey,
+  socialClaimAuthority: authorityKeypair.publicKey,
+  userId: "user123",
+  platform: 1,
 });
 ```
+
+## Authority Management
+
+The fee sharing config has an admin who can update shareholders. The SDK provides methods to transfer, reset, or permanently revoke this authority.
+
+### Transfer Authority
+
+Transfer admin control to a new address:
+
+```typescript
+const ix = await PUMP_SDK.transferFeeSharingAuthorityInstruction({
+  authority: wallet.publicKey,  // current admin
+  mint,
+  newAdmin: newAdminPublicKey,
+});
+```
+
+### Reset Config
+
+Reset the fee sharing configuration and assign a new admin:
+
+```typescript
+const ix = await PUMP_SDK.resetFeeSharingConfigInstruction({
+  authority: wallet.publicKey,
+  mint,
+  newAdmin: newAdminPublicKey,
+});
+```
+
+### Revoke Authority (Irreversible)
+
+Permanently lock the fee sharing configuration. After this, no one can modify shareholders.
+
+```typescript
+const ix = await PUMP_SDK.revokeFeeSharingAuthorityInstruction({
+  authority: wallet.publicKey,
+  mint,
+});
+```
+
+> **Warning:** Revoking is permanent. The `adminRevoked` flag in `SharingConfig` will be set to `true` and no further changes are possible.
 

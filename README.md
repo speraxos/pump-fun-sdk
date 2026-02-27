@@ -74,7 +74,7 @@ Token Creation &nbsp;·&nbsp; Bonding Curves &nbsp;·&nbsp; AMM Trading &nbsp;·
 - [Live Dashboards](#-live-dashboards) — Browser-based monitoring
 - [MCP Server](#-mcp-server) — 47+ tools for AI agents
 - [Telegram Bot](#-telegram-bot--api) — Fee claim & CTO alerts
-- [PumpOS Web Desktop](#-pumpos-web-desktop) — 169 Pump-Store apps
+- [PumpOS Web Desktop](#-pumpos-web-desktop) — 143 Pump-Store apps
 - [x402 Payments](#-x402-payment-protocol) — HTTP 402 micropayments
 - [DeFi Agents](#-defi-agents) — 58 production-ready AI agent definitions
 - [Lair Platform](#-lair-telegram-platform) — Unified DeFi Telegram bot
@@ -796,7 +796,7 @@ See [telegram-bot/README.md](telegram-bot/README.md) for setup and API reference
 
 The [website](website/) is a static HTML/CSS/JS web desktop (PumpOS) featuring:
 
-- **169 Pump-Store apps** — DeFi dashboards, trading tools, charts, wallets, Pump SDK tools, and more
+- **143 Pump-Store apps** — DeFi dashboards, trading tools, charts, wallets, Pump SDK tools, and more
 - **Live trades dashboard** — real-time token launches and trades via WebSocket relay
 - **Bonding curve calculator** — interactive constant-product AMM price simulation
 - **Fee tier explorer** — visualize market-cap-based tiered fee schedules
@@ -811,7 +811,7 @@ The [website](website/) is a static HTML/CSS/JS web desktop (PumpOS) featuring:
 website/
 ├── index.html          # PumpOS desktop shell
 ├── live.html           # Live token launches + trades dashboard
-├── Pump-Store/         # 169 installable apps
+├── Pump-Store/         # 143 installable apps
 │   ├── apps/           # Individual app HTML files
 │   └── db/v2.json      # App registry
 └── assets/             # Images, icons, wallpapers
@@ -938,7 +938,7 @@ Also see: [FAQ](FAQ.md) · [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 | `mcp-server/` | Model Context Protocol server for AI agent integration |
 | `telegram-bot/` | PumpFun fee claim monitor — Telegram bot + REST API |
 | `websocket-server/` | WebSocket relay — PumpFun API to browser clients |
-| `website/` | PumpOS web desktop with 169 Pump-Store apps |
+| `website/` | PumpOS web desktop with 143 Pump-Store apps |
 | `x402/` | x402 payment protocol — HTTP 402 micropayments with Solana USDC |
 | `lair-tg/` | Lair — unified Telegram bot platform for DeFi intelligence |
 | `live/` | Standalone live token launch + trades pages |
